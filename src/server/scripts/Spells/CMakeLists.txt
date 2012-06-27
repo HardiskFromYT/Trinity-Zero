@@ -14,7 +14,6 @@ set(scripts_STAT_SRCS
   Spells/spell_hunter.cpp
   Spells/spell_rogue.cpp
   Spells/spell_druid.cpp
-  Spells/spell_dk.cpp
   Spells/spell_quest.cpp
   Spells/spell_warrior.cpp
   Spells/spell_generic.cpp
