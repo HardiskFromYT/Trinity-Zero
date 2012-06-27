@@ -2070,13 +2070,10 @@ bool ChatHandler::HandleResetLevelCommand(const char * args)
     uint8 oldLevel = target->getLevel();
 
     // set starting level
-    uint32 start_level = target->getClass() != CLASS_DEATH_KNIGHT
-        ? sWorld->getIntConfig(CONFIG_START_PLAYER_LEVEL)
-        : sWorld->getIntConfig(CONFIG_START_HEROIC_PLAYER_LEVEL);
+    uint32 start_level = sWorld->getIntConfig(CONFIG_START_PLAYER_LEVEL);
 
     target->_ApplyAllLevelScaleItemMods(false);
     target->SetLevel(start_level);
-    target->InitRunes();
     target->InitStatsForLevel(true);
     target->InitTaxiNodesForLevel();
     target->InitGlyphsForLevel();
@@ -2103,7 +2100,6 @@ bool ChatHandler::HandleResetStatsCommand(const char * args)
     if (!HandleResetStatsOrLevelHelper(target))
         return false;
 
-    target->InitRunes();
     target->InitStatsForLevel(true);
     target->InitTaxiNodesForLevel();
     target->InitGlyphsForLevel();

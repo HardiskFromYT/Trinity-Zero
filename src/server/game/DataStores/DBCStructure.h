@@ -443,7 +443,7 @@ struct AchievementCriteriaEntry
         // ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_POWER          = 96
         struct
         {
-            uint32  powerType;                              // 3 mana=0, 1=rage, 3=energy, 6=runic power
+            uint32  powerType;                              // 3 mana=0, 1=rage, 3=energy
         } highest_power;
 
         // ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_STAT           = 97
@@ -1639,7 +1639,6 @@ struct SpellEntry
     uint32    TotemCategory[2];                             // 222-223  m_requiredTotemCategoryID
     int32     AreaGroupId;                                  // 224      m_requiredAreaGroupId
     uint32    SchoolMask;                                   // 225      m_schoolMask
-    uint32    runeCostID;                                   // 226      m_runeCostID
     //uint32    spellMissileID;                             // 227      m_spellMissileID not used
     //uint32  PowerDisplayId;                               // 228      PowerDisplay.dbc, new in 3.1
     float     EffectBonusMultiplier[MAX_SPELL_EFFECTS];     // 229-231  3.2.0
@@ -1693,16 +1692,6 @@ struct SpellRangeEntry
                                                             // 24 string flags, unused
     //char*     Name2[16];                                  // 25-40 unused
                                                             // 41 string flags, unused
-};
-
-struct SpellRuneCostEntry
-{
-    uint32  ID;                                             // 0
-    uint32  RuneCost[3];                                    // 1-3 (0=blood, 1=frost, 2=unholy)
-    uint32  runePowerGain;                                  // 4
-
-    bool NoRuneCost() const { return RuneCost[0] == 0 && RuneCost[1] == 0 && RuneCost[2] == 0; }
-    bool NoRunicPowerGain() const { return runePowerGain == 0; }
 };
 
 #define MAX_SHAPESHIFT_SPELLS 8

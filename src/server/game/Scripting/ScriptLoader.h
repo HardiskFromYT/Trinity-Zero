@@ -25,8 +25,6 @@ void AddCommandScripts();
 void AddWorldScripts();
 void AddEasternKingdomsScripts();
 void AddKalimdorScripts();
-void AddOutlandScripts();
-void AddNorthrendScripts();
 void AddBattlegroundScripts();
 void AddOutdoorPvPScripts();
 void AddCustomScripts();

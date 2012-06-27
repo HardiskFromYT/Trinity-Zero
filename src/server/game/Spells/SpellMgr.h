@@ -80,10 +80,6 @@ enum SpellFamilyFlag
     SPELLFAMILYFLAG2_SHAMAN_LAVA_LASH       = 0x00000004,
     SPELLFAMILYFLAG_SHAMAN_FIRE_NOVA        = 0x28000000,
 
-    // Deathknight
-    SPELLFAMILYFLAG_DK_DEATH_STRIKE         = 0x00000010,
-    SPELLFAMILYFLAG_DK_DEATH_COIL           = 0x00002000,
-
     // TODO: Figure out a more accurate name for the following familyflag(s)
     SPELLFAMILYFLAG_SHAMAN_TOTEM_EFFECTS    = 0x04000000,  // Seems to be linked to most totems and some totem effects
 };

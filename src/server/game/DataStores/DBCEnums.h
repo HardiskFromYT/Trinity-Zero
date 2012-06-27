@@ -364,6 +364,8 @@ enum TotemCategoryType
     TOTEM_CATEGORY_TYPE_SPANNER = 24
 };
 
+//! TrinityZero note: we can nuke all these, according to comments they're all from WOTLK.
+
 // SummonProperties.dbc, col 1
 enum SummonPropGroup
 {
