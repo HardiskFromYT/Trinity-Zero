@@ -1359,13 +1359,6 @@ void Spell::EffectPowerDrain(SpellEffIndex effIndex)
     damage = m_caster->SpellDamageBonusDone(unitTarget, m_spellInfo, uint32(damage), SPELL_DIRECT_DAMAGE);
     damage = unitTarget->SpellDamageBonusTaken(m_caster, m_spellInfo, uint32(damage), SPELL_DIRECT_DAMAGE);
 
-    // resilience reduce mana draining effect at spell crit damage reduction (added in 2.4)
-    int32 power = damage;
-    if (powerType == POWER_MANA)
-        power -= unitTarget->GetSpellCritDamageReduction(power);
-
-    int32 newDamage = -(unitTarget->ModifyPower(powerType, -int32(power)));
-
     float gainMultiplier = 0.0f;
 
     // Don`t restore from self drain
@@ -1373,11 +1366,11 @@ void Spell::EffectPowerDrain(SpellEffIndex effIndex)
     {
         gainMultiplier = m_spellInfo->Effects[effIndex].CalcValueMultiplier(m_originalCaster, this);
 
-        int32 gain = int32(newDamage* gainMultiplier);
+        int32 gain = int32(damage * gainMultiplier);
 
         m_caster->EnergizeBySpell(m_caster, m_spellInfo->Id, gain, powerType);
     }
-    ExecuteLogEffectTakeTargetPower(effIndex, unitTarget, powerType, newDamage, gainMultiplier);
+    ExecuteLogEffectTakeTargetPower(effIndex, unitTarget, powerType, damage, gainMultiplier);
 }
 
 void Spell::EffectSendEvent(SpellEffIndex effIndex)
@@ -1442,22 +1435,15 @@ void Spell::EffectPowerBurn(SpellEffIndex effIndex)
         damage = std::min(damage, maxDamage);
     }
 
-    int32 power = damage;
-    // resilience reduce mana draining effect at spell crit damage reduction (added in 2.4)
-    if (powerType == POWER_MANA)
-        power -= unitTarget->GetSpellCritDamageReduction(power);
-
-    int32 newDamage = -(unitTarget->ModifyPower(powerType, -power));
-
     // NO - Not a typo - EffectPowerBurn uses effect value multiplier - not effect damage multiplier
     float dmgMultiplier = m_spellInfo->Effects[effIndex].CalcValueMultiplier(m_originalCaster, this);
 
     // add log data before multiplication (need power amount, not damage)
-    ExecuteLogEffectTakeTargetPower(effIndex, unitTarget, powerType, newDamage, 0.0f);
+    ExecuteLogEffectTakeTargetPower(effIndex, unitTarget, powerType, damage, 0.0f);
 
-    newDamage = int32(newDamage* dmgMultiplier);
+    damage = int32(damage * dmgMultiplier);
 
-    m_damage += newDamage;
+    m_damage += damage;
 }
 
 void Spell::EffectHeal(SpellEffIndex /*effIndex*/)

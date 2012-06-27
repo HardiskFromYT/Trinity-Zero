@@ -1004,10 +1004,6 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage* damageInfo, int32 dama
                 damage -= damageInfo->blocked;
             }
 
-            if (attackType != RANGED_ATTACK)
-                ApplyResilience(victim, NULL, &damage, crit, CR_CRIT_TAKEN_MELEE);
-            else
-                ApplyResilience(victim, NULL, &damage, crit, CR_CRIT_TAKEN_RANGED);
             break;
         }
         // Magical Attacks
@@ -1021,7 +1017,6 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage* damageInfo, int32 dama
                 damage = SpellCriticalDamageBonus(spellInfo, damage, victim);
             }
 
-            ApplyResilience(victim, NULL, &damage, crit, CR_CRIT_TAKEN_SPELL);
             break;
         }
         default:
@@ -1239,15 +1234,6 @@ void Unit::CalculateMeleeDamage(Unit* victim, uint32 damage, CalcDamageInfo* dam
     // Always apply HITINFO_AFFECTS_VICTIM in case its not a miss
     if (!(damageInfo->HitInfo & HITINFO_MISS))
         damageInfo->HitInfo |= HITINFO_AFFECTS_VICTIM;
-
-    int32 resilienceReduction = damageInfo->damage;
-    if (attackType != RANGED_ATTACK)
-        ApplyResilience(victim, NULL, &resilienceReduction, (damageInfo->hitOutCome == MELEE_HIT_CRIT), CR_CRIT_TAKEN_MELEE);
-    else
-        ApplyResilience(victim, NULL, &resilienceReduction, (damageInfo->hitOutCome == MELEE_HIT_CRIT), CR_CRIT_TAKEN_RANGED);
-    resilienceReduction = damageInfo->damage - resilienceReduction;
-    damageInfo->damage      -= resilienceReduction;
-    damageInfo->cleanDamage += resilienceReduction;
 
     // Calculate absorb resist
     if (int32(damageInfo->damage) > 0)
@@ -2706,15 +2692,8 @@ float Unit::GetUnitCriticalChance(WeaponAttackType attackType, const Unit* victi
     crit += victim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
 
     // reduce crit chance from Rating for players
-    if (attackType != RANGED_ATTACK)
-    {
-        ApplyResilience(victim, &crit, NULL, false, CR_CRIT_TAKEN_MELEE);
-        // Glyph of barkskin
-        if (victim->HasAura(63057) && victim->HasAura(22812))
-            crit -= 25.0f;
-    }
-    else
-        ApplyResilience(victim, &crit, NULL, false, CR_CRIT_TAKEN_RANGED);
+    if (attackType != RANGED_ATTACK && victim->HasAura(63057) && victim->HasAura(22812)) // Glyph of barkskin
+        crit -= 25.0f;
 
     // Apply crit chance from defence skill
     crit += (int32(GetMaxSkillValueForLevel(victim)) - int32(victim->GetDefenseSkillValue(this))) * 0.04f;
@@ -10848,7 +10827,6 @@ bool Unit::isSpellCrit(Unit* victim, SpellInfo const* spellProto, SpellSchoolMas
                     crit_chance += victim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE, schoolMask);
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE
                     crit_chance += victim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
-                    ApplyResilience(victim, &crit_chance, NULL, false, CR_CRIT_TAKEN_SPELL);
                 }
                 // scripted (increase crit chance ... against ... target by x%
                 AuraEffectList const& mOverrideClassScript = GetAuraEffectsByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
@@ -16332,67 +16310,6 @@ void Unit::SendPlaySpellImpact(uint64 guid, uint32 id)
     SendMessageToSet(&data, false);
 }
 
-void Unit::ApplyResilience(Unit const* victim, float* crit, int32* damage, bool isCrit, CombatRating type) const
-{
-    // player mounted on multi-passenger mount is also classified as vehicle
-    if (IsVehicle() || (victim->IsVehicle() && victim->GetTypeId() != TYPEID_PLAYER))
-        return;
-
-    Unit const* source = NULL;
-    if (GetTypeId() == TYPEID_PLAYER)
-        source = this;
-    else if (GetTypeId() == TYPEID_UNIT && GetOwner() && GetOwner()->GetTypeId() == TYPEID_PLAYER)
-        source = GetOwner();
-
-    Unit const* target = NULL;
-    if (victim->GetTypeId() == TYPEID_PLAYER)
-        target = victim;
-    else if (victim->GetTypeId() == TYPEID_UNIT && victim->GetOwner() && victim->GetOwner()->GetTypeId() == TYPEID_PLAYER)
-        target = victim->GetOwner();
-
-    if (!target)
-        return;
-
-    switch (type)
-    {
-        case CR_CRIT_TAKEN_MELEE:
-            // Crit chance reduction works against nonpets
-            if (crit)
-                *crit -= target->GetMeleeCritChanceReduction();
-            if (source && damage)
-            {
-                if (isCrit)
-                    *damage -= target->GetMeleeCritDamageReduction(*damage);
-                *damage -= target->GetMeleeDamageReduction(*damage);
-            }
-            break;
-        case CR_CRIT_TAKEN_RANGED:
-            // Crit chance reduction works against nonpets
-            if (crit)
-                *crit -= target->GetRangedCritChanceReduction();
-            if (source && damage)
-            {
-                if (isCrit)
-                    *damage -= target->GetRangedCritDamageReduction(*damage);
-                *damage -= target->GetRangedDamageReduction(*damage);
-            }
-            break;
-        case CR_CRIT_TAKEN_SPELL:
-            // Crit chance reduction works against nonpets
-            if (crit)
-                *crit -= target->GetSpellCritChanceReduction();
-            if (source && damage)
-            {
-                if (isCrit)
-                    *damage -= target->GetSpellCritDamageReduction(*damage);
-                *damage -= target->GetSpellDamageReduction(*damage);
-            }
-            break;
-        default:
-            break;
-    }
-}
-
 // Melee based spells can be miss, parry or dodge on this step
 // Crit or block - determined on damage calculation phase! (and can be both in some time)
 float Unit::MeleeSpellMissChance(const Unit* victim, WeaponAttackType attType, int32 skillDiff, uint32 spellId) const
@@ -16537,24 +16454,6 @@ void Unit::KnockbackFrom(float x, float y, float speedXY, float speedZ)
 
         player->GetSession()->SendPacket(&data);
     }
-}
-
-float Unit::GetCombatRatingReduction(CombatRating cr) const
-{
-    if (Player const* player = ToPlayer())
-        return player->GetRatingBonusValue(cr);
-    // Player's pet get resilience from owner
-    else if (isPet() && GetOwner())
-        if (Player* owner = GetOwner()->ToPlayer())
-            return owner->GetRatingBonusValue(cr);
-
-    return 0.0f;
-}
-
-uint32 Unit::GetCombatRatingDamageReduction(CombatRating cr, float rate, float cap, uint32 damage) const
-{
-    float percent = std::min(GetCombatRatingReduction(cr) * rate, cap);
-    return CalculatePctF(damage, percent);
 }
 
 uint32 Unit::GetModelForForm(ShapeshiftForm form)
