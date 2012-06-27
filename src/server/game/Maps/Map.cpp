@@ -2083,7 +2083,7 @@ void Map::DelayedUpdate(const uint32 t_diff)
 
     // Don't unload grids if it's battleground, since we may have manually added GOs, creatures, those doesn't load from DB at grid re-load !
     // This isn't really bother us, since as soon as we have instanced BG-s, the whole map unloads as the BG gets ended
-    if (!IsBattlegroundOrArena())
+    if (!IsBattleground())
     {
         for (GridRefManager<NGridType>::iterator i = GridRefManager<NGridType>::begin(); i != GridRefManager<NGridType>::end();)
         {
@@ -2690,7 +2690,7 @@ uint32 InstanceMap::GetMaxResetDelay() const
 BattlegroundMap::BattlegroundMap(uint32 id, time_t expiry, uint32 InstanceId, Map* _parent, uint8 spawnMode)
   : Map(id, expiry, InstanceId, spawnMode, _parent)
 {
-    //lets initialize visibility distance for BG/Arenas
+    //lets initialize visibility distance for BGs
     BattlegroundMap::InitVisibilityDistance();
 }
 
@@ -2706,7 +2706,7 @@ BattlegroundMap::~BattlegroundMap()
 
 void BattlegroundMap::InitVisibilityDistance()
 {
-    //init visibility distance for BG/Arenas
+    //init visibility distance for BGs
     m_VisibleDistance = World::GetMaxVisibleDistanceInBGArenas();
     m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBGArenas();
 }

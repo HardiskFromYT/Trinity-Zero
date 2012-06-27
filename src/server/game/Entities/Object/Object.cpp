@@ -1794,7 +1794,7 @@ bool WorldObject::CanDetectInvisibilityOf(WorldObject const* obj) const
 
     // It isn't possible in invisibility to detect something that can't detect the invisible object
     // (it's at least true for spell: 66)
-    // It seems like that only Units are affected by this check (couldn't see arena doors with preparation invisibility)
+    // It seems like that only Units are affected by this check (couldn't see bg doors with preparation invisibility)
     if (obj->ToUnit())
         if ((m_invisibility.GetFlags() & obj->m_invisibilityDetect.GetFlags()) != m_invisibility.GetFlags())
             return false;
@@ -2262,7 +2262,7 @@ void WorldObject::SetZoneScript()
     {
         if (map->IsDungeon())
             m_zoneScript = (ZoneScript*)((InstanceMap*)map)->GetInstanceScript();
-        else if (!map->IsBattlegroundOrArena())
+        else if (!map->IsBattleground())
             m_zoneScript = sOutdoorPvPMgr->GetZoneScript(GetZoneId());
     }
 }

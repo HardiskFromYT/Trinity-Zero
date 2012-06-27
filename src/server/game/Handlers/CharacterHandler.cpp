@@ -19,15 +19,12 @@
 #include "Common.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
-#include "ArenaTeamMgr.h"
 #include "GuildMgr.h"
 #include "SystemConfig.h"
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "DatabaseEnv.h"
-
-#include "ArenaTeam.h"
 #include "Chat.h"
 #include "Group.h"
 #include "Guild.h"
@@ -145,10 +142,6 @@ bool LoginQueryHolder::Initialize()
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_GUILD_MEMBER);
     stmt->setUInt32(0, lowGuid);
     res &= SetPreparedQuery(PLAYER_LOGIN_QUERY_LOADGUILD, stmt);
-
-    stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHARACTER_ARENAINFO);
-    stmt->setUInt32(0, lowGuid);
-    res &= SetPreparedQuery(PLAYER_LOGIN_QUERY_LOADARENAINFO, stmt);
 
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHARACTER_ACHIEVEMENTS);
     stmt->setUInt32(0, lowGuid);
@@ -654,15 +647,6 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket & recv_data)
     {
         WorldPacket data(SMSG_CHAR_DELETE, 1);
         data << (uint8)CHAR_DELETE_FAILED_GUILD_LEADER;
-        SendPacket(&data);
-        return;
-    }
-
-    // is arena team captain
-    if (sArenaTeamMgr->GetArenaTeamByCaptain(guid))
-    {
-        WorldPacket data(SMSG_CHAR_DELETE, 1);
-        data << (uint8)CHAR_DELETE_FAILED_ARENA_CAPTAIN;
         SendPacket(&data);
         return;
     }
@@ -1680,7 +1664,6 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
         case RACE_TAUREN:
         case RACE_UNDEAD_PLAYER:
         case RACE_TROLL:
-        case RACE_BLOODELF:
             team = BG_TEAM_HORDE;
             break;
         default:
@@ -1716,9 +1699,6 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
             case RACE_DWARF:
                 stmt->setUInt16(1, 111);
                 break;
-            case RACE_DRAENEI:
-                stmt->setUInt16(1, 759);
-                break;
             case RACE_GNOME:
                 stmt->setUInt16(1, 313);
                 break;
@@ -1734,8 +1714,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
             case RACE_TROLL:
                 stmt->setUInt16(1, 315);
                 break;
-            case RACE_BLOODELF:
-                stmt->setUInt16(1, 137);
+            default:
                 break;
         }
 
@@ -1843,9 +1822,6 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
             trans->Append(stmt);
 
         }
-
-        // Leave Arena Teams
-        Player::LeaveAllArenaTeams(guid);
 
         // Reset homebind and position
         stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_PLAYER_HOMEBIND);

@@ -1201,12 +1201,12 @@ public:
                 else canBuy = true;
                 break;
             case 16264:                                         //Winaestra
-                if (player->GetReputationRank(911) != REP_EXALTED && race != RACE_BLOODELF)
+                if (player->GetReputationRank(911) != REP_EXALTED)
                     player->SEND_GOSSIP_MENU(10305, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 17584:                                         //Torallius the Pack Handler
-                if (player->GetReputationRank(930) != REP_EXALTED && race != RACE_DRAENEI)
+                if (player->GetReputationRank(930) != REP_EXALTED)
                     player->SEND_GOSSIP_MENU(10239, creature->GetGUID());
                 else canBuy = true;
                 break;

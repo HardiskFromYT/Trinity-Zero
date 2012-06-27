@@ -2137,10 +2137,6 @@ void AuraEffect::HandleAuraTransform(AuraApplication const* aurApp, uint8 mode, 
 
                         switch (target->getRace())
                         {
-                            // Blood Elf
-                            case RACE_BLOODELF:
-                                target->SetDisplayId(target->getGender() == GENDER_MALE ? 17829 : 17830);
-                                break;
                             // Orc
                             case RACE_ORC:
                                 target->SetDisplayId(target->getGender() == GENDER_MALE ? 10139 : 10140);
@@ -2156,10 +2152,6 @@ void AuraEffect::HandleAuraTransform(AuraApplication const* aurApp, uint8 mode, 
                             // Undead
                             case RACE_UNDEAD_PLAYER:
                                 target->SetDisplayId(target->getGender() == GENDER_MALE ? 10146 : 10145);
-                                break;
-                            // Draenei
-                            case RACE_DRAENEI:
-                                target->SetDisplayId(target->getGender() == GENDER_MALE ? 17827 : 17828);
                                 break;
                             // Dwarf
                             case RACE_DWARF:
@@ -2196,10 +2188,6 @@ void AuraEffect::HandleAuraTransform(AuraApplication const* aurApp, uint8 mode, 
 
                         switch (target->getRace())
                         {
-                            // Blood Elf
-                            case RACE_BLOODELF:
-                                target->SetDisplayId(target->getGender() == GENDER_MALE ? 25032 : 25043);
-                                break;
                             // Orc
                             case RACE_ORC:
                                 target->SetDisplayId(target->getGender() == GENDER_MALE ? 25039 : 25050);
@@ -2215,10 +2203,6 @@ void AuraEffect::HandleAuraTransform(AuraApplication const* aurApp, uint8 mode, 
                             // Undead
                             case RACE_UNDEAD_PLAYER:
                                 target->SetDisplayId(target->getGender() == GENDER_MALE ? 25042 : 25053);
-                                break;
-                            // Draenei
-                            case RACE_DRAENEI:
-                                target->SetDisplayId(target->getGender() == GENDER_MALE ? 25033 : 25044);
                                 break;
                             // Dwarf
                             case RACE_DWARF:

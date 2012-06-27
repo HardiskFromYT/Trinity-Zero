@@ -153,7 +153,7 @@ bool ChatHandler::HandleSummonCommand(const char* args)
 
         Map* map = m_session->GetPlayer()->GetMap();
 
-        if (map->IsBattlegroundOrArena())
+        if (map->IsBattleground())
         {
             // only allow if gm mode is on
             if (!_player->isGameMaster())
@@ -170,7 +170,7 @@ bool ChatHandler::HandleSummonCommand(const char* args)
             // when porting out from the bg, it will be reset to 0
             target->SetBattlegroundId(m_session->GetPlayer()->GetBattlegroundId(), m_session->GetPlayer()->GetBattlegroundTypeId());
             // remember current position as entry point for return at bg end teleportation
-            if (!target->GetMap()->IsBattlegroundOrArena())
+            if (!target->GetMap()->IsBattleground())
                 target->SetBattlegroundEntryPoint();
         }
         else if (map->IsDungeon())
@@ -261,7 +261,7 @@ bool ChatHandler::HandleAppearCommand(const char* args)
         std::string chrNameLink = playerLink(target_name);
 
         Map* cMap = target->GetMap();
-        if (cMap->IsBattlegroundOrArena())
+        if (cMap->IsBattleground())
         {
             // only allow if gm mode is on
             if (!_player->isGameMaster())
@@ -278,7 +278,7 @@ bool ChatHandler::HandleAppearCommand(const char* args)
             // when porting out from the bg, it will be reset to 0
             _player->SetBattlegroundId(target->GetBattlegroundId(), target->GetBattlegroundTypeId());
             // remember current position as entry point for return at bg end teleportation
-            if (!_player->GetMap()->IsBattlegroundOrArena())
+            if (!_player->GetMap()->IsBattleground())
                 _player->SetBattlegroundEntryPoint();
         }
         else if (cMap->IsDungeon())

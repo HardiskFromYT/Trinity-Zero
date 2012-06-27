@@ -792,7 +792,7 @@ class spell_gen_gunship_portal : public SpellScriptLoader
             {
                 Player* caster = GetCaster()->ToPlayer();
                 if (Battleground* bg = caster->GetBattleground())
-                    if (bg->GetTypeID(true) == BATTLEGROUND_IC)
+                    if (bg->GetTypeID() == BATTLEGROUND_IC)
                         bg->DoAction(1, caster->GetGUID());
             }
 
@@ -1174,7 +1174,6 @@ class spell_gen_lifeblood : public SpellScriptLoader
 enum MagicRoosterSpells
 {
     SPELL_MAGIC_ROOSTER_NORMAL          = 66122,
-    SPELL_MAGIC_ROOSTER_DRAENEI_MALE    = 66123,
     SPELL_MAGIC_ROOSTER_TAUREN_MALE     = 66124,
 };
 
@@ -1195,22 +1194,10 @@ class spell_gen_magic_rooster : public SpellScriptLoader
                     // prevent client crashes from stacking mounts
                     target->RemoveAurasByType(SPELL_AURA_MOUNTED);
 
-                    uint32 spellId = SPELL_MAGIC_ROOSTER_NORMAL;
-                    switch (target->getRace())
-                    {
-                        case RACE_DRAENEI:
-                            if (target->getGender() == GENDER_MALE)
-                                spellId = SPELL_MAGIC_ROOSTER_DRAENEI_MALE;
-                            break;
-                        case RACE_TAUREN:
-                            if (target->getGender() == GENDER_MALE)
-                                spellId = SPELL_MAGIC_ROOSTER_TAUREN_MALE;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    target->CastSpell(target, spellId, true);
+                    if (target->getRace() == RACE_TAUREN && target->getGender() == GENDER_MALE)
+                        target->CastSpell(target, SPELL_MAGIC_ROOSTER_TAUREN_MALE, true);
+                    else
+                        target->CastSpell(target, SPELL_MAGIC_ROOSTER_NORMAL, true);
                 }
             }
 

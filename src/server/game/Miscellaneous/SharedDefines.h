@@ -63,8 +63,6 @@ enum Races
     RACE_GNOME          = 7,
     RACE_TROLL          = 8,
     //RACE_GOBLIN         = 9,
-    RACE_BLOODELF       = 10, //! TrinityZero note: to-do: remove these!
-    RACE_DRAENEI        = 11
     //RACE_FEL_ORC        = 12,
     //RACE_NAGA           = 13,
     //RACE_BROKEN         = 14,
@@ -81,14 +79,14 @@ enum Races
 #define MAX_RACES         12
 
 #define RACEMASK_ALL_PLAYABLE \
-    ((1<<(RACE_HUMAN-1))   |(1<<(RACE_ORC-1))          |(1<<(RACE_DWARF-1))   | \
-    (1<<(RACE_NIGHTELF-1))|(1<<(RACE_UNDEAD_PLAYER-1))|(1<<(RACE_TAUREN-1))  | \
-    (1<<(RACE_GNOME-1))   |(1<<(RACE_TROLL-1))        |(1<<(RACE_BLOODELF-1))| \
-    (1<<(RACE_DRAENEI-1)))
+    ((1 << (RACE_HUMAN - 1))   |(1 << (RACE_ORC - 1))          |(1 << (RACE_DWARF - 1))   | \
+    (1 << (RACE_NIGHTELF - 1))|(1 << (RACE_UNDEAD_PLAYER - 1))|(1 << (RACE_TAUREN - 1))  | \
+    (1 << (RACE_GNOME - 1))   |(1 << (RACE_TROLL - 1))        |(1 << (RACE_BLOODELF - 1))| \
+    (1 << (RACE_DRAENEI - 1)))
 
 #define RACEMASK_ALLIANCE \
-    ((1<<(RACE_HUMAN-1)) | (1<<(RACE_DWARF-1)) | (1<<(RACE_NIGHTELF-1)) | \
-    (1<<(RACE_GNOME-1)) | (1<<(RACE_DRAENEI-1)))
+    ((1 << (RACE_HUMAN - 1)) | (1 << (RACE_DWARF - 1)) | (1 << (RACE_NIGHTELF - 1)) | \
+    (1 << (RACE_GNOME - 1)) | (1 << (RACE_DRAENEI - 1)))
 
 #define RACEMASK_HORDE RACEMASK_ALL_PLAYABLE & ~RACEMASK_ALLIANCE
 
@@ -2838,10 +2836,7 @@ enum SkillType
     SKILL_RACIAL_GNOME             = 753,
     SKILL_RACIAL_HUMAN             = 754,
     SKILL_JEWELCRAFTING            = 755,
-    SKILL_RACIAL_BLOODELF          = 756,
     SKILL_PET_EVENT_RC             = 758,
-    SKILL_LANG_DRAENEI             = 759,
-    SKILL_RACIAL_DRAENEI           = 760,
     SKILL_PET_FELGUARD             = 761,
     SKILL_RIDING                   = 762,
     SKILL_PET_DRAGONHAWK           = 763,

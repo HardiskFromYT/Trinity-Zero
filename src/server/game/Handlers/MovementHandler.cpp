@@ -101,7 +101,7 @@ void WorldSession::HandleMoveWorldportAckOpcode()
     if (_player->InBattleground())
     {
         // cleanup setting if outdated
-        if (!mEntry->IsBattlegroundOrArena())
+        if (!mEntry->IsBattleground())
         {
             // We're not in BG
             _player->SetBattlegroundId(0, BATTLEGROUND_TYPE_NONE);
@@ -145,7 +145,7 @@ void WorldSession::HandleMoveWorldportAckOpcode()
         }
     }
 
-    bool allowMount = !mEntry->IsDungeon() || mEntry->IsBattlegroundOrArena();
+    bool allowMount = !mEntry->IsDungeon() || mEntry->IsBattleground();
     if (mInstance)
     {
         Difficulty diff = GetPlayer()->GetDifficulty(mEntry->IsRaid());
