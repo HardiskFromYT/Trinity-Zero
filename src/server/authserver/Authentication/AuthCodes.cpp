@@ -39,12 +39,12 @@ namespace AuthHelper
                 return true;
 
         return false;
-    }*/
+    }
 
     bool IsAcceptedClientBuild(int build)
     {
         return (IsPostBCAcceptedClientBuild(build) || IsPreBCAcceptedClientBuild(build));
-    }
+    }*/
 
     bool IsAcceptedClientBuild(int build)
     {
