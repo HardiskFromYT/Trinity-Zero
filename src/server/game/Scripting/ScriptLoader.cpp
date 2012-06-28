@@ -231,31 +231,6 @@ void AddSC_boss_gelihast();
 void AddSC_boss_kelris();
 void AddSC_boss_aku_mai();
 void AddSC_instance_blackfathom_deeps();
-void AddSC_hyjal();                          //CoT Battle for Mt. Hyjal
-void AddSC_boss_archimonde();
-void AddSC_instance_mount_hyjal();
-void AddSC_hyjal_trash();
-void AddSC_boss_rage_winterchill();
-void AddSC_boss_anetheron();
-void AddSC_boss_kazrogal();
-void AddSC_boss_azgalor();
-void AddSC_boss_captain_skarloc();           //CoT Old Hillsbrad
-void AddSC_boss_epoch_hunter();
-void AddSC_boss_lieutenant_drake();
-void AddSC_instance_old_hillsbrad();
-void AddSC_old_hillsbrad();
-void AddSC_boss_aeonus();                    //CoT The Dark Portal
-void AddSC_boss_chrono_lord_deja();
-void AddSC_boss_temporus();
-void AddSC_dark_portal();
-void AddSC_instance_dark_portal();
-void AddSC_boss_epoch();                     //CoT Culling Of Stratholme
-void AddSC_boss_infinite_corruptor();
-void AddSC_boss_salramm();
-void AddSC_boss_mal_ganis();
-void AddSC_boss_meathook();
-void AddSC_culling_of_stratholme();
-void AddSC_instance_culling_of_stratholme();
 void AddSC_boss_celebras_the_cursed();       //Maraudon
 void AddSC_boss_landslide();
 void AddSC_boss_noxxion();
@@ -564,31 +539,6 @@ void AddKalimdorScripts()
     AddSC_boss_kelris();
     AddSC_boss_aku_mai();
     AddSC_instance_blackfathom_deeps();
-    AddSC_hyjal();                          //CoT Battle for Mt. Hyjal
-    AddSC_boss_archimonde();
-    AddSC_instance_mount_hyjal();
-    AddSC_hyjal_trash();
-    AddSC_boss_rage_winterchill();
-    AddSC_boss_anetheron();
-    AddSC_boss_kazrogal();
-    AddSC_boss_azgalor();
-    AddSC_boss_captain_skarloc();           //CoT Old Hillsbrad
-    AddSC_boss_epoch_hunter();
-    AddSC_boss_lieutenant_drake();
-    AddSC_instance_old_hillsbrad();
-    AddSC_old_hillsbrad();
-    AddSC_boss_aeonus();                    //CoT The Dark Portal
-    AddSC_boss_chrono_lord_deja();
-    AddSC_boss_temporus();
-    AddSC_dark_portal();
-    AddSC_instance_dark_portal();
-    AddSC_boss_epoch();                     //CoT Culling Of Stratholme
-    AddSC_boss_infinite_corruptor();
-    AddSC_boss_salramm();
-    AddSC_boss_mal_ganis();
-    AddSC_boss_meathook();
-    AddSC_culling_of_stratholme();
-    AddSC_instance_culling_of_stratholme();
     AddSC_boss_celebras_the_cursed();       //Maraudon
     AddSC_boss_landslide();
     AddSC_boss_noxxion();
