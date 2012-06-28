@@ -19,7 +19,7 @@
 
 namespace AuthHelper
 {
-    bool IsPreBCAcceptedClientBuild(int build)
+    /*bool IsPreBCAcceptedClientBuild(int build)
     {
         int accepted_versions[] = PRE_BC_ACCEPTED_CLIENT_BUILD;
 
@@ -44,5 +44,16 @@ namespace AuthHelper
     bool IsAcceptedClientBuild(int build)
     {
         return (IsPostBCAcceptedClientBuild(build) || IsPreBCAcceptedClientBuild(build));
+    }*/
+
+    bool IsAcceptedClientBuild(int build)
+    {
+        int accepted_versions[] = ACCEPTED_CLIENT_BUILD;
+
+        for (int i = 0; accepted_versions[i]; ++i)
+            if (build == accepted_versions[i])
+                return true;
+
+        return false;
     }
 };
