@@ -24,7 +24,6 @@
 #include "Creature.h"
 #include "CreatureAI.h"
 #include "Log.h"
-#include "LFGMgr.h"
 
 void InstanceScript::SaveToDB()
 {
@@ -318,39 +317,6 @@ void InstanceScript::DoSendNotifyToInstance(char const* format, ...)
                 if (WorldSession* session = player->GetSession())
                     session->SendNotification("%s", buff);
     }
-}
-
-// Update Achievement Criteria for all players in instance
-void InstanceScript::DoUpdateAchievementCriteria(AchievementCriteriaTypes type, uint32 miscValue1 /*= 0*/, uint32 miscValue2 /*= 0*/, Unit* unit /*= NULL*/)
-{
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->getSource())
-                player->UpdateAchievementCriteria(type, miscValue1, miscValue2, unit);
-}
-
-// Start timed achievement for all players in instance
-void InstanceScript::DoStartTimedAchievement(AchievementCriteriaTimedTypes type, uint32 entry)
-{
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->getSource())
-                player->GetAchievementMgr().StartTimedAchievement(type, entry);
-}
-
-// Stop timed achievement for all players in instance
-void InstanceScript::DoStopTimedAchievement(AchievementCriteriaTimedTypes type, uint32 entry)
-{
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->getSource())
-                player->GetAchievementMgr().RemoveTimedAchievement(type, entry);
 }
 
 // Remove Auras due to Spell on all players in instance

@@ -38,7 +38,6 @@
 #include "WaypointManager.h"
 #include "GossipDef.h"
 #include "Vehicle.h"
-#include "AchievementMgr.h"
 #include "DisableMgr.h"
 #include "ScriptMgr.h"
 #include "SpellScript.h"

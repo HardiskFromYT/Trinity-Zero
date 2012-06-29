@@ -47,7 +47,6 @@ public:
     {
         static ChatCommand reloadAllCommandTable[] =
         {
-            { "achievement", SEC_ADMINISTRATOR,  true,  &HandleReloadAllAchievementCommand, "", NULL },
             { "area",       SEC_ADMINISTRATOR,  true,  &HandleReloadAllAreaCommand,       "", NULL },
             { "eventai",    SEC_ADMINISTRATOR,  true,  &HandleReloadAllEventAICommand,    "", NULL },
             { "gossips",    SEC_ADMINISTRATOR,  true,  &HandleReloadAllGossipsCommand,    "", NULL },
@@ -65,8 +64,6 @@ public:
         {
             { "auctions",                     SEC_ADMINISTRATOR, true,  &HandleReloadAuctionsCommand,                   "", NULL },
             { "access_requirement",           SEC_ADMINISTRATOR, true,  &HandleReloadAccessRequirementCommand,          "", NULL },
-            { "achievement_criteria_data",    SEC_ADMINISTRATOR, true,  &HandleReloadAchievementCriteriaDataCommand,    "", NULL },
-            { "achievement_reward",           SEC_ADMINISTRATOR, true,  &HandleReloadAchievementRewardCommand,          "", NULL },
             { "all",                          SEC_ADMINISTRATOR, true,  NULL,                          "", reloadAllCommandTable },
             { "areatrigger_involvedrelation", SEC_ADMINISTRATOR, true,  &HandleReloadQuestAreaTriggersCommand,          "", NULL },
             { "areatrigger_tavern",           SEC_ADMINISTRATOR, true,  &HandleReloadAreaTriggerTavernCommand,          "", NULL },
@@ -102,8 +99,6 @@ public:
             { "item_enchantment_template",    SEC_ADMINISTRATOR, true,  &HandleReloadItemEnchantementsCommand,          "", NULL },
             { "item_loot_template",           SEC_ADMINISTRATOR, true,  &HandleReloadLootTemplatesItemCommand,          "", NULL },
             { "item_set_names",               SEC_ADMINISTRATOR, true,  &HandleReloadItemSetNamesCommand,               "", NULL },
-            { "lfg_dungeon_rewards",          SEC_ADMINISTRATOR, true,  &HandleReloadLfgRewardsCommand,                 "", NULL },
-            { "locales_achievement_reward",   SEC_ADMINISTRATOR, true,  &HandleReloadLocalesAchievementRewardCommand,   "", NULL },
             { "locales_creature",             SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureCommand,            "", NULL },
             { "locales_creature_text",        SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureTextCommand,        "", NULL },
             { "locales_gameobject",           SEC_ADMINISTRATOR, true,  &HandleReloadLocalesGameobjectCommand,          "", NULL },
@@ -178,7 +173,6 @@ public:
     {
         HandleReloadSkillFishingBaseLevelCommand(handler, "");
 
-        HandleReloadAllAchievementCommand(handler, "");
         HandleReloadAllAreaCommand(handler, "");
         HandleReloadAllEventAICommand(handler, "");
         HandleReloadAllLootCommand(handler, "");
@@ -200,13 +194,6 @@ public:
         HandleReloadVehicleTemplateAccessoryCommand(handler, "");
 
         HandleReloadAutobroadcastCommand(handler, "");
-        return true;
-    }
-
-    static bool HandleReloadAllAchievementCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        HandleReloadAchievementCriteriaDataCommand(handler, "");
-        HandleReloadAchievementRewardCommand(handler, "");
         return true;
     }
 
@@ -317,7 +304,6 @@ public:
 
     static bool HandleReloadAllLocalesCommand(ChatHandler* handler, const char* /*args*/)
     {
-        HandleReloadLocalesAchievementRewardCommand(handler, "a");
         HandleReloadLocalesCreatureCommand(handler, "a");
         HandleReloadLocalesCreatureTextCommand(handler, "a");
         HandleReloadLocalesGameobjectCommand(handler, "a");
@@ -344,22 +330,6 @@ public:
         sLog->outString("Re-Loading Access Requirement definitions...");
         sObjectMgr->LoadAccessRequirements();
         handler->SendGlobalGMSysMessage("DB table `access_requirement` reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadAchievementCriteriaDataCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Re-Loading Additional Achievement Criteria Data...");
-        sAchievementMgr->LoadAchievementCriteriaData();
-        handler->SendGlobalGMSysMessage("DB table `achievement_criteria_data` reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadAchievementRewardCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Re-Loading Achievement Reward Data...");
-        sAchievementMgr->LoadRewards();
-        handler->SendGlobalGMSysMessage("DB table `achievement_reward` reloaded.");
         return true;
     }
 
@@ -1148,22 +1118,6 @@ public:
         sLog->outString("Checking quest disables...");
         DisableMgr::CheckQuestDisables();
         handler->SendGlobalGMSysMessage("DB table `disables` reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadLocalesAchievementRewardCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Re-Loading Locales Achievement Reward Data...");
-        sAchievementMgr->LoadRewardLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_achievement_reward` reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadLfgRewardsCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Re-Loading lfg dungeon rewards...");
-        sLFGMgr->LoadRewards();
-        handler->SendGlobalGMSysMessage("DB table `lfg_dungeon_rewards` reloaded.");
         return true;
     }
 

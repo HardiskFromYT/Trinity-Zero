@@ -33,7 +33,6 @@
 #include "InstanceSaveMgr.h"
 #include "MapInstanced.h"
 #include "Util.h"
-#include "LFGMgr.h"
 
 Roll::Roll(uint64 _guid, LootItem const& li) : itemGUID(_guid), itemid(li.itemid),
 itemRandomPropId(li.randomPropertyId), itemRandomSuffix(li.randomSuffix), itemCount(li.count),
@@ -191,9 +190,6 @@ void Group::LoadGroupFromDB(Field* fields)
        m_raidDifficulty = RAID_DIFFICULTY_10MAN_NORMAL;
     else
        m_raidDifficulty = Difficulty(r_diff);
-
-    if (m_groupType & GROUPTYPE_LFG)
-        sLFGMgr->_LoadFromDB(fields, GetGUID());
 }
 
 void Group::LoadMemberFromDB(uint32 guidLow, uint8 memberFlags, uint8 subgroup, uint8 roles)
@@ -217,14 +213,6 @@ void Group::LoadMemberFromDB(uint32 guidLow, uint8 memberFlags, uint8 subgroup, 
     m_memberSlots.push_back(member);
 
     SubGroupCounterIncrease(subgroup);
-
-    if (isLFGGroup())
-    {
-        LfgDungeonSet Dungeons;
-        Dungeons.insert(sLFGMgr->GetDungeon(GetGUID()));
-        sLFGMgr->SetSelectedDungeons(member.guid, Dungeons);
-        sLFGMgr->SetState(member.guid, sLFGMgr->GetState(GetGUID()));
-    }
 }
 
 void Group::ConvertToLFG()
@@ -550,17 +538,6 @@ bool Group::RemoveMember(uint64 guid, const RemoveMethod &method /*= GROUP_REMOV
         }
 
         SendUpdate();
-
-        if (isLFGGroup() && GetMembersCount() == 1)
-        {
-            Player* Leader = ObjectAccessor::FindPlayer(GetLeaderGUID());
-            LFGDungeonEntry const* dungeon = sLFGDungeonStore.LookupEntry(sLFGMgr->GetDungeon(GetGUID()));
-            if ((Leader && dungeon && Leader->isAlive() && Leader->GetMapId() != uint32(dungeon->map)) || !dungeon)
-            {
-                Disband();
-                return false;
-            }
-        }
 
         if (m_memberMgr.getSize() < ((isLFGGroup() || isBGGroup()) ? 1u : 2u))
             Disband();
@@ -1011,7 +988,7 @@ void Group::NeedBeforeGreed(Loot* loot, WorldObject* lootedObject)
                     if (itr->second == PASS)
                         SendLootRoll(newitemGUID, p->GetGUID(), 128, ROLL_PASS, *r);
                     else
-                        SendLootStartRollToPlayer(60000, lootedObject->GetMapId(), p, p->CanRollForItemInLFG(item, lootedObject) == EQUIP_ERR_OK, *r);
+                        SendLootStartRollToPlayer(60000, lootedObject->GetMapId(), p, true, *r);
                 }
 
                 RollId.push_back(r);
@@ -1162,7 +1139,6 @@ void Group::CountTheRoll(Rolls::iterator rollI)
 
             if (player && player->GetSession())
             {
-                player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_NEED_ON_LOOT, roll->itemid, maxresul);
 
                 ItemPosCountVec dest;
                 LootItem* item = &(roll->getLoot()->items[roll->itemSlot]);
@@ -1212,7 +1188,6 @@ void Group::CountTheRoll(Rolls::iterator rollI)
 
             if (player && player->GetSession())
             {
-                player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_GREED_ON_LOOT, roll->itemid, maxresul);
 
                 LootItem* item = &(roll->getLoot()->items[roll->itemSlot]);
 
@@ -1241,7 +1216,6 @@ void Group::CountTheRoll(Rolls::iterator rollI)
                     roll->getLoot()->unlootedCount--;
                     ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(roll->itemid);
                     player->AutoStoreLoot(pProto->DisenchantID, LootTemplates_Disenchant, true);
-                    player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_CAST_SPELL, 13262); // Disenchant
                 }
             }
         }
@@ -1330,11 +1304,6 @@ void Group::SendUpdateToPlayer(uint64 playerGUID, MemberSlot* slot)
     data << uint8(slot->group);
     data << uint8(slot->flags);
     data << uint8(slot->roles);
-    if (isLFGGroup())
-    {
-        data << uint8(sLFGMgr->GetState(m_guid) == LFG_STATE_FINISHED_DUNGEON ? 2 : 0); // FIXME - Dungeon save status? 2 = done
-        data << uint32(sLFGMgr->GetDungeon(m_guid));
-    }
 
     data << uint64(m_guid);
     data << uint32(m_counter++);                        // 3.3, value increases every time this packet gets sent

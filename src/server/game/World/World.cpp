@@ -34,7 +34,6 @@
 #include "SkillDiscovery.h"
 #include "World.h"
 #include "AccountMgr.h"
-#include "AchievementMgr.h"
 #include "AuctionHouseMgr.h"
 #include "ObjectMgr.h"
 #include "GuildMgr.h"
@@ -64,7 +63,6 @@
 #include "Transport.h"
 #include "ScriptMgr.h"
 #include "AddonMgr.h"
-#include "LFGMgr.h"
 #include "ConditionMgr.h"
 #include "DisableMgr.h"
 #include "CharacterDatabaseCleaner.h"
@@ -1401,8 +1399,8 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Dungeon boss data...");
     sObjectMgr->LoadInstanceEncounters();
 
-    sLog->outString("Loading LFG rewards...");
-    sLFGMgr->LoadRewards();
+    /*sLog->outString("Loading LFG rewards...");
+    sLFGMgr->LoadRewards();*/
 
     sLog->outString("Loading SpellArea Data...");                // must be after quest load
     sSpellMgr->LoadSpellAreas();
@@ -1472,7 +1470,7 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Skill Fishing base level requirements...");
     sObjectMgr->LoadFishingBaseSkillLevel();
 
-    sLog->outString("Loading Achievements...");
+    /*sLog->outString("Loading Achievements...");
     sAchievementMgr->LoadAchievementReferenceList();
     sLog->outString("Loading Achievement Criteria Lists...");
     sAchievementMgr->LoadAchievementCriteriaList();
@@ -1483,7 +1481,7 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Achievement Reward Locales...");
     sAchievementMgr->LoadRewardLocales();
     sLog->outString("Loading Completed Achievements...");
-    sAchievementMgr->LoadCompletedAchievements();
+    sAchievementMgr->LoadCompletedAchievements();*/
 
     // Delete expired auctions before loading
     sLog->outString("Deleting expired auctions...");
@@ -1942,8 +1940,8 @@ void World::Update(uint32 diff)
         Player::DeleteOldCharacters();
     }
 
-    sLFGMgr->Update(diff);
-    RecordTimeDiff("UpdateLFGMgr");
+    /*sLFGMgr->Update(diff);
+    RecordTimeDiff("UpdateLFGMgr");*/
 
     // execute callbacks from sql queries that were queued recently
     ProcessQueryCallbacks();

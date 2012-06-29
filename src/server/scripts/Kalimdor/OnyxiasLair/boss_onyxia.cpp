@@ -178,7 +178,6 @@ public:
             {
                 instance->SetData(DATA_ONYXIA, NOT_STARTED);
                 instance->SetData(DATA_ONYXIA_PHASE, Phase);
-                instance->DoStopTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT,  ACHIEV_TIMED_START_EVENT);
             }
         }
 
@@ -188,10 +187,7 @@ public:
             me->SetInCombatWithZone();
 
             if (instance)
-            {
                 instance->SetData(DATA_ONYXIA, IN_PROGRESS);
-                instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT,  ACHIEV_TIMED_START_EVENT);
-            }
         }
 
         void JustDied(Unit* /*killer*/)
