@@ -68,10 +68,6 @@ set(scripts_STAT_SRCS
   EasternKingdoms/BlackrockDepths/boss_emperor_dagran_thaurissan.cpp
   EasternKingdoms/BlackrockDepths/boss_magmus.cpp
   EasternKingdoms/ironforge.cpp
-  EasternKingdoms/ScarletEnclave/chapter2.cpp
-  EasternKingdoms/ScarletEnclave/chapter5.cpp
-  EasternKingdoms/ScarletEnclave/chapter1.cpp
-  EasternKingdoms/ScarletEnclave/the_scarlet_enclave.cpp
   EasternKingdoms/eastern_plaguelands.cpp
   EasternKingdoms/MoltenCore/boss_gehennas.cpp
   EasternKingdoms/MoltenCore/boss_lucifron.cpp

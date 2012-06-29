@@ -20,38 +20,6 @@ set(scripts_STAT_SRCS
   Kalimdor/ZulFarrak/zulfarrak.h
   Kalimdor/ZulFarrak/zulfarrak.cpp
   Kalimdor/ZulFarrak/instance_zulfarrak.cpp
-  Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/boss_epoch_hunter.cpp
-  Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/old_hillsbrad.h
-  Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/boss_leutenant_drake.cpp
-  Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/old_hillsbrad.cpp
-  Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/instance_old_hillsbrad.cpp
-  Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/boss_captain_skarloc.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/boss_archimonde.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjalAI.h
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal_trash.h
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/boss_kazrogal.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal_trash.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjalAI.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/instance_hyjal.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/boss_rage_winterchill.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal.h
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/boss_azgalor.cpp
-  Kalimdor/CavernsOfTime/BattleForMountHyjal/boss_anetheron.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/boss_infinite.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/boss_salramm.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/boss_meathook.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/boss_mal_ganis.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/boss_epoch.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/culling_of_stratholme.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/instance_culling_of_stratholme.cpp
-  Kalimdor/CavernsOfTime/CullingOfStratholme/culling_of_stratholme.h
-  Kalimdor/CavernsOfTime/DarkPortal/dark_portal.h
-  Kalimdor/CavernsOfTime/DarkPortal/instance_dark_portal.cpp
-  Kalimdor/CavernsOfTime/DarkPortal/boss_chrono_lord_deja.cpp
-  Kalimdor/CavernsOfTime/DarkPortal/dark_portal.cpp
-  Kalimdor/CavernsOfTime/DarkPortal/boss_aeonus.cpp
-  Kalimdor/CavernsOfTime/DarkPortal/boss_temporus.cpp
   Kalimdor/BlackfathomDeeps/boss_kelris.cpp
   Kalimdor/BlackfathomDeeps/instance_blackfathom_deeps.cpp
   Kalimdor/BlackfathomDeeps/boss_gelihast.cpp
