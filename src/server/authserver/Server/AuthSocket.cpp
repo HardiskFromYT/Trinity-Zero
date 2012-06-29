@@ -343,7 +343,7 @@ bool AuthSocket::_HandleLogonChallenge()
 
     _login = (const char*)ch->I;
     _build = ch->build;
-    _expversion = (AuthHelper::IsPostBCAcceptedClientBuild(_build) ? POST_BC_EXP_FLAG : NO_VALID_EXP_FLAG) | (AuthHelper::IsPreBCAcceptedClientBuild(_build) ? PRE_BC_EXP_FLAG : NO_VALID_EXP_FLAG);
+    _expversion = (NO_VALID_EXP_FLAG) | (PRE_BC_EXP_FLAG);
     _os = (const char*)ch->os;
 
     if (_os.size() > 4)
@@ -749,7 +749,7 @@ bool AuthSocket::_HandleReconnectChallenge()
 
     // Reinitialize build, expansion and the account securitylevel
     _build = ch->build;
-    _expversion = (AuthHelper::IsPostBCAcceptedClientBuild(_build) ? POST_BC_EXP_FLAG : NO_VALID_EXP_FLAG) | (AuthHelper::IsPreBCAcceptedClientBuild(_build) ? PRE_BC_EXP_FLAG : NO_VALID_EXP_FLAG);
+    _expversion = (NO_VALID_EXP_FLAG) | (PRE_BC_EXP_FLAG);
     _os = (const char*)ch->os;
 
     if (_os.size() > 4)
@@ -851,7 +851,7 @@ bool AuthSocket::_HandleRealmList()
         // don't work with realms which not compatible with the client
         if ((_expversion & POST_BC_EXP_FLAG) && i->second.gamebuild != _build)
             continue;
-        else if ((_expversion & PRE_BC_EXP_FLAG) && !AuthHelper::IsPreBCAcceptedClientBuild(i->second.gamebuild))
+        else if ((_expversion & PRE_BC_EXP_FLAG) && !AuthHelper::IsAcceptedClientBuild(i->second.gamebuild))
                 continue;
 
         uint8 AmountOfCharacters;

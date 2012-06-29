@@ -61,7 +61,6 @@ class WorldPacket;
 class WorldSocket;
 class WorldObject;
 
-struct AchievementCriteriaData;
 struct AuctionEntry;
 struct ConditionSourceInfo;
 struct Condition;
@@ -642,20 +641,6 @@ class TransportScript : public ScriptObject, public UpdatableScript<Transport>
         virtual void OnRelocate(Transport* /*transport*/, uint32 /*waypointId*/, uint32 /*mapId*/, float /*x*/, float /*y*/, float /*z*/) { }
 };
 
-class AchievementCriteriaScript : public ScriptObject
-{
-    protected:
-
-        AchievementCriteriaScript(const char* name);
-
-    public:
-
-        bool IsDatabaseBound() const { return true; }
-
-        // Called when an additional criteria is checked.
-        virtual bool OnCheck(Player* source, Unit* target) = 0;
-};
-
 class PlayerScript : public ScriptObject
 {
     protected:
@@ -976,10 +961,6 @@ class ScriptMgr
         void OnRemovePassenger(Transport* transport, Player* player);
         void OnTransportUpdate(Transport* transport, uint32 diff);
         void OnRelocate(Transport* transport, uint32 waypointId, uint32 mapId, float x, float y, float z);
-
-    public: /* AchievementCriteriaScript */
-
-        bool OnCriteriaCheck(AchievementCriteriaData const* data, Player* source, Unit* target);
 
     public: /* PlayerScript */
 
