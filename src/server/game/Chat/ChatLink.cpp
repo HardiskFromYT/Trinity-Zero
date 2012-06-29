@@ -28,7 +28,6 @@
 // |color|Hgameevent:id|h[name]|h|r
 // |color|Hgameobject:go_guid|h[name]|h|r
 // |color|Hgameobject_entry:go_id|h[name]|h|r
-// |color|Hglyph:glyph_slot_id:glyph_prop_id|h[%s]|h|r                    - client, at shift click in glyphs dialog, GlyphSlot.dbc, GlyphProperties.dbc
 // |color|Hitem:item_id:perm_ench_id:gem1:gem2:gem3:0:0:0:0:reporter_level|h[name]|h|r
 //                                                                        - client, item icon shift click
 // |color|Hitemset:itemset_id|h[name]|h|r
@@ -433,45 +432,6 @@ bool EnchantmentChatLink::Initialize(std::istringstream& iss)
     if (!_spell)
     {
         sLog->outDebug(LOG_FILTER_CHATSYS, "ChatHandler::isValidChatMessage('%s'): got invalid spell id %u in |enchant command", iss.str().c_str(), spellId);
-        return false;
-    }
-    return true;
-}
-
-// |color|Hglyph:glyph_slot_id:glyph_prop_id|h[%s]|h|r
-// |cff66bbff|Hglyph:21:762|h[Glyph of Bladestorm]|h|r
-bool GlyphChatLink::Initialize(std::istringstream& iss)
-{
-    if (_color != CHAT_LINK_COLOR_GLYPH)
-        return false;
-    // Slot
-    if (!ReadUInt32(iss, _slotId))
-    {
-        sLog->outDebug(LOG_FILTER_CHATSYS, "ChatHandler::isValidChatMessage('%s'): sequence finished unexpectedly while reading slot id", iss.str().c_str());
-        return false;
-    }
-    // Check delimiter
-    if (!CheckDelimiter(iss, DELIMITER, "glyph"))
-        return false;
-    // Glyph Id
-    uint32 glyphId = 0;
-    if (!ReadUInt32(iss, glyphId))
-    {
-        sLog->outDebug(LOG_FILTER_CHATSYS, "ChatHandler::isValidChatMessage('%s'): sequence finished unexpectedly while reading glyph entry", iss.str().c_str());
-        return false;
-    }
-    // Validate glyph
-    _glyph = sGlyphPropertiesStore.LookupEntry(glyphId);
-    if (!_glyph)
-    {
-        sLog->outDebug(LOG_FILTER_CHATSYS, "ChatHandler::isValidChatMessage('%s'): got invalid glyph id %u in |glyph command", iss.str().c_str(), glyphId);
-        return false;
-    }
-    // Validate glyph's spell
-    _spell = sSpellMgr->GetSpellInfo(_glyph->SpellId);
-    if (!_spell)
-    {
-        sLog->outDebug(LOG_FILTER_CHATSYS, "ChatHandler::isValidChatMessage('%s'): got invalid spell id %u in |glyph command", iss.str().c_str(), _glyph->SpellId);
         return false;
     }
     return true;

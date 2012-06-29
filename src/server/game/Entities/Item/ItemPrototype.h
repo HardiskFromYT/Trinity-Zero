@@ -278,7 +278,6 @@ enum ItemClass
     ITEM_CLASS_KEY                              = 13,
     ITEM_CLASS_PERMANENT                        = 14,
     ITEM_CLASS_MISC                             = 15,
-    ITEM_CLASS_GLYPH                            = 16
 };
 
 #define MAX_ITEM_CLASS                            17
@@ -490,22 +489,6 @@ enum ItemSubclassJunk
 
 #define MAX_ITEM_SUBCLASS_JUNK                    6
 
-enum ItemSubclassGlyph
-{
-    ITEM_SUBCLASS_GLYPH_WARRIOR                 = 1,
-    ITEM_SUBCLASS_GLYPH_PALADIN                 = 2,
-    ITEM_SUBCLASS_GLYPH_HUNTER                  = 3,
-    ITEM_SUBCLASS_GLYPH_ROGUE                   = 4,
-    ITEM_SUBCLASS_GLYPH_PRIEST                  = 5,
-    ITEM_SUBCLASS_GLYPH_DEATH_KNIGHT            = 6,
-    ITEM_SUBCLASS_GLYPH_SHAMAN                  = 7,
-    ITEM_SUBCLASS_GLYPH_MAGE                    = 8,
-    ITEM_SUBCLASS_GLYPH_WARLOCK                 = 9,
-    ITEM_SUBCLASS_GLYPH_DRUID                   = 11
-};
-
-#define MAX_ITEM_SUBCLASS_GLYPH                   12
-
 const uint32 MaxItemSubclassValues[MAX_ITEM_CLASS] =
 {
     MAX_ITEM_SUBCLASS_CONSUMABLE,
@@ -524,7 +507,6 @@ const uint32 MaxItemSubclassValues[MAX_ITEM_CLASS] =
     MAX_ITEM_SUBCLASS_KEY,
     MAX_ITEM_SUBCLASS_PERMANENT,
     MAX_ITEM_SUBCLASS_JUNK,
-    MAX_ITEM_SUBCLASS_GLYPH
 };
 
 inline uint8 ItemSubClassToDurabilityMultiplierId(uint32 ItemClass, uint32 ItemSubClass)

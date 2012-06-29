@@ -1135,14 +1135,6 @@ class ObjectMgr
                 value = data[loc_idx];
         }
 
-        CharacterConversionMap FactionChange_Items;
-        CharacterConversionMap FactionChange_Spells;
-        CharacterConversionMap FactionChange_Reputation;
-
-        void LoadFactionChangeItems();
-        void LoadFactionChangeSpells();
-        void LoadFactionChangeReputations();
-
     private:
         // first free id for selected id type
         uint32 _auctionId;

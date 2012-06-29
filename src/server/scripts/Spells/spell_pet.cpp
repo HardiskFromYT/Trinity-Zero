@@ -56,7 +56,6 @@ enum WarlockPetCalculate
      ENTRY_FELHUNTER                    = 417,
      ENTRY_SUCCUBUS                     = 1863,
      ENTRY_IMP                          = 416,
-     SPELL_WARLOCK_GLYPH_OF_VOIDWALKER  = 56247,
 };
 
 enum ShamanPetCalculate
@@ -290,16 +289,6 @@ public:
                     float bonusAP = maximum * 0.57f;
 
                     amount += bonusAP;
-
-                    // Glyph of felguard
-                    if (pet->GetEntry() == ENTRY_FELGUARD)
-                    {
-                        if (AuraEffect* /* aurEff */ect = owner->GetAuraEffect(56246, EFFECT_0))
-                        {
-                            float base_attPower = pet->GetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_VALUE) * pet->GetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_PCT);
-                            amount += CalculatePctN(amount+base_attPower, /* aurEff */ect->GetAmount());
-                        }
-                    }
                 }
         }
 
@@ -759,44 +748,6 @@ public:
         return new spell_warl_pet_passive_damage_done_AuraScript();
     }
 };
-
-class spell_warl_pet_passive_voidwalker : public SpellScriptLoader
-{
-public:
-    spell_warl_pet_passive_voidwalker() : SpellScriptLoader("spell_warl_pet_passive_voidwalker") { }
-
-    class spell_warl_pet_passive_voidwalker_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_warl_pet_passive_voidwalker_AuraScript);
-
-        bool Load()
-        {
-            if (!GetCaster() || !GetCaster()->GetOwner() || GetCaster()->GetOwner()->GetTypeId() != TYPEID_PLAYER)
-                return false;
-            return true;
-        }
-
-        void CalculateAmount(AuraEffect const* /* aurEff */, int32& amount, bool& /*canBeRecalculated*/)
-        {
-            if (Unit* pet = GetUnitOwner())
-                if (pet->isPet())
-                    if (Unit* owner = pet->ToPet()->GetOwner())
-                        if (AuraEffect* /* aurEff */ect = owner->GetAuraEffect(SPELL_WARLOCK_GLYPH_OF_VOIDWALKER, EFFECT_0))
-                            amount += /* aurEff */ect->GetAmount();
-        }
-
-        void Register()
-        {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_pet_passive_voidwalker_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
-        }
-    };
-
-    AuraScript* GetAuraScript() const
-    {
-        return new spell_warl_pet_passive_voidwalker_AuraScript();
-    }
-};
-
 
 class spell_sha_pet_scaling_04 : public SpellScriptLoader
 {

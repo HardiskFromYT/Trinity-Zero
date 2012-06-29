@@ -497,21 +497,6 @@ struct GemPropertiesEntry
     uint32      color;
 };
 
-struct GlyphPropertiesEntry
-{
-    uint32  Id;
-    uint32  SpellId;
-    uint32  TypeFlags;
-    uint32  Unk1;                                           // GlyphIconId (SpellIcon.dbc)
-};
-
-struct GlyphSlotEntry
-{
-    uint32  Id;
-    uint32  TypeFlags;
-    uint32  Order;
-};
-
 // All Gt* DBC store data for 100 levels, some by 100 per class/race
 #define GT_MAX_LEVEL    100
 // gtOCTClassCombatRatingScalar.dbc stores data for 32 ratings, look at MAX_COMBAT_RATING for real used amount

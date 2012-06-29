@@ -1255,9 +1255,6 @@ public:
         if (creature->isCanTrainingAndResetTalentsOf(player))
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_HELLO_ROGUE1, GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNTALENTS);
 
-        if (player->GetSpecsCount() == 1 && creature->isCanTrainingAndResetTalentsOf(player) && player->getLevel() >= sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_HELLO_ROGUE3, GOSSIP_SENDER_MAIN, GOSSIP_OPTION_LEARNDUALSPEC);
-
         if (player->getClass() == CLASS_ROGUE && player->getLevel() >= 24 && !player->HasItemCount(17126, 1) && !player->GetQuestRewardStatus(6681))
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_ROGUE2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
@@ -1284,28 +1281,7 @@ public:
                 player->CLOSE_GOSSIP_MENU();
                 player->SendTalentWipeConfirm(creature->GetGUID());
                 break;
-            case GOSSIP_OPTION_LEARNDUALSPEC:
-                if (player->GetSpecsCount() == 1 && !(player->getLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)))
-                {
-                    if (!player->HasEnoughMoney(10000000))
-                    {
-                        player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0, 0);
-                        player->PlayerTalkClass->SendCloseGossip();
-                        break;
-                    }
-                    else
-                    {
-                        player->ModifyMoney(-10000000);
-
-                        // Cast spells that teach dual spec
-                        // Both are also ImplicitTarget self and must be cast by player
-                        player->CastSpell(player, 63680, true, NULL, NULL, player->GetGUID());
-                        player->CastSpell(player, 63624, true, NULL, NULL, player->GetGUID());
-
-                        // Should show another Gossip text with "Congratulations..."
-                        player->PlayerTalkClass->SendCloseGossip();
-                    }
-                }
+            default:
                 break;
         }
         return true;
@@ -1837,143 +1813,6 @@ public:
     }
 };
 
-class npc_mirror_image : public CreatureScript
-{
-public:
-    npc_mirror_image() : CreatureScript("npc_mirror_image") { }
-
-    struct npc_mirror_imageAI : CasterAI
-    {
-        npc_mirror_imageAI(Creature* creature) : CasterAI(creature) {}
-
-        void InitializeAI()
-        {
-            CasterAI::InitializeAI();
-            Unit* owner = me->GetOwner();
-            if (!owner)
-                return;
-            // Inherit Master's Threat List (not yet implemented)
-            owner->CastSpell((Unit*)NULL, 58838, true);
-            // here mirror image casts on summoner spell (not present in client dbc) 49866
-            // here should be auras (not present in client dbc): 35657, 35658, 35659, 35660 selfcasted by mirror images (stats related?)
-            // Clone Me!
-            owner->CastSpell(me, 45204, false);
-        }
-
-        // Do not reload Creature templates on evade mode enter - prevent visual lost
-        void EnterEvadeMode()
-        {
-            if (me->IsInEvadeMode() || !me->isAlive())
-                return;
-
-            Unit* owner = me->GetCharmerOrOwner();
-
-            me->CombatStop(true);
-            if (owner && !me->HasUnitState(UNIT_STATE_FOLLOW))
-            {
-                me->GetMotionMaster()->Clear(false);
-                me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
-            }
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_mirror_imageAI(creature);
-    }
-};
-
-class npc_ebon_gargoyle : public CreatureScript
-{
-public:
-    npc_ebon_gargoyle() : CreatureScript("npc_ebon_gargoyle") { }
-
-    struct npc_ebon_gargoyleAI : CasterAI
-    {
-        npc_ebon_gargoyleAI(Creature* creature) : CasterAI(creature) {}
-
-        uint32 despawnTimer;
-
-        void InitializeAI()
-        {
-            CasterAI::InitializeAI();
-            uint64 ownerGuid = me->GetOwnerGUID();
-            if (!ownerGuid)
-                return;
-            // Not needed to be despawned now
-            despawnTimer = 0;
-            // Find victim of Summon Gargoyle spell
-            std::list<Unit*> targets;
-            Trinity::AnyUnfriendlyUnitInObjectRangeCheck u_check(me, me, 30);
-            Trinity::UnitListSearcher<Trinity::AnyUnfriendlyUnitInObjectRangeCheck> searcher(me, targets, u_check);
-            me->VisitNearbyObject(30, searcher);
-            for (std::list<Unit*>::const_iterator iter = targets.begin(); iter != targets.end(); ++iter)
-                if ((*iter)->GetAura(49206, ownerGuid))
-                {
-                    me->Attack((*iter), false);
-                    break;
-                }
-        }
-
-        void JustDied(Unit* /*killer*/)
-        {
-            // Stop Feeding Gargoyle when it dies
-            if (Unit* owner = me->GetOwner())
-                owner->RemoveAurasDueToSpell(50514);
-        }
-
-        // Fly away when dismissed
-        void SpellHit(Unit* source, SpellInfo const* spell)
-        {
-            if (spell->Id != 50515 || !me->isAlive())
-                return;
-
-            Unit* owner = me->GetOwner();
-
-            if (!owner || owner != source)
-                return;
-
-            // Stop Fighting
-            me->ApplyModFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE, true);
-            // Sanctuary
-            me->CastSpell(me, 54661, true);
-            me->SetReactState(REACT_PASSIVE);
-
-            //! HACK: Creature's can't have MOVEMENTFLAG_FLYING
-            // Fly Away
-            me->AddUnitMovementFlag(MOVEMENTFLAG_CAN_FLY|MOVEMENTFLAG_ASCENDING|MOVEMENTFLAG_FLYING);
-            me->SetSpeed(MOVE_FLIGHT, 0.75f, true);
-            me->SetSpeed(MOVE_RUN, 0.75f, true);
-            float x = me->GetPositionX() + 20 * cos(me->GetOrientation());
-            float y = me->GetPositionY() + 20 * sin(me->GetOrientation());
-            float z = me->GetPositionZ() + 40;
-            me->GetMotionMaster()->Clear(false);
-            me->GetMotionMaster()->MovePoint(0, x, y, z);
-
-            // Despawn as soon as possible
-            despawnTimer = 4 * IN_MILLISECONDS;
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (despawnTimer > 0)
-            {
-                if (despawnTimer > diff)
-                    despawnTimer -= diff;
-                else
-                    me->DespawnOrUnsummon();
-                return;
-            }
-            CasterAI::UpdateAI(diff);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_ebon_gargoyleAI(creature);
-    }
-};
-
 class npc_lightwell : public CreatureScript
 {
     public:
@@ -2088,38 +1927,6 @@ public:
     {
         return new npc_training_dummyAI(creature);
     }
-};
-
-/*######
-# npc_shadowfiend
-######*/
-#define GLYPH_OF_SHADOWFIEND_MANA         58227
-#define GLYPH_OF_SHADOWFIEND              58228
-
-class npc_shadowfiend : public CreatureScript
-{
-    public:
-        npc_shadowfiend() : CreatureScript("npc_shadowfiend") { }
-
-        struct npc_shadowfiendAI : public PetAI
-        {
-            npc_shadowfiendAI(Creature* creature) : PetAI(creature) {}
-
-            void JustDied(Unit* killer)
-            {
-                if (me->isSummon())
-                    if (Unit* owner = me->ToTempSummon()->GetSummoner())
-                        if (owner->HasAura(GLYPH_OF_SHADOWFIEND))
-                            owner->CastSpell(owner, GLYPH_OF_SHADOWFIEND_MANA, true);
-
-                PetAI::JustDied(killer);
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_shadowfiendAI(creature);
-        }
 };
 
 /*######
@@ -3034,12 +2841,9 @@ void AddSC_npcs_special()
     new npc_winter_reveler();
     new npc_brewfest_reveler();
     new npc_snake_trap();
-    new npc_mirror_image();
-    new npc_ebon_gargoyle();
     new npc_lightwell();
     new mob_mojo();
     new npc_training_dummy();
-    new npc_shadowfiend();
     new npc_wormhole();
     new npc_pet_trainer();
     new npc_locksmith();

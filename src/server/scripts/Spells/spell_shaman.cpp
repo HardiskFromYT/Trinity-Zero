@@ -29,7 +29,6 @@
 
 enum ShamanSpells
 {
-    SHAMAN_SPELL_GLYPH_OF_MANA_TIDE        = 55441,
     SHAMAN_SPELL_MANA_TIDE_TOTEM           = 39609,
     SHAMAN_SPELL_FIRE_NOVA_R1              = 1535,
     SHAMAN_SPELL_FIRE_NOVA_TRIGGERED_R1    = 8349,
@@ -166,7 +165,7 @@ class spell_sha_mana_tide_totem : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellEntry*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SHAMAN_SPELL_GLYPH_OF_MANA_TIDE) || !sSpellMgr->GetSpellInfo(SHAMAN_SPELL_MANA_TIDE_TOTEM))
+                if ( !sSpellMgr->GetSpellInfo(SHAMAN_SPELL_MANA_TIDE_TOTEM))
                     return false;
                 return true;
             }
@@ -179,10 +178,6 @@ class spell_sha_mana_tide_totem : public SpellScriptLoader
                         if (unitTarget->getPowerType() == POWER_MANA)
                         {
                             int32 effValue = GetEffectValue();
-                            // Glyph of Mana Tide
-                            if (Unit* owner = caster->GetOwner())
-                                if (AuraEffect* dummy = owner->GetAuraEffect(SHAMAN_SPELL_GLYPH_OF_MANA_TIDE, 0))
-                                    effValue += dummy->GetAmount();
                             // Regenerate 6% of Total Mana Every 3 secs
                             int32 effBasePoints0 = int32(CalculatePctN(unitTarget->GetMaxPower(POWER_MANA), effValue));
                             caster->CastCustomSpell(unitTarget, SHAMAN_SPELL_MANA_TIDE_TOTEM, &effBasePoints0, NULL, NULL, true, NULL, NULL, GetOriginalCaster()->GetGUID());
@@ -463,7 +458,6 @@ class spell_sha_cleansing_totem_pulse : public SpellScriptLoader
 
 enum HealingStreamTotem
 {
-    SPELL_GLYPH_OF_HEALING_STREAM_TOTEM     = 55456,
     ICON_ID_RESTORATIVE_TOTEMS              = 338,
     SPELL_HEALING_STREAM_TOTEM_HEAL         = 52042,
 };
@@ -479,7 +473,7 @@ class spell_sha_healing_stream_totem : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*SpellEntry*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_HEALING_STREAM_TOTEM) || !sSpellMgr->GetSpellInfo(SPELL_HEALING_STREAM_TOTEM_HEAL))
+                if (!sSpellMgr->GetSpellInfo(SPELL_HEALING_STREAM_TOTEM_HEAL))
                     return false;
                 return true;
             }
@@ -499,10 +493,6 @@ class spell_sha_healing_stream_totem : public SpellScriptLoader
                             // Restorative Totems
                             if (AuraEffect* dummy = owner->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_SHAMAN, ICON_ID_RESTORATIVE_TOTEMS, 1))
                                 AddPctN(damage, dummy->GetAmount());
-
-                            // Glyph of Healing Stream Totem
-                            if (AuraEffect const* aurEff = owner->GetAuraEffect(SPELL_GLYPH_OF_HEALING_STREAM_TOTEM, EFFECT_0))
-                                AddPctN(damage, aurEff->GetAmount());
 
                             damage = int32(target->SpellHealingBonusTaken(owner, triggeringSpell, damage, HEAL));
                         }

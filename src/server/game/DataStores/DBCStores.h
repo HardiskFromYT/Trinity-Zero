@@ -95,8 +95,6 @@ extern DBCStorage <FactionEntry>                 sFactionStore;
 extern DBCStorage <FactionTemplateEntry>         sFactionTemplateStore;
 extern DBCStorage <GameObjectDisplayInfoEntry>   sGameObjectDisplayInfoStore;
 extern DBCStorage <GemPropertiesEntry>           sGemPropertiesStore;
-extern DBCStorage <GlyphPropertiesEntry>         sGlyphPropertiesStore;
-extern DBCStorage <GlyphSlotEntry>               sGlyphSlotStore;
 
 extern DBCStorage <GtBarberShopCostBaseEntry>    sGtBarberShopCostBaseStore;
 extern DBCStorage <GtCombatRatingsEntry>         sGtCombatRatingsStore;

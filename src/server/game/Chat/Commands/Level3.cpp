@@ -2058,7 +2058,6 @@ bool ChatHandler::HandleResetLevelCommand(const char * args)
     target->SetLevel(start_level);
     target->InitStatsForLevel(true);
     target->InitTaxiNodesForLevel();
-    target->InitGlyphsForLevel();
     target->InitTalentForLevel();
     target->SetUInt32Value(PLAYER_XP, 0);
 
@@ -2084,7 +2083,6 @@ bool ChatHandler::HandleResetStatsCommand(const char * args)
 
     target->InitStatsForLevel(true);
     target->InitTaxiNodesForLevel();
-    target->InitGlyphsForLevel();
     target->InitTalentForLevel();
 
     return true;

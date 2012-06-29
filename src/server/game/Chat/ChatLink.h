@@ -27,7 +27,6 @@ struct ItemTemplate;
 struct ItemRandomSuffixEntry;
 struct ItemRandomPropertiesEntry;
 class SpellInfo;
-struct GlyphPropertiesEntry;
 class Quest;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,17 +123,6 @@ class EnchantmentChatLink : public SpellChatLink
 public:
     EnchantmentChatLink() : SpellChatLink() { }
     virtual bool Initialize(std::istringstream& iss);
-};
-
-// GlyphChatLink - link to glyph
-class GlyphChatLink : public SpellChatLink
-{
-public:
-    GlyphChatLink() : SpellChatLink(), _slotId(0), _glyph(NULL) { }
-    virtual bool Initialize(std::istringstream& iss);
-private:
-    uint32 _slotId;
-    GlyphPropertiesEntry const* _glyph;
 };
 
 class LinkExtractor

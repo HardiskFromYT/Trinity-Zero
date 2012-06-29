@@ -544,12 +544,6 @@ enum SpellAttr7
     SPELL_ATTR7_UNK31                            = 0x80000000  // 31 only 70769
 };
 
-#define MIN_TALENT_SPEC         0
-#define MAX_TALENT_SPEC         1
-#define MIN_TALENT_SPECS        1
-#define MAX_TALENT_SPECS        2
-#define MAX_GLYPH_SLOT_INDEX    6
-
 // Custom values
 enum SpellClickUserTypes
 {
@@ -724,7 +718,6 @@ enum SpellEffects
     SPELL_EFFECT_PICKPOCKET                         = 71,
     SPELL_EFFECT_ADD_FARSIGHT                       = 72,
     SPELL_EFFECT_UNTRAIN_TALENTS                    = 73,
-    SPELL_EFFECT_APPLY_GLYPH                        = 74,
     SPELL_EFFECT_HEAL_MECHANICAL                    = 75,
     SPELL_EFFECT_SUMMON_OBJECT_WILD                 = 76,
     SPELL_EFFECT_SCRIPT_EFFECT                      = 77,
@@ -992,9 +985,6 @@ enum SpellCastResult
     SPELL_FAILED_CUSTOM_ERROR = 172,
     SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW = 173,
     SPELL_FAILED_TOO_MANY_SOCKETS = 174,
-    SPELL_FAILED_INVALID_GLYPH = 175,
-    SPELL_FAILED_UNIQUE_GLYPH = 176,
-    SPELL_FAILED_GLYPH_SOCKET_LOCKED = 177,
     SPELL_FAILED_NO_VALID_TARGETS = 178,
     SPELL_FAILED_ITEM_AT_MAX_CHARGES = 179,
     SPELL_FAILED_NOT_IN_BARBERSHOP = 180,

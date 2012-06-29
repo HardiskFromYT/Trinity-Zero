@@ -299,7 +299,6 @@ class spell_warr_slam : public SpellScriptLoader
 enum Execute
 {
     SPELL_EXECUTE               = 20647,
-    SPELL_GLYPH_OF_EXECUTION    = 58367,
     ICON_ID_SUDDEN_DEATH        = 1989,
 };
 
@@ -314,7 +313,7 @@ class spell_warr_execute : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*SpellEntry*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_EXECUTE) || !sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_EXECUTION))
+                if (!sSpellMgr->GetSpellInfo(SPELL_EXECUTE))
                     return false;
                 return true;
             }
@@ -335,13 +334,8 @@ class spell_warr_execute : public SpellScriptLoader
                     }
 
                     caster->SetPower(POWER_RAGE, uint32(newRage));
-                    // Glyph of Execution bonus
-                    if (AuraEffect* aurEff = caster->GetAuraEffect(SPELL_GLYPH_OF_EXECUTION, EFFECT_0))
-                        rageUsed += aurEff->GetAmount() * 10;
-
-
                     int32 bp = GetEffectValue() + int32(rageUsed * spellInfo->Effects[effIndex].DamageMultiplier + caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.2f);
-                    caster->CastCustomSpell(target,SPELL_EXECUTE,&bp,0,0,true,0,0,GetOriginalCaster()->GetGUID());
+                    caster->CastCustomSpell(target, SPELL_EXECUTE, &bp, 0, 0, true, 0, 0, GetOriginalCaster()->GetGUID());
                 }
             }
 

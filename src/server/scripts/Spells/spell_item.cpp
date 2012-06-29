@@ -810,43 +810,6 @@ class spell_item_create_heart_candy : public SpellScriptLoader
         }
 };
 
-class spell_item_book_of_glyph_mastery : public SpellScriptLoader
-{
-    public:
-        spell_item_book_of_glyph_mastery() : SpellScriptLoader("spell_item_book_of_glyph_mastery") {}
-
-        class spell_item_book_of_glyph_mastery_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_book_of_glyph_mastery_SpellScript);
-
-            bool Load()
-            {
-                return GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
-
-            SpellCastResult CheckRequirement()
-            {
-                if (HasDiscoveredAllSpells(GetSpellInfo()->Id, GetCaster()->ToPlayer()))
-                {
-                    SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_LEARNED_EVERYTHING);
-                    return SPELL_FAILED_CUSTOM_ERROR;
-                }
-
-                return SPELL_CAST_OK;
-            }
-
-            void Register()
-            {
-                OnCheckCast += SpellCheckCastFn(spell_item_book_of_glyph_mastery_SpellScript::CheckRequirement);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_item_book_of_glyph_mastery_SpellScript();
-        }
-};
-
 enum GiftOfTheHarvester
 {
     NPC_GHOUL   = 28845,
@@ -2030,7 +1993,6 @@ void AddSC_item_spell_scripts()
     new spell_item_red_rider_air_rifle();
 
     new spell_item_create_heart_candy();
-    new spell_item_book_of_glyph_mastery();
     new spell_item_gift_of_the_harvester();
     new spell_item_map_of_the_geyser_fields();
     new spell_item_vanquished_clutches();
