@@ -4890,14 +4890,6 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
 
-            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENTS);
-            stmt->setUInt32(0, guid);
-            trans->Append(stmt);
-
-            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT_PROGRESS);
-            stmt->setUInt32(0, guid);
-            trans->Append(stmt);
-
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_EQUIPMENTSETS);
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
@@ -8880,7 +8872,6 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
         default: break;
     }
 
-    // need know merged fishing/corpse loot type for achievements
     loot->loot_type = loot_type;
 
     WorldPacket data(SMSG_LOOT_RESPONSE, (9+50));           // we guess size
@@ -16120,9 +16111,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
     SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f);
     SetFloatValue(UNIT_FIELD_HOVERHEIGHT, 1.0f);
 
-    // load achievements before anything else to prevent multiple gains for the same achievement/criteria on every loading (as loading does call UpdateAchievementCriteria)
-    //m_achievementMgr.LoadFromDB(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOADACHIEVEMENTS), holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOADCRITERIAPROGRESS));
-
     uint32 money = fields[8].GetUInt32();
     if (money > MAX_MONEY_AMOUNT)
         money = MAX_MONEY_AMOUNT;
@@ -17818,7 +17806,6 @@ bool Player::Satisfy(AccessRequirement const* ar, uint32 target_map, bool report
         else if (GetTeam() == HORDE && ar->quest_H && !GetQuestRewardStatus(ar->quest_H))
             missingQuest = ar->quest_H;
 
-        uint32 missingAchievement = 0;
         Player* leader = this;
         uint64 leaderGuid = GetGroup() ? GetGroup()->GetLeaderGUID() : GetGUID();
         if (leaderGuid != GetGUID())
@@ -17826,13 +17813,13 @@ bool Player::Satisfy(AccessRequirement const* ar, uint32 target_map, bool report
 
         Difficulty target_difficulty = GetDifficulty(mapEntry->IsRaid());
         MapDifficulty const* mapDiff = GetDownscaledMapDifficultyData(target_map, target_difficulty);
-        if (LevelMin || LevelMax || missingItem || missingQuest || missingAchievement)
+        if (LevelMin || LevelMax || missingItem || missingQuest)
         {
             if (report)
             {
                 if (missingQuest && !ar->questFailedText.empty())
                     ChatHandler(GetSession()).PSendSysMessage("%s", ar->questFailedText.c_str());
-                else if (mapDiff->hasErrorMessage) // if (missingAchievement) covered by this case
+                else if (mapDiff->hasErrorMessage)
                     SendTransferAborted(target_map, TRANSFER_ABORT_DIFFICULTY, target_difficulty);
                 else if (missingItem)
                     GetSession()->SendAreaTriggerMessage(GetSession()->GetTrinityString(LANG_LEVEL_MINREQUIRED_AND_ITEM), LevelMin, sObjectMgr->GetItemTemplate(missingItem)->Name1.c_str());
@@ -18187,7 +18174,6 @@ void Player::SaveToDB(bool create /*=false*/)
     _SaveActions(trans);
     _SaveAuras(trans);
     _SaveSkills(trans);
-    //m_achievementMgr.SaveToDB(trans);
     m_reputationMgr.SaveToDB(trans);
     _SaveEquipmentSets(trans);
     GetSession()->SaveTutorialsData(trans);                 // changed only while character in game
@@ -21358,7 +21344,6 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     SendInitialActionButtons();
     m_reputationMgr.SendInitialReputations();
-    //m_achievementMgr.SendAllAchievementData();
 
     SendEquipmentSetList();
 

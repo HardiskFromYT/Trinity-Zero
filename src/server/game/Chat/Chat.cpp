@@ -719,8 +719,6 @@ Valid examples:
 |cff4e96f7|Htalent:2232:-1|h[Taste for Blood]|h|r
 |cff71d5ff|Hspell:21563|h[Command]|h|r
 |cffffd000|Henchant:3919|h[Engineering: Rough Dynamite]|h|r
-|cffffff00|Hachievement:546:0000000000000001:0:0:0:-1:0:0:0:0|h[Safe Deposit]|h|r
-|cff66bbff|Hglyph:21:762|h[Glyph of Bladestorm]|h|r
 
 | will be escaped to ||
 */

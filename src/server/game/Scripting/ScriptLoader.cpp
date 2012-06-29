@@ -44,7 +44,6 @@ void AddSC_SmartSCripts();
 
 //Commands
 void AddSC_account_commandscript();
-void AddSC_achievement_commandscript();
 void AddSC_cast_commandscript();
 void AddSC_debug_commandscript();
 void AddSC_event_commandscript();
@@ -78,7 +77,6 @@ void AddSC_npc_professions();
 void AddSC_npc_innkeeper();
 void AddSC_npcs_special();
 void AddSC_npc_taxi();
-void AddSC_achievement_scripts();
 
 //eastern kingdoms
 void AddSC_alterac_valley();                 //Alterac Valley
@@ -345,7 +343,6 @@ void AddSpellScripts()
 void AddCommandScripts()
 {
     AddSC_account_commandscript();
-    AddSC_achievement_commandscript();
     AddSC_cast_commandscript();
     AddSC_debug_commandscript();
     AddSC_event_commandscript();
@@ -381,7 +378,6 @@ void AddWorldScripts()
     AddSC_npc_innkeeper();
     AddSC_npcs_special();
     AddSC_npc_taxi();
-    AddSC_achievement_scripts();
     AddSC_chat_log();
 #endif
 }

@@ -738,8 +738,6 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADSPELLCOOLDOWNS       = 14,
     PLAYER_LOGIN_QUERY_LOADDECLINEDNAMES        = 15,
     PLAYER_LOGIN_QUERY_LOADGUILD                = 16,
-    PLAYER_LOGIN_QUERY_LOADACHIEVEMENTS         = 18,
-    PLAYER_LOGIN_QUERY_LOADCRITERIAPROGRESS     = 19,
     PLAYER_LOGIN_QUERY_LOADEQUIPMENTSETS        = 20,
     PLAYER_LOGIN_QUERY_LOADBGDATA               = 21,
     PLAYER_LOGIN_QUERY_LOADGLYPHS               = 22,
@@ -798,7 +796,6 @@ struct AccessRequirement
     uint32 item2;
     uint32 quest_A;
     uint32 quest_H;
-    uint32 achievement;
     std::string questFailedText;
 };
 
@@ -1239,7 +1236,6 @@ class Player : public Unit, public GridObject<Player>
         void DestroyItem(uint8 bag, uint8 slot, bool update);
         void DestroyItemCount(uint32 item, uint32 count, bool update, bool unequip_check = false);
         void DestroyItemCount(Item* item, uint32& count, bool update);
-        void DestroyConjuredItems(bool update);
         void DestroyZoneLimitedItem(bool update, uint32 new_zone);
         void SplitItem(uint16 src, uint16 dst, uint32 count);
         void SwapItem(uint16 src, uint16 dst);

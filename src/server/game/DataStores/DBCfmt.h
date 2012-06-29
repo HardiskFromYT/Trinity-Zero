@@ -19,10 +19,6 @@
 #ifndef TRINITY_DBCSFRM_H
 #define TRINITY_DBCSFRM_H
 
-const char Achievementfmt[]="niixssssssssssssssssxxxxxxxxxxxxxxxxxxiixixxxxxxxxxxxxxxxxxxii";
-const std::string CustomAchievementfmt="pppaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaapapaaaaaaaaaaaaaaaaaapp";
-const std::string CustomAchievementIndex = "ID";
-const char AchievementCriteriafmt[]="niiiiiiiixxxxxxxxxxxxxxxxxiiiix";
 const char AreaTableEntryfmt[]="iiinixxxxxissssssssssssssssxiiiiixxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
 const char AreaPOIEntryfmt[]="niiiiiiiiiiifffixixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxix";

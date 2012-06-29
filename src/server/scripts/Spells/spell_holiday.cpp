@@ -30,7 +30,6 @@ enum SpellsPicnic
     SPELL_MEAL_EAT_VISUAL           = 45120, // Holiday - Valentine - Romantic Picnic Meal Eat Visual
     //SPELL_MEAL_PARTICLE             = 45114, // Holiday - Valentine - Romantic Picnic Meal Particle - unused
     SPELL_DRINK_VISUAL              = 45121, // Holiday - Valentine - Romantic Picnic Drink Visual
-    SPELL_ROMANTIC_PICNIC_ACHIEV    = 45123, // Romantic Picnic periodic = 5000
 };
 
 class spell_love_is_in_the_air_romantic_picnic : public SpellScriptLoader
@@ -58,7 +57,6 @@ class spell_love_is_in_the_air_romantic_picnic : public SpellScriptLoader
                 // If our player is no longer sit, remove all auras
                 if (target->getStandState() != UNIT_STAND_STATE_SIT)
                 {
-                    target->RemoveAura(SPELL_ROMANTIC_PICNIC_ACHIEV);
                     target->RemoveAura(GetAura());
                     return;
                 }
@@ -68,27 +66,15 @@ class spell_love_is_in_the_air_romantic_picnic : public SpellScriptLoader
 
                 bool foundSomeone = false;
                 // For nearby players, check if they have the same aura. If so, cast Romantic Picnic (45123)
-                // required by achievement and "hearts" visual
+                // required for "hearts" visual
                 std::list<Player*> playerList;
                 Trinity::AnyPlayerInObjectRangeCheck checker(target, INTERACTION_DISTANCE*2);
                 Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(target, playerList, checker);
                 target->VisitNearbyWorldObject(INTERACTION_DISTANCE*2, searcher);
                 for (std::list<Player*>::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
-                {
                     if ((*itr) != target && (*itr)->HasAura(GetId())) // && (*itr)->getStandState() == UNIT_STAND_STATE_SIT)
-                    {
-                        if (caster)
-                        {
-                            caster->CastSpell(*itr, SPELL_ROMANTIC_PICNIC_ACHIEV, true);
-                            caster->CastSpell(target, SPELL_ROMANTIC_PICNIC_ACHIEV, true);
-                        }
                         foundSomeone = true;
                         // break;
-                    }
-                }
-
-                if (!foundSomeone && target->HasAura(SPELL_ROMANTIC_PICNIC_ACHIEV))
-                    target->RemoveAura(SPELL_ROMANTIC_PICNIC_ACHIEV);
             }
 
             void Register()

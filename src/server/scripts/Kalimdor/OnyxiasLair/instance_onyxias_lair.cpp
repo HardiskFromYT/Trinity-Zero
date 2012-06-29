@@ -56,9 +56,6 @@ public:
 
         uint8  Encounter[MAX_ENCOUNTER];
 
-        bool   AchievManyWhelpsHandleIt;
-        bool   AchievSheDeepBreathMore;
-
         void Initialize()
         {
             memset(&Encounter, 0, sizeof(Encounter));
@@ -66,8 +63,6 @@ public:
             OnyxiasGUID = 0;
             OnyxiaLiftoffTimer = 0;
             ManyWhelpsCounter = 0;
-            AchievManyWhelpsHandleIt = false;
-            AchievSheDeepBreathMore = true;
 
             EruptTimer = 0;
         }
@@ -156,20 +151,11 @@ public:
                 case DATA_ONYXIA_PHASE:
                     if (Data == PHASE_BREATH) //Used to mark the liftoff phase
                     {
-                        AchievManyWhelpsHandleIt = false;
                         ManyWhelpsCounter = 0;
                         OnyxiaLiftoffTimer = 10*IN_MILLISECONDS;
                     }
                     break;
                 case DATA_SHE_DEEP_BREATH_MORE:
-                    if (Data == IN_PROGRESS)
-                    {
-                        AchievSheDeepBreathMore = true;
-                    }
-                    else if (Data == FAIL)
-                    {
-                        AchievSheDeepBreathMore = false;
-                    }
                     break;
             }
 
@@ -213,49 +199,27 @@ public:
 
         void Update(uint32 Diff)
         {
-            if (GetData(DATA_ONYXIA) == IN_PROGRESS)
-            {
-                if (OnyxiaLiftoffTimer && OnyxiaLiftoffTimer <= Diff)
-                {
-                    OnyxiaLiftoffTimer = 0;
-                    if (ManyWhelpsCounter >= 50)
-                        AchievManyWhelpsHandleIt = true;
-                } else OnyxiaLiftoffTimer -= Diff;
-            }
-
             if (!FloorEruptionGUIDQueue.empty())
             {
                 if (EruptTimer <= Diff)
                 {
                     uint32 treeHeight = 0;
+
                     do
                     {
                         treeHeight = (*FloorEruptionGUID[1].find(FloorEruptionGUIDQueue.front())).second;
                         FloorEruption(FloorEruptionGUIDQueue.front());
                         FloorEruptionGUIDQueue.pop();
-                    } while (!FloorEruptionGUIDQueue.empty() && (*FloorEruptionGUID[1].find(FloorEruptionGUIDQueue.front())).second == treeHeight);
+                    }
+                    while (!FloorEruptionGUIDQueue.empty() && (*FloorEruptionGUID[1].find(FloorEruptionGUIDQueue.front())).second == treeHeight);
+
                     EruptTimer = 1000;
                 }
                 else
                     EruptTimer -= Diff;
             }
         }
-
-        bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ = NULL, uint32 /*miscvalue1*/ = 0)
-        {
-            switch (criteria_id)
-            {
-                case ACHIEV_CRITERIA_MANY_WHELPS_10_PLAYER:  // Criteria for achievement 4403: Many Whelps! Handle It! (10 player) Hatch 50 eggs in 10s
-                case ACHIEV_CRITERIA_MANY_WHELPS_25_PLAYER:  // Criteria for achievement 4406: Many Whelps! Handle It! (25 player) Hatch 50 eggs in 10s
-                    return AchievManyWhelpsHandleIt;
-                case ACHIEV_CRITERIA_DEEP_BREATH_10_PLAYER:  // Criteria for achievement 4404: She Deep Breaths More (10 player) Everybody evade Deep Breath
-                case ACHIEV_CRITERIA_DEEP_BREATH_25_PLAYER:  // Criteria for achievement 4407: She Deep Breaths More (25 player) Everybody evade Deep Breath
-                    return AchievSheDeepBreathMore;
-            }
-            return false;
-        }
     };
-
 };
 
 void AddSC_instance_onyxias_lair()

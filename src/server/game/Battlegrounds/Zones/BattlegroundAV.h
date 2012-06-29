@@ -50,7 +50,7 @@ class Battleground;
 #define BG_AV_KILL_SURVIVING_CAPTAIN    2
 #define BG_AV_REP_SURVIVING_CAPTAIN     125
 
-#define AV_EVENT_START_BATTLE           9166 // Achievement: The Alterac Blitz
+#define AV_EVENT_START_BATTLE           9166
 
 enum BG_AV_Sounds
 { //TODO: get out if there comes a sound when neutral team captures mine
@@ -1575,11 +1575,6 @@ class BattlegroundAV : public Battleground
         void EndBattleground(uint32 winner);
 
         virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
-
-        /* achievement req. */
-        bool IsBothMinesControlledByTeam(uint32 team) const;
-        bool IsAllTowersControlledAndCaptainAlive(uint32 team) const;
-
     private:
         virtual void PostUpdateImpl(uint32 diff);
 

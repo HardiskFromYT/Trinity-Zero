@@ -3379,7 +3379,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
                 spellInfo->EffectImplicitTargetB[0] = 0;
                 break;
-            case 72706: // Achievement Check (Valithria Dreamwalker)
             case 71357: // Order Whelp
                 spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_200_YARDS;   // 200yd
                 break;

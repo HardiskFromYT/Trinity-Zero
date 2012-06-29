@@ -181,7 +181,7 @@ enum BG_AB_Objectives
 #define BG_AB_NotABBGWeekendReputationTicks 160
 #define BG_AB_ABBGWeekendReputationTicks    120
 
-#define AB_EVENT_START_BATTLE               9158 // Achievement: Let's Get This Done
+#define AB_EVENT_START_BATTLE               9158
 
 // x, y, z, o
 const float BG_AB_NodePositions[BG_AB_DYNAMIC_NODES_COUNT][4] =
@@ -268,10 +268,6 @@ class BattlegroundAB : public Battleground
 
         /* Nodes occupying */
         virtual void EventPlayerClickedOnFlag(Player* source, GameObject* target_obj);
-
-        /* achievement req. */
-        bool IsAllNodesConrolledByTeam(uint32 team) const;  // overwrited
-        bool IsTeamScores500Disadvantage(uint32 team) const { return m_TeamScores500Disadvantage[GetTeamIndexByTeamId(team)]; }
     private:
         virtual void PostUpdateImpl(uint32 diff);
         /* Gameobject spawning/despawning */
@@ -302,8 +298,6 @@ class BattlegroundAB : public Battleground
         bool                m_IsInformedNearVictory;
         uint32              m_HonorTics;
         uint32              m_ReputationTics;
-        // need for achievements
-        bool                m_TeamScores500Disadvantage[BG_TEAMS_COUNT];
 };
 #endif
 

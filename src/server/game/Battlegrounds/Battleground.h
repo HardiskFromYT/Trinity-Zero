@@ -291,10 +291,6 @@ class Battleground
 
         virtual void DestroyGate(Player* /*player*/, GameObject* /*go*/) {}
 
-        /* achievement req. */
-        virtual bool IsAllNodesConrolledByTeam(uint32 /*team*/) const { return false; }
-        bool IsTeamScoreInRange(uint32 team, uint32 minScore, uint32 maxScore) const;
-
         /* Battleground */
         // Get methods:
         char const* GetName() const         { return m_Name; }

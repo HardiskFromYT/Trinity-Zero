@@ -27,7 +27,6 @@ struct ItemTemplate;
 struct ItemRandomSuffixEntry;
 struct ItemRandomPropertiesEntry;
 class SpellInfo;
-struct AchievementEntry;
 struct GlyphPropertiesEntry;
 class Quest;
 
@@ -92,20 +91,6 @@ public:
 
 protected:
     SpellInfo const* _spell;
-};
-
-// AchievementChatLink - link to quest
-class AchievementChatLink : public ChatLink
-{
-public:
-    AchievementChatLink() : ChatLink(), _guid(0), _achievement(NULL) { }
-    virtual bool Initialize(std::istringstream& iss);
-    virtual bool ValidateName(char* buffer, const char* context);
-
-protected:
-    uint32 _guid;
-    AchievementEntry const* _achievement;
-    uint32 _data[8];
 };
 
 // TradeChatLink - link to trade info

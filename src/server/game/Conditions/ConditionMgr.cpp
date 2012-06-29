@@ -316,9 +316,6 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
         case CONDITION_REPUTATION_RANK:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
-        case CONDITION_ACHIEVEMENT:
-            mask |= GRID_MAP_TYPE_MASK_PLAYER;
-            break;
         case CONDITION_TEAM:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
@@ -1544,21 +1541,6 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
                 sLog->outErrorDb("ActiveEvent condition has useless data in value2 (%u)!", cond->ConditionValue2);
             if (cond->ConditionValue3)
                 sLog->outErrorDb("ActiveEvent condition has useless data in value3 (%u)!", cond->ConditionValue3);
-            break;
-        }
-        case CONDITION_ACHIEVEMENT:
-        {
-            AchievementEntry const* achievement = sAchievementStore.LookupEntry(cond->ConditionValue1);
-            if (!achievement)
-            {
-                sLog->outErrorDb("Achivement condition has non existing achivement id (%u), skipped", cond->ConditionValue1);
-                return false;
-            }
-
-            if (cond->ConditionValue2)
-                sLog->outErrorDb("Achivement condition has useless data in value2 (%u)!", cond->ConditionValue2);
-            if (cond->ConditionValue3)
-                sLog->outErrorDb("Achivement condition has useless data in value3 (%u)!", cond->ConditionValue3);
             break;
         }
         case CONDITION_CLASS:

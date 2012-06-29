@@ -1135,12 +1135,10 @@ class ObjectMgr
                 value = data[loc_idx];
         }
 
-        CharacterConversionMap FactionChange_Achievements;
         CharacterConversionMap FactionChange_Items;
         CharacterConversionMap FactionChange_Spells;
         CharacterConversionMap FactionChange_Reputation;
 
-        void LoadFactionChangeAchievements();
         void LoadFactionChangeItems();
         void LoadFactionChangeSpells();
         void LoadFactionChangeReputations();

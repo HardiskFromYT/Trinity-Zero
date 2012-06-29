@@ -143,11 +143,6 @@ void BattlegroundAB::PostUpdateImpl(uint32 diff)
                     UpdateWorldState(BG_AB_OP_RESOURCES_ALLY, m_TeamScores[team]);
                 if (team == BG_TEAM_HORDE)
                     UpdateWorldState(BG_AB_OP_RESOURCES_HORDE, m_TeamScores[team]);
-                // update achievement flags
-                // we increased m_TeamScores[team] so we just need to check if it is 500 more than other teams resources
-                uint8 otherTeam = (team + 1) % BG_TEAMS_COUNT;
-                if (m_TeamScores[team] > m_TeamScores[otherTeam] + 500)
-                    m_TeamScores500Disadvantage[otherTeam] = true;
             }
         }
 

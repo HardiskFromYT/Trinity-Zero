@@ -3021,9 +3021,6 @@ enum ChatMsg
     CHAT_MSG_BATTLEGROUND_LEADER    = 0x2D,
     CHAT_MSG_RESTRICTED             = 0x2E,
     CHAT_MSG_BATTLENET              = 0x2F,
-    CHAT_MSG_ACHIEVEMENT            = 0x30,
-    CHAT_MSG_GUILD_ACHIEVEMENT      = 0x31,
-    //CHAT_MSG_ARENA_POINTS           = 0x32,
     CHAT_MSG_PARTY_LEADER           = 0x33
 };
 
@@ -3035,8 +3032,6 @@ enum ChatLinkColors
     CHAT_LINK_COLOR_TALENT      = 0xff4e96f7,   // blue
     CHAT_LINK_COLOR_SPELL       = 0xff71d5ff,   // bright blue
     CHAT_LINK_COLOR_ENCHANT     = 0xffffd000,   // orange
-    CHAT_LINK_COLOR_ACHIEVEMENT = 0xffffff00,
-    CHAT_LINK_COLOR_GLYPH       = 0xff66bbff
 };
 
 // Values from ItemPetFood (power of (value-1) used for compare with CreatureFamilyEntry.petDietMask

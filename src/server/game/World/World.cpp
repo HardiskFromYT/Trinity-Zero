@@ -1470,19 +1470,6 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Skill Fishing base level requirements...");
     sObjectMgr->LoadFishingBaseSkillLevel();
 
-    /*sLog->outString("Loading Achievements...");
-    sAchievementMgr->LoadAchievementReferenceList();
-    sLog->outString("Loading Achievement Criteria Lists...");
-    sAchievementMgr->LoadAchievementCriteriaList();
-    sLog->outString("Loading Achievement Criteria Data...");
-    sAchievementMgr->LoadAchievementCriteriaData();
-    sLog->outString("Loading Achievement Rewards...");
-    sAchievementMgr->LoadRewards();
-    sLog->outString("Loading Achievement Reward Locales...");
-    sAchievementMgr->LoadRewardLocales();
-    sLog->outString("Loading Completed Achievements...");
-    sAchievementMgr->LoadCompletedAchievements();*/
-
     // Delete expired auctions before loading
     sLog->outString("Deleting expired auctions...");
     sAuctionMgr->DeleteExpiredAuctionsAtStartup();
@@ -1536,18 +1523,6 @@ void World::SetInitialWorldSettings()
 
     sLog->outString("Loading Conditions...");
     sConditionMgr->LoadConditions();
-
-    sLog->outString("Loading faction change achievement pairs...");
-    sObjectMgr->LoadFactionChangeAchievements();
-
-    sLog->outString("Loading faction change spell pairs...");
-    sObjectMgr->LoadFactionChangeSpells();
-
-    sLog->outString("Loading faction change item pairs...");
-    sObjectMgr->LoadFactionChangeItems();
-
-    sLog->outString("Loading faction change reputation pairs...");
-    sObjectMgr->LoadFactionChangeReputations();
 
     sLog->outString("Loading GM tickets...");
     sTicketMgr->LoadTickets();

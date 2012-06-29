@@ -35,7 +35,6 @@ enum DebugLogFilters
     LOG_FILTER_MAPSCRIPTS               = 0x00000020,
     LOG_FILTER_NETWORKIO                = 0x00000040,   // Anything packet/netcode related
     LOG_FILTER_SPELLS_AURAS             = 0x00000080,
-    LOG_FILTER_ACHIEVEMENTSYS           = 0x00000100,
     LOG_FILTER_CONDITIONSYS             = 0x00000200,
     LOG_FILTER_POOLSYS                  = 0x00000400,
     LOG_FILTER_AUCTIONHOUSE             = 0x00000800,

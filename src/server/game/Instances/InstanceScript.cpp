@@ -348,13 +348,6 @@ void InstanceScript::DoCastSpellOnPlayers(uint32 spell)
                 player->CastSpell(player, spell, true);
 }
 
-bool InstanceScript::CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ /*= NULL*/, uint32 /*miscvalue1*/ /*= 0*/)
-{
-    sLog->outError("Achievement system call InstanceScript::CheckAchievementCriteriaMeet but instance script for map %u not have implementation for achievement criteria %u",
-        instance->GetId(), criteria_id);
-    return false;
-}
-
 void InstanceScript::SendEncounterUnit(uint32 type, Unit* unit /*= NULL*/, uint8 param1 /*= 0*/, uint8 param2 /*= 0*/)
 {
     // size of this packet is at most 15 (usually less)

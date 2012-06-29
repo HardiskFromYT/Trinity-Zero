@@ -29,7 +29,6 @@ enum DisableType
     DISABLE_TYPE_QUEST                  = 1,
     DISABLE_TYPE_MAP                    = 2,
     DISABLE_TYPE_BATTLEGROUND           = 3,
-    DISABLE_TYPE_ACHIEVEMENT_CRITERIA   = 4,
     DISABLE_TYPE_OUTDOORPVP             = 5,
     DISABLE_TYPE_VMAP                   = 6,
 };
