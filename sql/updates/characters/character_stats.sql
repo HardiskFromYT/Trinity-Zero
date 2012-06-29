@@ -5,3 +5,4 @@ DROP TABLE IF EXISTS `arena_team_member`;
 DROP TABLE IF EXISTS `character_battleground_random`;
 DROP TABLE IF EXISTS `character_achievement`;
 DROP TABLE IF EXISTS `character_achievement_progress`;
+DROP TABLE IF EXISTS `character_glyphs`;
