@@ -315,17 +315,6 @@ public:
                                 eventTimer = 3000;
                                 if (Creature* naralex = instance->instance->GetCreature(instance->GetData64(DATA_NARALEX)))
                                 {
-                                    AchievementEntry const* AchievWC = sAchievementStore.LookupEntry(ACHIEVEMENT_WAILING_CAVERNS);
-                                    if (AchievWC)
-                                    {
-                                        Map* map = me->GetMap();
-                                        if (map && map->IsDungeon())
-                                        {
-                                            Map::PlayerList const &players = map->GetPlayers();
-                                            for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                                                itr->getSource()->CompletedAchievement(AchievWC);
-                                        }
-                                    }
                                     if (me->HasAura(SPELL_NARALEXS_AWAKENING))
                                         me->RemoveAura(SPELL_NARALEXS_AWAKENING);
                                     naralex->SetStandState(UNIT_STAND_STATE_STAND);

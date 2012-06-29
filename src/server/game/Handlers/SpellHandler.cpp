@@ -290,8 +290,6 @@ void WorldSession::HandleGameobjectReportUse(WorldPacket& recvPacket)
         return;
 
     go->AI()->GossipHello(_player);
-
-    _player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT, go->GetEntry());
 }
 
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)

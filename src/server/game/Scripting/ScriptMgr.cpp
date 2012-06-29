@@ -285,7 +285,6 @@ void ScriptMgr::Unload()
     SCR_CLEAR(VehicleScript);
     SCR_CLEAR(DynamicObjectScript);
     SCR_CLEAR(TransportScript);
-    SCR_CLEAR(AchievementCriteriaScript);
     SCR_CLEAR(PlayerScript);
     SCR_CLEAR(GuildScript);
     SCR_CLEAR(GroupScript);
@@ -1184,15 +1183,6 @@ void ScriptMgr::OnShutdown()
     FOREACH_SCRIPT(WorldScript)->OnShutdown();
 }
 
-bool ScriptMgr::OnCriteriaCheck(AchievementCriteriaData const* data, Player* source, Unit* target)
-{
-    ASSERT(source);
-    // target can be NULL.
-
-    GET_SCRIPT_RET(AchievementCriteriaScript, data->ScriptId, tmpscript, false);
-    return tmpscript->OnCheck(source, target);
-}
-
 // Player
 void ScriptMgr::OnPVPKill(Player* killer, Player* killed)
 {
@@ -1541,12 +1531,6 @@ TransportScript::TransportScript(const char* name)
     ScriptRegistry<TransportScript>::AddScript(this);
 }
 
-AchievementCriteriaScript::AchievementCriteriaScript(const char* name)
-    : ScriptObject(name)
-{
-    ScriptRegistry<AchievementCriteriaScript>::AddScript(this);
-}
-
 PlayerScript::PlayerScript(const char* name)
     : ScriptObject(name)
 {
@@ -1590,7 +1574,6 @@ template class ScriptRegistry<ConditionScript>;
 template class ScriptRegistry<VehicleScript>;
 template class ScriptRegistry<DynamicObjectScript>;
 template class ScriptRegistry<TransportScript>;
-template class ScriptRegistry<AchievementCriteriaScript>;
 template class ScriptRegistry<PlayerScript>;
 template class ScriptRegistry<GuildScript>;
 template class ScriptRegistry<GroupScript>;

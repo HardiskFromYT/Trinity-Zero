@@ -443,16 +443,6 @@ void WorldSession::HandleLootRoll(WorldPacket& recvData)
         return;
 
     group->CountRollVote(GetPlayer()->GetGUID(), guid, rollType);
-
-    switch (rollType)
-    {
-        case ROLL_NEED:
-            GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_NEED, 1);
-            break;
-        case ROLL_GREED:
-            GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_GREED, 1);
-            break;
-    }
 }
 
 void WorldSession::HandleMinimapPingOpcode(WorldPacket& recv_data)

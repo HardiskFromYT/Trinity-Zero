@@ -1988,21 +1988,6 @@ bool ChatHandler::HandleChangeWeather(const char *args)
     return true;
 }
 
-bool ChatHandler::HandleResetAchievementsCommand (const char * args)
-{
-    Player* target;
-    uint64 target_guid;
-    if (!extractPlayerTarget((char*)args, &target, &target_guid))
-        return false;
-
-    if (target)
-        target->GetAchievementMgr().Reset();
-    else
-        AchievementMgr::DeleteFromDB(GUID_LOPART(target_guid));
-
-    return true;
-}
-
 bool ChatHandler::HandleResetHonorCommand (const char * args)
 {
     Player* target;
@@ -2014,7 +1999,6 @@ bool ChatHandler::HandleResetHonorCommand (const char * args)
     target->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, 0);
     target->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
     target->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
-    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL);
 
     return true;
 }
