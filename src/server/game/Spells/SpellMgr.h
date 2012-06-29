@@ -667,7 +667,6 @@ class SpellMgr
         PetAura const* GetPetAura(uint32 spell_id, uint8 eff);
 
         SpellEnchantProcEntry const* GetSpellEnchantProcEvent(uint32 enchId) const;
-        bool IsArenaAllowedEnchancment(uint32 ench_id) const;
 
         const std::vector<int32> *GetSpellLinked(int32 spell_id) const;
 

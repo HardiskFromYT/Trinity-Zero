@@ -64,7 +64,6 @@ Quest::Quest(Field* questRecord)
     RewardTitleId = questRecord[39].GetUInt8();
     RequiredPlayerKills = questRecord[40].GetUInt8();
     RewardTalents = questRecord[41].GetUInt8();
-    RewardArenaPoints = questRecord[42].GetUInt16();
 
     for (int i = 0; i < QUEST_REWARDS_COUNT; ++i)
         RewardItemId[i] = questRecord[43+i].GetUInt32();

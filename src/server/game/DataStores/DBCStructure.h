@@ -613,7 +613,7 @@ struct BattlemasterListEntry
 {
     uint32  id;                                             // 0
     int32   mapid[8];                                       // 1-8 mapid
-    uint32  type;                                           // 9 (3 - BG, 4 - arena)
+    uint32  type;                                           // 9 (3 - BG)
     //uint32 canJoinAsGroup;                                // 10 (0 or 1)
     char*   name[16];                                       // 11-26
     //uint32 nameFlags                                      // 27 string flag, unused
@@ -1136,11 +1136,8 @@ struct ItemExtendedCostEntry
 {
     uint32      ID;                                                 // 0 extended-cost entry id
     uint32      reqhonorpoints;                                     // 1 required honor points
-    uint32      reqarenapoints;                                     // 2 required arena points
-    uint32      reqarenaslot;                                       // 3 arena slot restrctions (min slot value)
     uint32      reqitem[MAX_ITEM_EXTENDED_COST_REQUIREMENTS];       // 4-8 required item id
     uint32      reqitemcount[MAX_ITEM_EXTENDED_COST_REQUIREMENTS];  // 9-14 required count of 1st item
-    uint32      reqpersonalarenarating;                             // 15 required personal arena rating};
 };
 
 struct ItemLimitCategoryEntry
@@ -1264,7 +1261,7 @@ struct MapEntry
     //char*       internalname;                             // 1 unused
     uint32  map_type;                                       // 2
     //uint32 unk_330;                                       // 3
-                                                            // 4 0 or 1 for battlegrounds (not arenas)
+                                                            // 4 0 or 1 for battlegrounds
     char*   name[16];                                       // 5-20
                                                             // 21 name flags, unused
     uint32  linked_zone;                                    // 22 common zone for instance and continent map
@@ -1312,7 +1309,7 @@ struct MapDifficultyEntry
 {
     //uint32      Id;                                       // 0
     uint32      MapId;                                      // 1
-    uint32      Difficulty;                                 // 2 (for arenas: arena slot)
+    uint32      Difficulty;                                 // 2
     char*       areaTriggerText;                            // 3-18 text showed when transfer to map failed (missing requirements)
     //uint32      textFlags;                                // 19
     uint32      resetTime;                                  // 20

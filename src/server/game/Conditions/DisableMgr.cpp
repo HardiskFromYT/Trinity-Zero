@@ -141,7 +141,6 @@ void LoadDisables()
                             isFlagInvalid = true;
                         break;
                     case MAP_BATTLEGROUND:
-                    case MAP_ARENA:
                         sLog->outErrorDb("Battleground map %u specified to be disabled in map case, skipped.", entry);
                         continue;
                 }
@@ -207,12 +206,6 @@ void LoadDisables()
                             sLog->outString("Height disabled for battleground map %u.", entry);
                         if (flags & VMAP_DISABLE_LOS)
                             sLog->outString("LoS disabled for battleground map %u.", entry);
-                        break;
-                    case MAP_ARENA:
-                        if (flags & VMAP_DISABLE_HEIGHT)
-                            sLog->outString("Height disabled for arena map %u.", entry);
-                        if (flags & VMAP_DISABLE_LOS)
-                            sLog->outString("LoS disabled for arena map %u.", entry);
                         break;
                     default:
                         break;

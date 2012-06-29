@@ -29,7 +29,7 @@ extern LoginDatabaseWorkerPool LoginDatabase;
 
 Log::Log() :
     raLogfile(NULL), logfile(NULL), gmLogfile(NULL), charLogfile(NULL),
-    dberLogfile(NULL), chatLogfile(NULL), arenaLogFile(NULL), sqlLogFile(NULL), sqlDevLogFile(NULL), wardenLogFile(NULL),
+    dberLogfile(NULL), chatLogfile(NULL), sqlLogFile(NULL), sqlDevLogFile(NULL), wardenLogFile(NULL),
     m_gmlog_per_account(false), m_enableLogDBLater(false),
     m_enableLogDB(false), m_colored(false)
 {
@@ -61,10 +61,6 @@ Log::~Log()
     if (chatLogfile != NULL)
         fclose(chatLogfile);
     chatLogfile = NULL;
-
-    if (arenaLogFile != NULL)
-        fclose(arenaLogFile);
-    arenaLogFile = NULL;
 
     if (sqlLogFile != NULL)
         fclose(sqlLogFile);
@@ -167,7 +163,6 @@ void Log::Initialize()
     dberLogfile = openLogFile("DBErrorLogFile", NULL, "a");
     raLogfile = openLogFile("RaLogFile", NULL, "a");
     chatLogfile = openLogFile("ChatLogFile", "ChatLogTimestamp", "a");
-    arenaLogFile = openLogFile("ArenaLogFile", NULL, "a");
     sqlLogFile = openLogFile("SQLDriverLogFile", NULL, "a");
     sqlDevLogFile = openLogFile("SQLDeveloperLogFile", NULL, "a");
     wardenLogFile = openLogFile("Warden.LogFile",NULL,"a");
@@ -530,23 +525,6 @@ void Log::outError(const char * err, ...)
         fflush(logfile);
     }
     fflush(stderr);
-}
-
-void Log::outArena(const char * str, ...)
-{
-    if (!str)
-        return;
-
-    if (arenaLogFile)
-    {
-        va_list ap;
-        outTimestamp(arenaLogFile);
-        va_start(ap, str);
-        vfprintf(arenaLogFile, str, ap);
-        fprintf(arenaLogFile, "\n");
-        va_end(ap);
-        fflush(arenaLogFile);
-    }
 }
 
 void Log::outSQLDriver(const char* str, ...)

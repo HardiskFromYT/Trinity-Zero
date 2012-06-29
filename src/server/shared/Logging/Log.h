@@ -39,7 +39,7 @@ enum DebugLogFilters
     LOG_FILTER_CONDITIONSYS             = 0x00000200,
     LOG_FILTER_POOLSYS                  = 0x00000400,
     LOG_FILTER_AUCTIONHOUSE             = 0x00000800,
-    LOG_FILTER_BATTLEGROUND             = 0x00001000,   // Anything related to arena's and battlegrounds
+    LOG_FILTER_BATTLEGROUND             = 0x00001000,   // Anything related to battlegrounds
     LOG_FILTER_OUTDOORPVP               = 0x00002000,
     LOG_FILTER_CHATSYS                  = 0x00004000,
     LOG_FILTER_LFG                      = 0x00008000,
@@ -135,7 +135,6 @@ class Log
         void outCommand(uint32 account, const char * str, ...)  ATTR_PRINTF(3, 4);
         void outRemote(const char * str, ...)                   ATTR_PRINTF(2, 3);
         void outChat(const char * str, ...)                     ATTR_PRINTF(2, 3);
-        void outArena(const char * str, ...)                    ATTR_PRINTF(2, 3);
         void outSQLDriver(const char* str, ...)                 ATTR_PRINTF(2, 3);
         void outWarden(const char * str, ...)                   ATTR_PRINTF(2, 3);
         void outCharDump(const char * str, uint32 account_id, uint32 guid, const char * name);
@@ -167,7 +166,6 @@ class Log
         FILE* charLogfile;
         FILE* dberLogfile;
         FILE* chatLogfile;
-        FILE* arenaLogFile;
         FILE* sqlLogFile;
         FILE* sqlDevLogFile;
         FILE* wardenLogFile;

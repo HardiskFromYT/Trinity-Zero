@@ -81,12 +81,11 @@ enum Races
 #define RACEMASK_ALL_PLAYABLE \
     ((1 << (RACE_HUMAN - 1))   |(1 << (RACE_ORC - 1))          |(1 << (RACE_DWARF - 1))   | \
     (1 << (RACE_NIGHTELF - 1))|(1 << (RACE_UNDEAD_PLAYER - 1))|(1 << (RACE_TAUREN - 1))  | \
-    (1 << (RACE_GNOME - 1))   |(1 << (RACE_TROLL - 1))        |(1 << (RACE_BLOODELF - 1))| \
-    (1 << (RACE_DRAENEI - 1)))
+    (1 << (RACE_GNOME - 1))   |(1 << (RACE_TROLL - 1)))
 
 #define RACEMASK_ALLIANCE \
     ((1 << (RACE_HUMAN - 1)) | (1 << (RACE_DWARF - 1)) | (1 << (RACE_NIGHTELF - 1)) | \
-    (1 << (RACE_GNOME - 1)) | (1 << (RACE_DRAENEI - 1)))
+    (1 << (RACE_GNOME - 1)))
 
 #define RACEMASK_HORDE RACEMASK_ALL_PLAYABLE & ~RACEMASK_ALLIANCE
 
@@ -345,7 +344,6 @@ enum SpellAttr2
     SPELL_ATTR2_UNK10                            = 0x00000400, // 10 related to tame
     SPELL_ATTR2_HEALTH_FUNNEL                    = 0x00000800, // 11
     SPELL_ATTR2_UNK12                            = 0x00001000, // 12 Cleave, Heart Strike, Maul, Sunder Armor, Swipe
-    SPELL_ATTR2_PRESERVE_ENCHANT_IN_ARENA        = 0x00002000, // 13 Items enchanted by spells with this flag preserve the enchant to arenas
     SPELL_ATTR2_UNK14                            = 0x00004000, // 14
     SPELL_ATTR2_UNK15                            = 0x00008000, // 15 not set in 3.0.3
     SPELL_ATTR2_TAME_BEAST                       = 0x00010000, // 16
@@ -420,8 +418,8 @@ enum SpellAttr4
     SPELL_ATTR4_UNK13                            = 0x00002000, // 13
     SPELL_ATTR4_DAMAGE_DOESNT_BREAK_AURAS        = 0x00004000, // 14 doesn't break auras by damage from these spells
     SPELL_ATTR4_UNK15                            = 0x00008000, // 15
-    SPELL_ATTR4_NOT_USABLE_IN_ARENA              = 0x00010000, // 16
-    SPELL_ATTR4_USABLE_IN_ARENA                  = 0x00020000, // 17
+    //SPELL_ATTR4_NOT_USABLE_IN_ARENA              = 0x00010000, // 16
+    //SPELL_ATTR4_USABLE_IN_ARENA                  = 0x00020000, // 17
     SPELL_ATTR4_AREA_TARGET_CHAIN                = 0x00040000, // 18 (NYI)hits area targets one after another instead of all at once
     SPELL_ATTR4_UNK19                            = 0x00080000, // 19 proc dalayed, after damage or don't proc on absorb?
     SPELL_ATTR4_NOT_CHECK_SELFCAST_POWER         = 0x00100000, // 20 supersedes message "More powerful spell applied" for self casts.
@@ -477,7 +475,7 @@ enum SpellAttr5
 enum SpellAttr6
 {
     SPELL_ATTR6_DONT_DISPLAY_COOLDOWN            = 0x00000001, //  0 client doesn't display cooldown in tooltip for these spells
-    SPELL_ATTR6_ONLY_IN_ARENA                    = 0x00000002, //  1 only usable in arena
+    //SPELL_ATTR6_ONLY_IN_ARENA                    = 0x00000002, //  1 only usable in arena
     SPELL_ATTR6_IGNORE_CASTER_AURAS              = 0x00000004, //  2
     SPELL_ATTR6_UNK3                             = 0x00000008, //  3
     SPELL_ATTR6_UNK4                             = 0x00000010, //  4
@@ -972,7 +970,6 @@ enum SpellCastResult
     SPELL_FAILED_PLAY_TIME = 148,
     SPELL_FAILED_REPUTATION = 149,
     SPELL_FAILED_MIN_SKILL = 150,
-    SPELL_FAILED_NOT_IN_ARENA = 151,
     SPELL_FAILED_NOT_ON_SHAPESHIFT = 152,
     SPELL_FAILED_NOT_ON_STEALTHED = 153,
     SPELL_FAILED_NOT_ON_DAMAGE_IMMUNE = 154,
@@ -989,7 +986,6 @@ enum SpellCastResult
     SPELL_FAILED_NO_PLAYTIME = 165,
     SPELL_FAILED_NOT_IN_BATTLEGROUND = 166,
     SPELL_FAILED_NOT_IN_RAID_INSTANCE = 167,
-    SPELL_FAILED_ONLY_IN_ARENA = 168,
     SPELL_FAILED_TARGET_LOCKED_TO_RAID_INSTANCE = 169,
     SPELL_FAILED_ON_USE_ENCHANT = 170,
     SPELL_FAILED_NOT_ON_GROUND = 171,
@@ -3027,7 +3023,7 @@ enum ChatMsg
     CHAT_MSG_BATTLENET              = 0x2F,
     CHAT_MSG_ACHIEVEMENT            = 0x30,
     CHAT_MSG_GUILD_ACHIEVEMENT      = 0x31,
-    CHAT_MSG_ARENA_POINTS           = 0x32,
+    //CHAT_MSG_ARENA_POINTS           = 0x32,
     CHAT_MSG_PARTY_LEADER           = 0x33
 };
 
@@ -3210,7 +3206,7 @@ enum ResponseCodes
     CHAR_CREATE_CHARACTER_IN_GUILD                         = 0x3D,
     CHAR_CREATE_RESTRICTED_RACECLASS                       = 0x3E,
     CHAR_CREATE_CHARACTER_CHOOSE_RACE                      = 0x3F,
-    CHAR_CREATE_CHARACTER_ARENA_LEADER                     = 0x40,
+    //CHAR_CREATE_CHARACTER_ARENA_LEADER                     = 0x40,
     CHAR_CREATE_CHARACTER_DELETE_MAIL                      = 0x41,
     CHAR_CREATE_CHARACTER_SWAP_FACTION                     = 0x42,
     CHAR_CREATE_CHARACTER_RACE_ONLY                        = 0x43,
@@ -3224,7 +3220,7 @@ enum ResponseCodes
     CHAR_DELETE_FAILED                                     = 0x48,
     CHAR_DELETE_FAILED_LOCKED_FOR_TRANSFER                 = 0x49,
     CHAR_DELETE_FAILED_GUILD_LEADER                        = 0x4A,
-    CHAR_DELETE_FAILED_ARENA_CAPTAIN                       = 0x4B,
+    //CHAR_DELETE_FAILED_ARENA_CAPTAIN                       = 0x4B,
 
     CHAR_LOGIN_IN_PROGRESS                                 = 0x4C,
     CHAR_LOGIN_SUCCESS                                     = 0x4D,
@@ -3280,19 +3276,9 @@ enum BattlegroundTypeId
     BATTLEGROUND_AV            = 1, // Alterac Valley
     BATTLEGROUND_WS            = 2, // Warsong Gulch
     BATTLEGROUND_AB            = 3, // Arathi Basin
-    BATTLEGROUND_NA            = 4, // Nagrand Arena
-    BATTLEGROUND_BE            = 5, // Blade's Edge Arena
-    BATTLEGROUND_AA            = 6, // All Arenas
-    BATTLEGROUND_EY            = 7, // Eye of the Storm
-    BATTLEGROUND_RL            = 8, // Ruins of Lordaernon
-    BATTLEGROUND_SA            = 9, // Strand of the Ancients
-    BATTLEGROUND_DS            = 10, // Dalaran Sewers
-    BATTLEGROUND_RV            = 11, // Ring of Valor
-    BATTLEGROUND_IC            = 30, // Isle of Conquest
-    BATTLEGROUND_RB            = 32 // Random Battleground
 };
 
-#define MAX_BATTLEGROUND_TYPE_ID 33
+#define MAX_BATTLEGROUND_TYPE_ID 4
 
 enum MailResponseType
 {
@@ -3491,7 +3477,6 @@ enum CalendarError
     CALENDAR_ERROR_DELETE_CREATOR_FAILED        = 22,
     CALENDAR_ERROR_SYSTEM_DISABLED              = 24,
     CALENDAR_ERROR_RESTRICTED_ACCOUNT           = 25,
-    CALENDAR_ERROR_ARENA_EVENTS_EXCEEDED        = 26,
     CALENDAR_ERROR_RESTRICTED_LEVEL             = 27,
     CALENDAR_ERROR_USER_SQUELCHED               = 28,
     CALENDAR_ERROR_NO_INVITE                    = 29,

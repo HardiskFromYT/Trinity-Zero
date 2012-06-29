@@ -118,7 +118,7 @@ Map* MapInstanced::CreateInstanceForPlayer(const uint32 mapId, Player* player)
     Map* map = NULL;
     uint32 newInstanceId = 0;                       // instanceId of the resulting map
 
-    if (IsBattleground)
+    if (IsBattleground())
     {
         // instantiate or find existing bg map for player
         // the instance id is set in battlegroundid
@@ -265,7 +265,7 @@ bool MapInstanced::DestroyInstance(InstancedMaps::iterator &itr)
         Map::UnloadAll();
     }
 
-    // Free up the instance id and allow it to be reused for bgs and arenas (other instances are handled in the InstanceSaveMgr)
+    // Free up the instance id and allow it to be reused for bgs (other instances are handled in the InstanceSaveMgr)
     if (itr->second->IsBattleground())
         sMapMgr->FreeInstanceId(itr->second->GetInstanceId());
 

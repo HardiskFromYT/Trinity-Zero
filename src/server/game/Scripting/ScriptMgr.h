@@ -79,7 +79,6 @@ void DoScriptText(int32 textEntry, WorldObject* pSource, Unit* target = NULL);
     MailScript
     SessionScript
     CollisionScript
-    ArenaTeamScript
 
 */
 

@@ -1008,31 +1008,6 @@ uint32 GameEventMgr::StartSystem()                           // return the next 
     return delay;
 }
 
-void GameEventMgr::StartArenaSeason()
-{
-    uint8 season = sWorld->getIntConfig(CONFIG_ARENA_SEASON_ID);
-    QueryResult result = WorldDatabase.PQuery("SELECT eventEntry FROM game_event_arena_seasons WHERE season = '%i'", season);
-
-    if (!result)
-    {
-        sLog->outError("ArenaSeason (%u) must be an existant Arena Season", season);
-        return;
-    }
-
-    Field* fields = result->Fetch();
-    uint16 eventId = fields[0].GetUInt8();
-
-    if (eventId >= mGameEvent.size())
-    {
-        sLog->outError("EventEntry %u for ArenaSeason (%u) does not exists", eventId, season);
-        return;
-    }
-
-    StartEvent(eventId, true);
-    sLog->outString("Arena Season %u started...", season);
-    sLog->outString();
-}
-
 uint32 GameEventMgr::Update()                               // return the next event delay in ms
 {
     time_t currenttime = time(NULL);

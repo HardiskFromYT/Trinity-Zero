@@ -1339,7 +1339,6 @@ enum Opcodes
     SMSG_MOVE_SET_COLLISION_HGT                     = 0x516,
     CMSG_MOVE_SET_COLLISION_HGT_ACK                 = 0x517,
     MSG_MOVE_SET_COLLISION_HGT                      = 0x518,
-    CMSG_CLEAR_RANDOM_BG_WIN_TIME                   = 0x519,
     CMSG_CLEAR_HOLIDAY_BG_WIN_TIME                  = 0x51A,
     CMSG_COMMENTATOR_SKIRMISH_QUEUE_COMMAND         = 0x51B,
     SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT1         = 0x51C,

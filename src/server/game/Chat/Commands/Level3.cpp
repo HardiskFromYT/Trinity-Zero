@@ -22,7 +22,6 @@
 #include "WorldSession.h"
 #include "World.h"
 #include "ObjectMgr.h"
-#include "ArenaTeamMgr.h"
 #include "GuildMgr.h"
 #include "AuctionHouseMgr.h"
 #include "AccountMgr.h"
@@ -1256,7 +1255,6 @@ bool ChatHandler::HandleLookupMapCommand(const char *args)
                 {
                     case MAP_INSTANCE:      ss << GetTrinityString(LANG_INSTANCE);      break;
                     case MAP_BATTLEGROUND:  ss << GetTrinityString(LANG_BATTLEGROUND);  break;
-                    case MAP_ARENA:         ss << GetTrinityString(LANG_ARENA);         break;
                 }
 
                 if (MapInfo->IsRaid())
@@ -3381,12 +3379,6 @@ bool ChatHandler::HandleSendMessageCommand(const char *args)
     //Confirmation message
     std::string nameLink = GetNameLink(rPlayer);
     PSendSysMessage(LANG_SENDMESSAGE, nameLink.c_str(), msg_str);
-    return true;
-}
-
-bool ChatHandler::HandleFlushArenaPointsCommand(const char * /*args*/)
-{
-    sArenaTeamMgr->DistributeArenaPoints();
     return true;
 }
 

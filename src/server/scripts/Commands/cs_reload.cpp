@@ -29,7 +29,6 @@ EndScriptData */
 #include "MapManager.h"
 #include "CreatureEventAIMgr.h"
 #include "DisableMgr.h"
-#include "LFGMgr.h"
 #include "AuctionHouseMgr.h"
 #include "CreatureTextMgr.h"
 #include "SmartAI.h"

@@ -738,10 +738,6 @@ void WorldSession::HandleReclaimCorpseOpcode(WorldPacket &recv_data)
     if (GetPlayer()->isAlive())
         return;
 
-    // do not allow corpse reclaim in arena
-    if (GetPlayer()->InArena())
-        return;
-
     // body not released yet
     if (!GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST))
         return;
@@ -1690,10 +1686,6 @@ void WorldSession::SendSetPhaseShift(uint32 PhaseShift)
 void WorldSession::HandleHearthAndResurrect(WorldPacket& /*recv_data*/)
 {
     if (_player->isInFlight())
-        return;
-
-    AreaTableEntry const* atEntry = GetAreaEntryByAreaID(_player->GetAreaId());
-    if (!atEntry || !(atEntry->flags & AREA_FLAG_WINTERGRASP_2))
         return;
 
     _player->BuildPlayerRepop();

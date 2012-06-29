@@ -32,7 +32,6 @@
 #include "GridNotifiersImpl.h"
 #include "InstanceScript.h"
 #include "Group.h"
-#include "LFGMgr.h"
 
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
 {
@@ -792,7 +791,7 @@ class spell_gen_gunship_portal : public SpellScriptLoader
             {
                 Player* caster = GetCaster()->ToPlayer();
                 if (Battleground* bg = caster->GetBattleground())
-                    if (bg->GetTypeID() == BATTLEGROUND_IC)
+                    //if (bg->GetTypeID() == BATTLEGROUND_IC)
                         bg->DoAction(1, caster->GetGUID());
             }
 
@@ -2991,8 +2990,8 @@ class spell_gen_mount : public SpellScriptLoader
                     target->GetPosition(x, y, z);
                     uint32 areaFlag = target->GetBaseMap()->GetAreaFlag(x, y, z);
                     AreaTableEntry const* area = sAreaStore.LookupEntry(areaFlag);
-                    if (!area || (canFly && (area->flags & AREA_FLAG_NO_FLY_ZONE)))
-                        canFly = false;
+                    //if (!area || (canFly && (area->flags & AREA_FLAG_NO_FLY_ZONE)))
+                    //    canFly = false;
 
                     uint32 mount = 0;
                     switch (target->GetBaseSkillValue(SKILL_RIDING))

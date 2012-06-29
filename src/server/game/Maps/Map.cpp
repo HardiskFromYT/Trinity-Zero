@@ -2707,8 +2707,8 @@ BattlegroundMap::~BattlegroundMap()
 void BattlegroundMap::InitVisibilityDistance()
 {
     //init visibility distance for BGs
-    m_VisibleDistance = World::GetMaxVisibleDistanceInBGArenas();
-    m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBGArenas();
+    m_VisibleDistance = World::GetMaxVisibleDistanceInBattlegrounds();
+    m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBattlegrounds();
 }
 
 bool BattlegroundMap::CanEnter(Player* player)

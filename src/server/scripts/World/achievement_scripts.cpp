@@ -16,12 +16,6 @@
  */
 
 #include "ScriptMgr.h"
-
-#include "BattlegroundAB.h"
-#include "BattlegroundWS.h"
-#include "BattlegroundIC.h"
-#include "BattlegroundSA.h"
-#include "BattlegroundAV.h"
 #include "Vehicle.h"
 
 class achievement_resilient_victory : public AchievementCriteriaScript
@@ -35,7 +29,7 @@ class achievement_resilient_victory : public AchievementCriteriaScript
             if (!bg)
                 return false;
 
-            if (bg->GetTypeID(true) != BATTLEGROUND_AB)
+            if (bg->GetTypeID() != BATTLEGROUND_AB)
                 return false;
 
             if (!static_cast<BattlegroundAB*>(bg)->IsTeamScores500Disadvantage(source->GetTeam()))
@@ -79,7 +73,7 @@ class achievement_save_the_day : public AchievementCriteriaScript
                 if (!bg)
                     return false;
 
-                if (bg->GetTypeID(true) != BATTLEGROUND_WS)
+                if (bg->GetTypeID() != BATTLEGROUND_WS)
                     return false;
 
                 if (static_cast<BattlegroundWS*>(bg)->GetFlagState(player->GetTeam()) == BG_WS_FLAG_STATE_ON_BASE)
@@ -204,7 +198,7 @@ class achievement_everything_counts : public AchievementCriteriaScript
             if (!bg)
                 return false;
 
-            if (bg->GetTypeID(true) != BATTLEGROUND_AV)
+            if (bg->GetTypeID() != BATTLEGROUND_AV)
                 return false;
 
             if (static_cast<BattlegroundAV*>(bg)->IsBothMinesControlledByTeam(source->GetTeam()))
@@ -225,7 +219,7 @@ class achievement_bg_av_perfection : public AchievementCriteriaScript
             if (!bg)
                 return false;
 
-            if (bg->GetTypeID(true) != BATTLEGROUND_AV)
+            if (bg->GetTypeID() != BATTLEGROUND_AV)
                 return false;
 
             if (static_cast<BattlegroundAV*>(bg)->IsAllTowersControlledAndCaptainAlive(source->GetTeam()))
