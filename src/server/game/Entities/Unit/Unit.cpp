@@ -402,14 +402,7 @@ void Unit::UpdateSplineMovement(uint32 t_diff)
             pos.m_positionY = loc.y;
             pos.m_positionZ = loc.z;
             pos.m_orientation = loc.orientation;
-            if (Unit* vehicle = GetVehicleBase())
-            {
-                loc.x += vehicle->GetPositionX();
-                loc.y += vehicle->GetPositionY();
-                loc.z += vehicle->GetPositionZMinusOffset();
-                loc.orientation = vehicle->GetOrientation();
-            }
-            else if (Transport* trans = GetTransport())
+            if (Transport* trans = GetTransport())
                 trans->CalculatePassengerPosition(loc.x, loc.y, loc.z, loc.orientation);
         }
 
@@ -14265,7 +14258,7 @@ bool Unit::SetCharmedBy(Unit* charmer, CharmType type, AuraApplication const* au
 
     // Set charmed
     Map* map = GetMap();
-    if (map && !map->IsBattleground()))
+    if (map && !map->IsBattleground())
         setFaction(charmer->getFaction());
 
     charmer->SetCharm(this, true);
@@ -14364,7 +14357,7 @@ void Unit::RemoveCharmedBy(Unit* charmer)
     getHostileRefManager().deleteReferences();
     DeleteThreatList();
     Map* map = GetMap();
-    if (!IsVehicle() || (IsVehicle() && map && !map->IsBattleground()))
+    if (map && !map->IsBattleground())
         RestoreFaction();
     GetMotionMaster()->InitDefault();
 
@@ -14394,7 +14387,6 @@ void Unit::RemoveCharmedBy(Unit* charmer)
         return;
 
     ASSERT(type != CHARM_TYPE_POSSESS || charmer->GetTypeId() == TYPEID_PLAYER);
-    ASSERT(type != CHARM_TYPE_VEHICLE || (GetTypeId() == TYPEID_UNIT && IsVehicle()));
 
     charmer->SetCharm(this, false);
 
@@ -14402,11 +14394,6 @@ void Unit::RemoveCharmedBy(Unit* charmer)
     {
         switch (type)
         {
-            case CHARM_TYPE_VEHICLE:
-                charmer->ToPlayer()->SetClientControl(charmer, 1);
-                charmer->ToPlayer()->SetViewpoint(this, false);
-                charmer->ToPlayer()->SetClientControl(this, 0);
-                break;
             case CHARM_TYPE_POSSESS:
                 charmer->ToPlayer()->SetClientControl(charmer, 1);
                 charmer->ToPlayer()->SetViewpoint(this, false);

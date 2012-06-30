@@ -1168,8 +1168,6 @@ class spell_gen_launch : public SpellScriptLoader
 
                 if (Player* player = GetHitPlayer())
                 {
-                    player->ExitVehicle();
-
                     // A better research is needed
                     // There is no spell for this, the following calculation was based on void Spell::CalculateJumpSpeeds
 

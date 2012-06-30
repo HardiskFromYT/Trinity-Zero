@@ -184,7 +184,6 @@ class npc_tiger_matriarch_credit : public CreatureScript
                 if (events.ExecuteEvent() == EVENT_CHECK_SUMMON_AURA)
                 {
                     std::list<Creature*> tigers;
-                    GetCreatureListWithEntryInGrid(tigers, me, NPC_TIGER_VEHICLE, 15.0f);
                     if (!tigers.empty())
                     {
                         for (std::list<Creature*>::iterator itr = tigers.begin(); itr != tigers.end(); ++itr)

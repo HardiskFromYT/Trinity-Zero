@@ -5639,28 +5639,6 @@ void Spell::EffectPlayMusic(SpellEffIndex effIndex)
     unitTarget->ToPlayer()->GetSession()->SendPacket(&data);
 }
 
-void Spell::EffectSpecCount(SpellEffIndex /*effIndex*/)
-{
-    if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
-        return;
-
-    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    unitTarget->ToPlayer()->UpdateSpecCount(damage);
-}
-
-void Spell::EffectActivateSpec(SpellEffIndex /*effIndex*/)
-{
-    if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)
-        return;
-
-    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    unitTarget->ToPlayer()->ActivateSpec(damage-1);  // damage is 1 or 2, spec is 0 or 1
-}
-
 void Spell::EffectPlayerNotification(SpellEffIndex effIndex)
 {
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT_TARGET)

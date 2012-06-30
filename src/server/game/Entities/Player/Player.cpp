@@ -15421,7 +15421,7 @@ void Player::KilledPlayerCredit()
 
 void Player::CastedCreatureOrGO(uint32 entry, uint64 guid, uint32 spell_id)
 {
-    bool isCreature = IS_CRE_OR_VEH_GUID(guid);
+    bool isCreature = IS_CREATURE_GUID(guid);
 
     uint16 addCastCount = 1;
     for (uint8 i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
@@ -17913,9 +17913,6 @@ void Player::SaveToDB(bool create /*=false*/)
 
         stmt->setUInt32(index++, GetSession()->GetLatency());
 
-        stmt->setUInt8(index++, m_specsCount);
-        stmt->setUInt8(index++, m_activeSpec);
-
         ss.str("");
         for (uint32 i = 0; i < PLAYER_EXPLORED_ZONES_SIZE; ++i)
             ss << GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + i) << ' ';
@@ -18022,9 +18019,6 @@ void Player::SaveToDB(bool create /*=false*/)
             stmt->setUInt32(index++, GetPower(Powers(i)));
 
         stmt->setUInt32(index++, GetSession()->GetLatency());
-
-        stmt->setUInt8(index++, m_specsCount);
-        stmt->setUInt8(index++, m_activeSpec);
 
         ss.str("");
         for (uint32 i = 0; i < PLAYER_EXPLORED_ZONES_SIZE; ++i)
@@ -21729,34 +21723,6 @@ void Player::UpdateForQuestWorldObjects()
             if (GameObject* obj = HashMapHolder<GameObject>::Find(*itr))
                 obj->BuildValuesUpdateBlockForPlayer(&udata, this);
         }
-        else if (IS_CRE_OR_VEH_GUID(*itr))
-        {
-            Creature* obj = ObjectAccessor::GetCreatureOrPet(*this, *itr);
-            if (!obj)
-                continue;
-
-            // check if this unit requires quest specific flags
-            if (!obj->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK))
-                continue;
-
-            SpellClickInfoMapBounds clickPair = sObjectMgr->GetSpellClickInfoMapBounds(obj->GetEntry());
-            for (SpellClickInfoContainer::const_iterator _itr = clickPair.first; _itr != clickPair.second; ++_itr)
-            {
-                //! This code doesn't look right, but it was logically converted to condition system to do the exact
-                //! same thing it did before. It definitely needs to be overlooked for intended functionality.
-                ConditionList conds = sConditionMgr->GetConditionsForSpellClickEvent(obj->GetEntry(), _itr->second.spellId);
-                bool buildUpdateBlock = false;
-                for (ConditionList::const_iterator jtr = conds.begin(); jtr != conds.end() && !buildUpdateBlock; ++jtr)
-                    if ((*jtr)->ConditionType == CONDITION_QUESTREWARDED || (*jtr)->ConditionType == CONDITION_QUESTTAKEN)
-                        buildUpdateBlock = true;
-
-                if (buildUpdateBlock)
-                {
-                    obj->BuildCreateUpdateBlockForPlayer(&udata, this);
-                    break;
-                }
-            }
-        }
     }
     udata.BuildPacket(&packet);
     GetSession()->SendPacket(&packet);
@@ -23331,14 +23297,9 @@ bool Player::canSeeSpellClickOn(Creature const* c) const
 void Player::BuildPlayerTalentsInfoData(WorldPacket* data)
 {
     *data << uint32(GetFreeTalentPoints());                 // unspentTalentPoints
-    *data << uint8(m_specsCount);                           // talent group count (0, 1 or 2)
-    *data << uint8(m_activeSpec);                           // talent group index (0 or 1)
 
     if (m_specsCount)
     {
-        if (m_specsCount > MAX_TALENT_SPECS)
-            m_specsCount = MAX_TALENT_SPECS;
-
         // loop through all specs (only 1 for now)
         for (uint32 specIdx = 0; specIdx < m_specsCount; ++specIdx)
         {

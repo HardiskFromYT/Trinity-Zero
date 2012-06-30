@@ -843,13 +843,6 @@ void ConditionMgr::LoadConditions(bool isReload)
                 case CONDITION_SOURCE_TYPE_SPELL_IMPLICIT_TARGET:
                     valid = addToSpellImplicitTargetConditions(cond);
                     break;
-                case CONDITION_SOURCE_TYPE_VEHICLE_SPELL:
-                {
-                    VehicleSpellConditionStore[cond->SourceGroup][cond->SourceEntry].push_back(cond);
-                    valid = true;
-                    ++count;
-                    continue;   // do not add to m_AllocatedMemory to avoid double deleting
-                }
                 case CONDITION_SOURCE_TYPE_SMART_EVENT:
                 {
                     //! TODO: PAIR_32 ?

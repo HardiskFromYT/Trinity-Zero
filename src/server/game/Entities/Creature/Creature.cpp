@@ -748,7 +748,7 @@ bool Creature::Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, 
     Relocate(x, y, z, ang);
 
     //oX = x;     oY = y;    dX = x;    dY = y;    m_moveTime = 0;    m_startMove = 0;
-    if (!CreateFromProto(guidlow, Entry, vehId, team, data))
+    if (!CreateFromProto(guidlow, Entry, team, data))
         return false;
 
     if (!IsPositionValid())
@@ -1213,7 +1213,7 @@ float Creature::GetSpellDamageMod(int32 Rank)
     }
 }
 
-bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, uint32 team, const CreatureData* data)
+bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 team, const CreatureData* data)
 {
     SetZoneScript();
     if (m_zoneScript && data)
@@ -1232,7 +1232,7 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, uint3
 
     SetOriginalEntry(Entry);
 
-    Object::_Create(guidlow, Entry, vehId ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
+    Object::_Create(guidlow, Entry, HIGHGUID_GAMEOBJECT);
 
     if (!UpdateEntry(Entry, team, data))
         return false;

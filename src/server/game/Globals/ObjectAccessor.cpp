@@ -139,7 +139,7 @@ Creature* ObjectAccessor::GetCreatureOrPet(WorldObject const& u, uint64 guid)
     if (IS_PET_GUID(guid))
         return GetPet(u, guid);
 
-    if (IS_CRE_OR_VEH_GUID(guid))
+    if (IS_CREATURE_GUID(guid))
         return GetCreature(u, guid);
 
     return NULL;
