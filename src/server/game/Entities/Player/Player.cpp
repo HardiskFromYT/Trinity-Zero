@@ -3315,7 +3315,7 @@ void Player::AddNewMailDeliverTime(time_t deliver_time)
     }
 }
 
-bool Player::AddTalent(uint32 spellId, uint8 spec, bool learning)
+bool Player::AddTalent(uint32 spellId, bool learning)
 {
     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
     if (!spellInfo)
@@ -23082,7 +23082,7 @@ void Player::LearnTalent(uint32 talentId, uint32 talentRank)
 
     // learn! (other talent ranks will unlearned at learning)
     learnSpell(spellid, false);
-    AddTalent(spellid, m_activeSpec, true);
+    AddTalent(spellid, true);
 
     sLog->outDetail("TalentID: %u Rank: %u Spell: %u Spec: %u\n", talentId, talentRank, spellid, m_activeSpec);
 
@@ -23673,7 +23673,7 @@ void Player::_LoadTalents(PreparedQueryResult result)
     if (result)
     {
         do
-            AddTalent((*result)[0].GetUInt32(), (*result)[1].GetUInt8(), false);
+            AddTalent((*result)[0].GetUInt32(), false);
         while (result->NextRow());
     }
 }

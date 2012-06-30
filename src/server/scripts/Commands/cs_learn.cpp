@@ -227,7 +227,7 @@ public:
 
             // learn highest rank of talent and learn all non-talent spell ranks (recursive by tree)
             player->learnSpellHighRank(spellId);
-            player->AddTalent(spellId, player->GetActiveSpec(), true);
+            player->AddTalent(spellId, true);
         }
 
         player->SetFreeTalentPoints(0);

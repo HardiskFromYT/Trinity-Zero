@@ -536,9 +536,6 @@ void BattlegroundMgr::BuildBattlegroundListPacket(WorldPacket* data, uint64 guid
     if (!player)
         return;
 
-    winner_kills = Trinity::Honor::hk_honor_at_level(player->getLevel(), float(winner_kills));
-    loser_kills = Trinity::Honor::hk_honor_at_level(player->getLevel(), float(loser_kills));
-
     data->Initialize(SMSG_BATTLEFIELD_LIST);
     *data << uint64(guid);                                  // battlemaster guid
     *data << uint8(fromWhere);                              // from where you joined
@@ -548,8 +545,8 @@ void BattlegroundMgr::BuildBattlegroundListPacket(WorldPacket* data, uint64 guid
 
     // Rewards
     *data << uint8(player->GetRandomWinner());               // 3.3.3 hasWin
-    *data << uint32(winner_kills);                           // 3.3.3 winHonor
-    *data << uint32(loser_kills);                           // 3.3.3 lossHonor
+    *data << uint32(0);                                      // 3.3.3 winHonor
+    *data << uint32(0);                                      // 3.3.3 lossHonor
 
     size_t count_pos = data->wpos();
     *data << uint32(0);                                     // number of bg instances
