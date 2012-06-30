@@ -42,7 +42,6 @@
 #include "SocialMgr.h"
 #include "CellImpl.h"
 #include "AccountMgr.h"
-#include "Vehicle.h"
 #include "CreatureAI.h"
 #include "DBCEnums.h"
 #include "ScriptMgr.h"
@@ -98,7 +97,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
 
     Creature* unit = NULL;
     GameObject* go = NULL;
-    if (IS_CRE_OR_VEH_GUID(guid))
+    if (IS_CREATURE_GUID(guid))
     {
         unit = GetPlayer()->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_NONE);
         if (!unit)

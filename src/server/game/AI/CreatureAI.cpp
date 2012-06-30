@@ -21,7 +21,6 @@
 #include "Creature.h"
 #include "World.h"
 #include "SpellMgr.h"
-#include "Vehicle.h"
 #include "Log.h"
 #include "MapReference.h"
 #include "Player.h"
@@ -145,25 +144,13 @@ void CreatureAI::EnterEvadeMode()
 
     sLog->outDebug(LOG_FILTER_UNITS, "Creature %u enters evade mode.", me->GetEntry());
 
-    if (!me->GetVehicle()) // otherwise me will be in evade mode forever
+    if (Unit* owner = me->GetCharmerOrOwner())
     {
-        if (Unit* owner = me->GetCharmerOrOwner())
-        {
-            me->GetMotionMaster()->Clear(false);
-            me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
-        }
-        else
-            me->GetMotionMaster()->MoveTargetedHome();
+        me->GetMotionMaster()->Clear(false);
+        me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
     }
+    else
+        me->GetMotionMaster()->MoveTargetedHome();
 
     Reset();
-
-    if (me->IsVehicle()) // use the same sequence of addtoworld, aireset may remove all summons!
-        me->GetVehicleKit()->Reset(true);
 }
-
-/*void CreatureAI::AttackedBy(Unit* attacker)
-{
-    if (!me->getVictim())
-        AttackStart(attacker);
-}*/

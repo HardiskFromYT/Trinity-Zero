@@ -140,7 +140,6 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & /*recv_data*/)
             break;
         }
         case HIGHGUID_UNIT:
-        case HIGHGUID_VEHICLE:
         {
             Creature* creature = player->GetMap()->GetCreature(guid);
             bool lootAllowed = creature && creature->isAlive() == (player->getClass() == CLASS_ROGUE && creature->lootForPickPocketed);
@@ -450,7 +449,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
 
     Loot* loot = NULL;
 
-    if (IS_CRE_OR_VEH_GUID(GetPlayer()->GetLootGUID()))
+    if (IS_CREATURE_GUID(GetPlayer()->GetLootGUID()))
     {
         Creature* creature = GetPlayer()->GetMap()->GetCreature(lootguid);
         if (!creature)

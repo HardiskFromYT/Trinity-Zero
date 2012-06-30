@@ -45,7 +45,6 @@
 #include "OutdoorPvPMgr.h"
 #include "GameEventMgr.h"
 #include "CreatureGroups.h"
-#include "Vehicle.h"
 #include "SpellAuraEffects.h"
 #include "Group.h"
 #include "MoveSplineInit.h"
@@ -187,8 +186,6 @@ void Creature::AddToWorld()
         Unit::AddToWorld();
         SearchFormation();
         AIM_Initialize();
-        if (IsVehicle())
-            GetVehicleKit()->Install();
     }
 }
 
@@ -425,7 +422,6 @@ bool Creature::UpdateEntry(uint32 Entry, uint32 team, const CreatureData* data)
     //! Set MOVEMENTFLAG_CAN_FLY. Otherwise if it can only fly
     //! Set MOVEMENTFLAG_DISABLE_GRAVITY
     //! The only time I saw Movement Flags: DisableGravity, CanFly, Flying (50332672) on the same unit
-    //! it was a vehicle
     if (cInfo->InhabitType & INHABIT_AIR && cInfo->InhabitType & INHABIT_GROUND)
         SetCanFly(true);
     else if (cInfo->InhabitType & INHABIT_AIR)
@@ -451,8 +447,6 @@ void Creature::Update(uint32 diff)
     {
         TriggerJustRespawned = false;
         AI()->JustRespawned();
-        if (m_vehicleKit)
-            m_vehicleKit->Reset();
     }
 
     if (IsInWater())
@@ -576,14 +570,6 @@ void Creature::Update(uint32 diff)
             {*/
             if (!IsInEvadeMode() && (!bInCombat || IsPolymorphed())) // regenerate health if not in combat or if polymorphed
                 RegenerateHealth();
-
-            if (getPowerType() == POWER_ENERGY)
-            {
-                if (!IsVehicle() || GetVehicleKit()->GetVehicleInfo()->m_powerType != POWER_PYRITE)
-                    Regenerate(POWER_ENERGY);
-            }
-            else
-                RegenerateMana();
 
             /*if (!bIsPolymorphed) // only increase the timer if not polymorphed
                     m_regenTimer += CREATURE_REGEN_INTERVAL - diff;
@@ -725,9 +711,7 @@ bool Creature::AIM_Initialize(CreatureAI* ai)
     delete oldAI;
     IsAIEnabled = true;
     i_AI->InitializeAI();
-    // Initialize vehicle
-    if (GetVehicleKit())
-        GetVehicleKit()->Reset();
+
     return true;
 }
 
@@ -764,7 +748,7 @@ bool Creature::Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, 
     Relocate(x, y, z, ang);
 
     //oX = x;     oY = y;    dX = x;    dY = y;    m_moveTime = 0;    m_startMove = 0;
-    if (!CreateFromProto(guidlow, Entry, vehId, team, data))
+    if (!CreateFromProto(guidlow, Entry, team, data))
         return false;
 
     if (!IsPositionValid())
@@ -994,7 +978,7 @@ void Creature::SetLootRecipient(Unit* unit)
         return;
     }
 
-    if (unit->GetTypeId() != TYPEID_PLAYER && !unit->IsVehicle())
+    if (unit->GetTypeId() != TYPEID_PLAYER)
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();
@@ -1229,7 +1213,7 @@ float Creature::GetSpellDamageMod(int32 Rank)
     }
 }
 
-bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, uint32 team, const CreatureData* data)
+bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 team, const CreatureData* data)
 {
     SetZoneScript();
     if (m_zoneScript && data)
@@ -1248,13 +1232,7 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, uint3
 
     SetOriginalEntry(Entry);
 
-    if (!vehId)
-        vehId = cinfo->VehicleId;
-
-    if (vehId && !CreateVehicleKit(vehId, Entry))
-        vehId = 0;
-
-    Object::_Create(guidlow, Entry, vehId ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
+    Object::_Create(guidlow, Entry, HIGHGUID_GAMEOBJECT);
 
     if (!UpdateEntry(Entry, team, data))
         return false;
@@ -1974,8 +1952,7 @@ bool Creature::_IsTargetAcceptable(const Unit* target) const
 
     // if the target cannot be attacked, the target is not acceptable
     if (IsFriendlyTo(target)
-        || !target->isTargetableForAttack(false)
-        || (m_vehicle && (IsOnVehicle(target) || m_vehicle->GetBase()->IsOnVehicle(target))))
+        || !target->isTargetableForAttack(false))
         return false;
 
     if (target->HasUnitState(UNIT_STATE_DIED))
@@ -2436,8 +2413,6 @@ void Creature::SetPosition(float x, float y, float z, float o)
     }
 
     GetMap()->CreatureRelocation(ToCreature(), x, y, z, o);
-    if (IsVehicle())
-        GetVehicleKit()->RelocatePassengers(x, y, z, o);
 }
 
 bool Creature::IsDungeonBoss() const

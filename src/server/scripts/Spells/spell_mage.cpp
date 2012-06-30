@@ -341,7 +341,6 @@ class spell_mage_living_bomb : public SpellScriptLoader
 
 void AddSC_mage_spell_scripts()
 {
-    new spell_mage_blast_wave();
     new spell_mage_cold_snap();
     new spell_mage_frost_warding_trigger();
     new spell_mage_incanters_absorbtion_absorb();

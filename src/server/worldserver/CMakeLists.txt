@@ -97,7 +97,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Player
   ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Totem
   ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Unit
-  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Vehicle
   ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Transport
   ${CMAKE_SOURCE_DIR}/src/server/game/Events
   ${CMAKE_SOURCE_DIR}/src/server/game/Globals

@@ -150,8 +150,6 @@ public:
             { "warden_action",                SEC_ADMINISTRATOR, true,  &HandleReloadWardenactionCommand,               "", NULL },
             { "waypoint_scripts",             SEC_ADMINISTRATOR, true,  &HandleReloadWpScriptsCommand,                  "", NULL },
             { "waypoint_data",                SEC_ADMINISTRATOR, true,  &HandleReloadWpCommand,                         "", NULL },
-            { "vehicle_accessory",            SEC_ADMINISTRATOR, true,  &HandleReloadVehicleAccessoryCommand,           "", NULL },
-            { "vehicle_template_accessory",   SEC_ADMINISTRATOR, true,  &HandleReloadVehicleTemplateAccessoryCommand,   "", NULL },
             { NULL,                           0,                 false, NULL,                                           "", NULL }
         };
         static ChatCommand commandTable[] =
@@ -189,9 +187,6 @@ public:
         HandleReloadReservedNameCommand(handler, "");
         HandleReloadTrinityStringCommand(handler, "");
         HandleReloadGameTeleCommand(handler, "");
-
-        HandleReloadVehicleAccessoryCommand(handler, "");
-        HandleReloadVehicleTemplateAccessoryCommand(handler, "");
 
         HandleReloadAutobroadcastCommand(handler, "");
         return true;
@@ -463,7 +458,6 @@ public:
             cInfo->spells[6]          = fields[58].GetUInt32();
             cInfo->spells[7]          = fields[59].GetUInt32();
             cInfo->PetSpellDataId     = fields[60].GetUInt32();
-            cInfo->VehicleId          = fields[61].GetUInt32();
             cInfo->mingold            = fields[62].GetUInt32();
             cInfo->maxgold            = fields[63].GetUInt32();
             cInfo->AIName             = fields[64].GetString();
@@ -1240,22 +1234,6 @@ public:
         sLog->outString("Re-Loading Smart Scripts...");
         sSmartScriptMgr->LoadSmartAIFromDB();
         handler->SendGlobalGMSysMessage("Smart Scripts reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadVehicleAccessoryCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Reloading vehicle_accessory table...");
-        sObjectMgr->LoadVehicleAccessories();
-        handler->SendGlobalGMSysMessage("Vehicle accessories reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadVehicleTemplateAccessoryCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Reloading vehicle_template_accessory table...");
-        sObjectMgr->LoadVehicleTemplateAccessories();
-        handler->SendGlobalGMSysMessage("Vehicle template accessories reloaded.");
         return true;
     }
 };

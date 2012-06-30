@@ -56,7 +56,6 @@ class SpellScript;
 class SpellCastTargets;
 class Transport;
 class Unit;
-class Vehicle;
 class WorldPacket;
 class WorldSocket;
 class WorldObject;
@@ -584,33 +583,6 @@ class ConditionScript : public ScriptObject
         virtual bool OnConditionCheck(Condition* /*condition*/, ConditionSourceInfo& /*sourceInfo*/) { return true; }
 };
 
-class VehicleScript : public ScriptObject
-{
-    protected:
-
-        VehicleScript(const char* name);
-
-    public:
-
-        // Called after a vehicle is installed.
-        virtual void OnInstall(Vehicle* /*veh*/) { }
-
-        // Called after a vehicle is uninstalled.
-        virtual void OnUninstall(Vehicle* /*veh*/) { }
-
-        // Called when a vehicle resets.
-        virtual void OnReset(Vehicle* /*veh*/) { }
-
-        // Called after an accessory is installed in a vehicle.
-        virtual void OnInstallAccessory(Vehicle* /*veh*/, Creature* /*accessory*/) { }
-
-        // Called after a passenger is added to a vehicle.
-        virtual void OnAddPassenger(Vehicle* /*veh*/, Unit* /*passenger*/, int8 /*seatId*/) { }
-
-        // Called after a passenger is removed from a vehicle.
-        virtual void OnRemovePassenger(Vehicle* /*veh*/, Unit* /*passenger*/) { }
-};
-
 class DynamicObjectScript : public ScriptObject, public UpdatableScript<DynamicObject>
 {
     protected:
@@ -940,15 +912,6 @@ class ScriptMgr
     public: /* ConditionScript */
 
         bool OnConditionCheck(Condition* condition, ConditionSourceInfo& sourceInfo);
-
-    public: /* VehicleScript */
-
-        void OnInstall(Vehicle* veh);
-        void OnUninstall(Vehicle* veh);
-        void OnReset(Vehicle* veh);
-        void OnInstallAccessory(Vehicle* veh, Creature* accessory);
-        void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 seatId);
-        void OnRemovePassenger(Vehicle* veh, Unit* passenger);
 
     public: /* DynamicObjectScript */
 

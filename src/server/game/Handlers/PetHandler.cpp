@@ -39,7 +39,7 @@ void WorldSession::HandleDismissCritter(WorldPacket &recv_data)
 
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Received CMSG_DISMISS_CRITTER for GUID " UI64FMTD, guid);
 
-    Unit* pet = ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Unit* pet = ObjectAccessor::GetCreatureOrPet(*_player, guid);
 
     if (!pet)
     {
@@ -117,7 +117,7 @@ void WorldSession::HandlePetStopAttack(WorldPacket &recv_data)
 
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Received CMSG_PET_STOP_ATTACK for GUID " UI64FMTD "", guid);
 
-    Unit* pet = ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Unit* pet = ObjectAccessor::GetCreatureOrPet(*_player, guid);
 
     if (!pet)
     {
@@ -325,7 +325,7 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
             SpellCastResult result = spell->CheckPetCast(unit_target);
 
             //auto turn to target unless possessed
-            if (result == SPELL_FAILED_UNIT_NOT_INFRONT && !pet->isPossessed() && !pet->IsVehicle())
+            if (result == SPELL_FAILED_UNIT_NOT_INFRONT && !pet->isPossessed())
             {
                 if (unit_target)
                 {
@@ -362,7 +362,7 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
                     pet->SendPetAIReaction(guid1);
                 }
 
-                if (unit_target && !GetPlayer()->IsFriendlyTo(unit_target) && !pet->isPossessed() && !pet->IsVehicle())
+                if (unit_target && !GetPlayer()->IsFriendlyTo(unit_target) && !pet->isPossessed())
                 {
                     // This is true if pet has no target or has target but targets differs.
                     if (pet->getVictim() != unit_target)
@@ -379,7 +379,7 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
             }
             else
             {
-                if (pet->isPossessed() || pet->IsVehicle())
+                if (pet->isPossessed())
                     Spell::SendCastResult(GetPlayer(), spellInfo, 0, result);
                 else
                     pet->SendPetCastFail(spellid, result);
@@ -416,7 +416,7 @@ void WorldSession::HandlePetNameQuery(WorldPacket & recv_data)
 
 void WorldSession::SendPetNameQuery(uint64 petguid, uint32 petnumber)
 {
-    Creature* pet = ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, petguid);
+    Creature* pet = ObjectAccessor::GetCreatureOrPet(*_player, petguid);
     if (!pet)
     {
         WorldPacket data(SMSG_PET_NAME_QUERY_RESPONSE, (4+1+4+1));
@@ -681,7 +681,7 @@ void WorldSession::HandlePetAbandon(WorldPacket & recv_data)
         return;
 
     // pet/charmed
-    Creature* pet = ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Creature* pet = ObjectAccessor::GetCreatureOrPet(*_player, guid);
     if (pet)
     {
         if (pet->isPet())
@@ -713,7 +713,7 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPacket& recvPacket)
     if (ObjectAccessor::FindPlayer(guid))
         return;
 
-    Creature* pet=ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Creature* pet=ObjectAccessor::GetCreatureOrPet(*_player, guid);
 
     if (!pet || (pet != _player->GetGuardianPet() && pet != _player->GetCharm()))
     {

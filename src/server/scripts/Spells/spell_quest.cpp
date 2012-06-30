@@ -24,7 +24,6 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "SpellScript.h"
-#include "Vehicle.h"
 
 class spell_generic_quest_update_entry_SpellScript : public SpellScript
 {
@@ -966,10 +965,6 @@ class spell_q13280_13283_plant_battle_standard: public SpellScriptLoader
 
             void HandleDummy(SpellEffIndex /*effIndex*/)
             {
-                Unit* caster = GetCaster();
-                if (caster->IsVehicle())
-                    if (Unit* player = caster->GetVehicleKit()->GetPassenger(0))
-                         player->ToPlayer()->KilledMonsterCredit(NPC_KING_OF_THE_MOUNTAINT_KC, 0);
             }
 
             void Register()

@@ -1168,8 +1168,6 @@ class spell_gen_launch : public SpellScriptLoader
 
                 if (Player* player = GetHitPlayer())
                 {
-                    player->ExitVehicle();
-
                     // A better research is needed
                     // There is no spell for this, the following calculation was based on void Spell::CalculateJumpSpeeds
 
@@ -1193,66 +1191,6 @@ class spell_gen_launch : public SpellScriptLoader
             return new spell_gen_launch_SpellScript();
         }
 };
-
-enum VehicleScaling
-{
-    SPELL_GEAR_SCALING      = 66668,
-};
-
-class spell_gen_vehicle_scaling : public SpellScriptLoader
-{
-    public:
-        spell_gen_vehicle_scaling() : SpellScriptLoader("spell_gen_vehicle_scaling") { }
-
-        class spell_gen_vehicle_scaling_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_vehicle_scaling_AuraScript);
-
-            bool Load()
-            {
-                return GetCaster() && GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
-
-            void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
-            {
-                Unit* caster = GetCaster();
-                float factor;
-                uint16 baseItemLevel;
-
-                // TODO: Reserach coeffs for different vehicles
-                switch (GetId())
-                {
-                    case SPELL_GEAR_SCALING:
-                        factor = 1.0f;
-                        baseItemLevel = 205;
-                        break;
-                    default:
-                        factor = 1.0f;
-                        baseItemLevel = 170;
-                        break;
-                }
-
-                float avgILvl = caster->ToPlayer()->GetAverageItemLevel();
-                if (avgILvl < baseItemLevel)
-                    return;                     // TODO: Research possibility of scaling down
-
-                amount = uint16((avgILvl - baseItemLevel) * factor);
-            }
-
-            void Register()
-            {
-                DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_gen_vehicle_scaling_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_MOD_HEALING_PCT);
-                DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_gen_vehicle_scaling_AuraScript::CalculateAmount, EFFECT_1, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
-                DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_gen_vehicle_scaling_AuraScript::CalculateAmount, EFFECT_2, SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT);
-            }
-        };
-
-        AuraScript* GetAuraScript() const
-        {
-            return new spell_gen_vehicle_scaling_AuraScript();
-        }
-};
-
 
 class spell_gen_oracle_wolvar_reputation : public SpellScriptLoader
 {
@@ -2015,7 +1953,6 @@ void AddSC_generic_spell_scripts()
     new spell_gen_magic_rooster();
     new spell_gen_allow_cast_from_item_only();
     new spell_gen_launch();
-    new spell_gen_vehicle_scaling();
     new spell_gen_oracle_wolvar_reputation();
     new spell_gen_damage_reduction_aura();
     new spell_gen_dummy_trigger();

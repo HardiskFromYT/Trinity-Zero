@@ -29,7 +29,7 @@ enum DebugLogFilters
     LOG_FILTER_NONE                     = 0x00000000,
     LOG_FILTER_UNITS                    = 0x00000001,   // Anything related to units that doesn't fit in other categories. ie. creature formations
     LOG_FILTER_PETS                     = 0x00000002,
-    LOG_FILTER_VEHICLES                 = 0x00000004,
+    /*LOG_FILTER_VEHICLES                 = 0x00000004,*/
     LOG_FILTER_TSCR                     = 0x00000008,   // C++ AI, instance scripts, etc.
     LOG_FILTER_DATABASE_AI              = 0x00000010,   // SmartAI, EventAI, CreatureAI
     LOG_FILTER_MAPSCRIPTS               = 0x00000020,

@@ -378,29 +378,3 @@ void InstanceScript::SendEncounterUnit(uint32 type, Unit* unit /*= NULL*/, uint8
 
     instance->SendToPlayers(&data);
 }
-
-void InstanceScript::UpdateEncounterState(EncounterCreditType type, uint32 creditEntry, Unit* source)
-{
-    DungeonEncounterList const* encounters = sObjectMgr->GetDungeonEncounterList(instance->GetId(), instance->GetDifficulty());
-    if (!encounters)
-        return;
-
-    for (DungeonEncounterList::const_iterator itr = encounters->begin(); itr != encounters->end(); ++itr)
-    {
-        if ((*itr)->creditType == type && (*itr)->creditEntry == creditEntry)
-        {
-            completedEncounters |= 1 << (*itr)->dbcEntry->encounterIndex;
-            sLog->outDebug(LOG_FILTER_TSCR, "Instance %s (instanceId %u) completed encounter %s", instance->GetMapName(), instance->GetInstanceId(), (*itr)->dbcEntry->encounterName[0]);
-            if (uint32 dungeonId = (*itr)->lastEncounterDungeon)
-            {
-                Map::PlayerList const& players = instance->GetPlayers();
-                if (!players.isEmpty())
-                    for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
-                        if (Player* player = i->getSource())
-                            if (!source || player->IsAtGroupRewardDistance(source))
-                                sLFGMgr->RewardDungeonDoneFor(dungeonId, player);
-            }
-            return;
-        }
-    }
-}

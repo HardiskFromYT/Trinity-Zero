@@ -335,7 +335,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
             }
         }
 
-        if (!mover->GetTransport() && !mover->GetVehicle())
+        if (!mover->GetTransport())
         {
             GameObject* go = mover->GetMap()->GetGameObject(movementInfo.t_guid);
             if (!go || go->GetGoType() != GAMEOBJECT_TYPE_TRANSPORT)
@@ -371,13 +371,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
     mover->SendMessageToSet(&data, _player);
 
     mover->m_movementInfo = movementInfo;
-
-    // this is almost never true (not sure why it is sometimes, but it is), normally use mover->IsVehicle()
-    if (mover->GetVehicle())
-    {
-        mover->SetOrientation(movementInfo.pos.GetOrientation());
-        return;
-    }
 
     mover->UpdatePosition(movementInfo.pos);
 
