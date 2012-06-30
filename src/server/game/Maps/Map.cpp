@@ -31,7 +31,6 @@
 #include "ObjectMgr.h"
 #include "Group.h"
 #include "DynamicTree.h"
-#include "Vehicle.h"
 
 union u_map_magic
 {
@@ -459,7 +458,6 @@ bool Map::AddToMap(T *obj)
     if (obj->isActiveObject())
         AddToActive(obj);
 
-    //something, such as vehicle, needs to be update immediately
     //also, trigger needs to cast spell, if not update, cannot see visual
     obj->UpdateObjectVisibility(true);
     return true;
@@ -709,8 +707,6 @@ void Map::PlayerRelocation(Player* player, float x, float y, float z, float orie
         z += player->GetFloatValue(UNIT_FIELD_HOVERHEIGHT);
 
     player->Relocate(x, y, z, orientation);
-    if (player->IsVehicle())
-        player->GetVehicleKit()->RelocatePassengers(x, y, z, orientation);
 
     if (old_cell.DiffGrid(new_cell) || old_cell.DiffCell(new_cell))
     {
@@ -755,8 +751,6 @@ void Map::CreatureRelocation(Creature* creature, float x, float y, float z, floa
     else
     {
         creature->Relocate(x, y, z, ang);
-        if (creature->IsVehicle())
-            creature->GetVehicleKit()->RelocatePassengers(x, y, z, ang);
         creature->UpdateObjectVisibility(false);
         RemoveCreatureFromMoveList(creature);
     }

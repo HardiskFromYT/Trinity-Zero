@@ -80,9 +80,6 @@ public:
             { "setaurastate",   SEC_ADMINISTRATOR,  false, &HandleDebugSetAuraStateCommand,    "", NULL },
             { "setitemvalue",   SEC_ADMINISTRATOR,  false, &HandleDebugSetItemValueCommand,    "", NULL },
             { "setvalue",       SEC_ADMINISTRATOR,  false, &HandleDebugSetValueCommand,        "", NULL },
-            { "spawnvehicle",   SEC_ADMINISTRATOR,  false, &HandleDebugSpawnVehicleCommand,    "", NULL },
-            { "setvid",         SEC_ADMINISTRATOR,  false, &HandleDebugSetVehicleIdCommand,    "", NULL },
-            { "entervehicle",   SEC_ADMINISTRATOR,  false, &HandleDebugEnterVehicleCommand,    "", NULL },
             { "uws",            SEC_ADMINISTRATOR,  false, &HandleDebugUpdateWorldStateCommand, "", NULL },
             { "update",         SEC_ADMINISTRATOR,  false, &HandleDebugUpdateCommand,          "", NULL },
             { "itemexpire",     SEC_ADMINISTRATOR,  false, &HandleDebugItemExpireCommand,      "", NULL },
@@ -823,106 +820,6 @@ public:
             ref = ref->next();
         }
         handler->SendSysMessage("End of hostil reference list.");
-        return true;
-    }
-
-    static bool HandleDebugSetVehicleIdCommand(ChatHandler* handler, char const* args)
-    {
-        Unit* target = handler->getSelectedUnit();
-        if (!target || target->IsVehicle())
-            return false;
-
-        if (!args)
-            return false;
-
-        char* i = strtok((char*)args, " ");
-        if (!i)
-            return false;
-
-        uint32 id = (uint32)atoi(i);
-        //target->SetVehicleId(id);
-        handler->PSendSysMessage("Vehicle id set to %u", id);
-        return true;
-    }
-
-    static bool HandleDebugEnterVehicleCommand(ChatHandler* handler, char const* args)
-    {
-        Unit* target = handler->getSelectedUnit();
-        if (!target || !target->IsVehicle())
-            return false;
-
-        if (!args)
-            return false;
-
-        char* i = strtok((char*)args, " ");
-        if (!i)
-            return false;
-
-        char* j = strtok(NULL, " ");
-
-        uint32 entry = (uint32)atoi(i);
-        int8 seatId = j ? (int8)atoi(j) : -1;
-
-        if (!entry)
-            handler->GetSession()->GetPlayer()->EnterVehicle(target, seatId);
-        else
-        {
-            Creature* passenger = NULL;
-            Trinity::AllCreaturesOfEntryInRange check(handler->GetSession()->GetPlayer(), entry, 20.0f);
-            Trinity::CreatureSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(handler->GetSession()->GetPlayer(), passenger, check);
-            handler->GetSession()->GetPlayer()->VisitNearbyObject(30.0f, searcher);
-            if (!passenger || passenger == target)
-                return false;
-            passenger->EnterVehicle(target, seatId);
-        }
-
-        handler->PSendSysMessage("Unit %u entered vehicle %d", entry, (int32)seatId);
-        return true;
-    }
-
-    static bool HandleDebugSpawnVehicleCommand(ChatHandler* handler, char const* args)
-    {
-        if (!*args)
-            return false;
-
-        char* e = strtok((char*)args, " ");
-        char* i = strtok(NULL, " ");
-
-        if (!e)
-            return false;
-
-        uint32 entry = (uint32)atoi(e);
-
-        float x, y, z, o = handler->GetSession()->GetPlayer()->GetOrientation();
-        handler->GetSession()->GetPlayer()->GetClosePoint(x, y, z, handler->GetSession()->GetPlayer()->GetObjectSize());
-
-        if (!i)
-            return handler->GetSession()->GetPlayer()->SummonCreature(entry, x, y, z, o);
-
-        uint32 id = (uint32)atoi(i);
-
-        CreatureTemplate const* ci = sObjectMgr->GetCreatureTemplate(entry);
-
-        if (!ci)
-            return false;
-
-        VehicleEntry const* ve = sVehicleStore.LookupEntry(id);
-
-        if (!ve)
-            return false;
-
-        Creature* v = new Creature;
-
-        Map* map = handler->GetSession()->GetPlayer()->GetMap();
-
-        if (!v->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_VEHICLE), map, handler->GetSession()->GetPlayer()->GetPhaseMask(), entry, id, handler->GetSession()->GetPlayer()->GetTeam(), x, y, z, o))
-        {
-            delete v;
-            return false;
-        }
-
-        map->AddToMap(v->ToCreature());
-
         return true;
     }
 

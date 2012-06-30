@@ -37,7 +37,6 @@
 #include "Util.h"
 #include "WaypointManager.h"
 #include "GossipDef.h"
-#include "Vehicle.h"
 #include "DisableMgr.h"
 #include "ScriptMgr.h"
 #include "SpellScript.h"
@@ -225,7 +224,7 @@ bool SpellClickInfo::IsFitToRequirements(Unit const* clicker, Unit const* clicke
 
 ObjectMgr::ObjectMgr(): _auctionId(1), _equipmentSetGuid(1),
     _itemTextId(1), _mailId(1), _hiPetNumber(1), _hiCharGuid(1),
-    _hiCreatureGuid(1), _hiPetGuid(1), _hiVehicleGuid(1), _hiItemGuid(1),
+    _hiCreatureGuid(1), _hiPetGuid(1), _hiItemGuid(1),
     _hiGoGuid(1), _hiDoGuid(1), _hiCorpseGuid(1), _hiMoTransGuid(1)
 {}
 
@@ -375,8 +374,8 @@ void ObjectMgr::LoadCreatureTemplates()
                                              "dynamicflags, family, trainer_type, trainer_spell, trainer_class, trainer_race, minrangedmg, maxrangedmg, rangedattackpower, type, "
     //                                            43        44          45           46          47          48           49           50           51           52         53
                                              "type_flags, lootid, pickpocketloot, skinloot, resistance1, resistance2, resistance3, resistance4, resistance5, resistance6, spell1, "
-    //                                          54      55      56      57      58      59      60          61            62       63       64       65         66
-                                             "spell2, spell3, spell4, spell5, spell6, spell7, spell8, PetSpellDataId, VehicleId, mingold, maxgold, AIName, MovementType, "
+    //                                          54      55      56      57      58      59      60          61          62       63       64       65         66
+                                             "spell2, spell3, spell4, spell5, spell6, spell7, spell8, PetSpellDataId, mingold, maxgold, AIName, MovementType, "
     //                                             67          68         69         70          71           72          73          74          75          76          77
                                              "InhabitType, HoverHeight, Health_mod, Mana_mod, Armor_mod, RacialLeader, questItem1, questItem2, questItem3, questItem4, questItem5, "
     //                                            78           79           80               81                82           83
@@ -458,7 +457,6 @@ void ObjectMgr::LoadCreatureTemplates()
             creatureTemplate.spells[i] = fields[53 + i].GetUInt32();
 
         creatureTemplate.PetSpellDataId = fields[61].GetUInt32();
-        creatureTemplate.VehicleId      = fields[62].GetUInt32();
         creatureTemplate.mingold        = fields[63].GetUInt32();
         creatureTemplate.maxgold        = fields[64].GetUInt32();
         creatureTemplate.AIName         = fields[65].GetString();
@@ -802,16 +800,6 @@ void ObjectMgr::CheckCreatureTemplate(CreatureTemplate const* cInfo)
     {
         sLog->outErrorDb("Creature (Entry: %u) has wrong value (%f) in `HoverHeight`", cInfo->Entry, cInfo->HoverHeight);
         const_cast<CreatureTemplate*>(cInfo)->HoverHeight = 1.0f;
-    }
-
-    if (cInfo->VehicleId)
-    {
-        VehicleEntry const* vehId = sVehicleStore.LookupEntry(cInfo->VehicleId);
-        if (!vehId)
-        {
-             sLog->outErrorDb("Creature (Entry: %u) has a non-existing VehicleId (%u). This *WILL* cause the client to freeze!", cInfo->Entry, cInfo->VehicleId);
-             const_cast<CreatureTemplate*>(cInfo)->VehicleId = 0;
-        }
     }
 
     if (cInfo->PetSpellDataId)
@@ -2732,108 +2720,6 @@ void ObjectMgr::LoadItemSetNames()
     }
 
     sLog->outString(">> Loaded %u item set names in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
-    sLog->outString();
-}
-
-void ObjectMgr::LoadVehicleTemplateAccessories()
-{
-    uint32 oldMSTime = getMSTime();
-
-    _vehicleTemplateAccessoryStore.clear();                           // needed for reload case
-
-    uint32 count = 0;
-
-    //                                                  0             1              2          3           4             5
-    QueryResult result = WorldDatabase.Query("SELECT `entry`, `accessory_entry`, `seat_id`, `minion`, `summontype`, `summontimer` FROM `vehicle_template_accessory`");
-
-    if (!result)
-    {
-        sLog->outErrorDb(">> Loaded 0 vehicle template accessories. DB table `vehicle_template_accessory` is empty.");
-        sLog->outString();
-        return;
-    }
-
-    do
-    {
-        Field* fields = result->Fetch();
-
-        uint32 uiEntry      = fields[0].GetUInt32();
-        uint32 uiAccessory  = fields[1].GetUInt32();
-        int8   uiSeat       = int8(fields[2].GetInt8());
-        bool   bMinion      = fields[3].GetBool();
-        uint8  uiSummonType = fields[4].GetUInt8();
-        uint32 uiSummonTimer= fields[5].GetUInt32();
-
-        if (!sObjectMgr->GetCreatureTemplate(uiEntry))
-        {
-            sLog->outErrorDb("Table `vehicle_template_accessory`: creature template entry %u does not exist.", uiEntry);
-            continue;
-        }
-
-        if (!sObjectMgr->GetCreatureTemplate(uiAccessory))
-        {
-            sLog->outErrorDb("Table `vehicle_template_accessory`: Accessory %u does not exist.", uiAccessory);
-            continue;
-        }
-
-        if (_spellClickInfoStore.find(uiEntry) == _spellClickInfoStore.end())
-        {
-            sLog->outErrorDb("Table `vehicle_template_accessory`: creature template entry %u has no data in npc_spellclick_spells", uiEntry);
-            continue;
-        }
-
-        _vehicleTemplateAccessoryStore[uiEntry].push_back(VehicleAccessory(uiAccessory, uiSeat, bMinion, uiSummonType, uiSummonTimer));
-
-        ++count;
-    }
-    while (result->NextRow());
-
-    sLog->outString(">> Loaded %u Vehicle Template Accessories in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
-    sLog->outString();
-}
-
-void ObjectMgr::LoadVehicleAccessories()
-{
-    uint32 oldMSTime = getMSTime();
-
-    _vehicleAccessoryStore.clear();                           // needed for reload case
-
-    uint32 count = 0;
-
-    //                                                  0             1             2          3           4             5
-    QueryResult result = WorldDatabase.Query("SELECT `guid`, `accessory_entry`, `seat_id`, `minion`, `summontype`, `summontimer` FROM `vehicle_accessory`");
-
-    if (!result)
-    {
-        sLog->outString(">> Loaded 0 Vehicle Accessories in %u ms", GetMSTimeDiffToNow(oldMSTime));
-        sLog->outString();
-        return;
-    }
-
-    do
-    {
-        Field* fields = result->Fetch();
-
-        uint32 uiGUID       = fields[0].GetUInt32();
-        uint32 uiAccessory  = fields[1].GetUInt32();
-        int8   uiSeat       = int8(fields[2].GetInt16());
-        bool   bMinion      = fields[3].GetBool();
-        uint8  uiSummonType = fields[4].GetUInt8();
-        uint32 uiSummonTimer= fields[5].GetUInt32();
-
-        if (!sObjectMgr->GetCreatureTemplate(uiAccessory))
-        {
-            sLog->outErrorDb("Table `vehicle_accessory`: Accessory %u does not exist.", uiAccessory);
-            continue;
-        }
-
-        _vehicleAccessoryStore[uiGUID].push_back(VehicleAccessory(uiAccessory, uiSeat, bMinion, uiSummonType, uiSummonTimer));
-
-        ++count;
-    }
-    while (result->NextRow());
-
-    sLog->outString(">> Loaded %u Vehicle Accessories in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
 
@@ -6188,11 +6074,6 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
             ASSERT(_hiPetGuid < 0x00FFFFFE && "Pet guid overflow!");
             return _hiPetGuid++;
         }
-        case HIGHGUID_VEHICLE:
-        {
-            ASSERT(_hiVehicleGuid < 0x00FFFFFF && "Vehicle guid overflow!");
-            return _hiVehicleGuid++;
-        }
         case HIGHGUID_PLAYER:
         {
             ASSERT(_hiCharGuid < 0xFFFFFFFE && "Player guid overflow!");
@@ -7075,18 +6956,6 @@ void ObjectMgr::LoadNPCSpellClickSpells()
         ++count;
     }
     while (result->NextRow());
-
-    // all spellclick data loaded, now we check if there are creatures with NPC_FLAG_SPELLCLICK but with no data
-    // NOTE: It *CAN* be the other way around: no spellclick flag but with spellclick data, in case of creature-only vehicle accessories
-    CreatureTemplateContainer const* ctc = sObjectMgr->GetCreatureTemplates();
-    for (CreatureTemplateContainer::const_iterator itr = ctc->begin(); itr != ctc->end(); ++itr)
-    {
-        if ((itr->second.npcflag & UNIT_NPC_FLAG_SPELLCLICK) && _spellClickInfoStore.find(itr->second.Entry) == _spellClickInfoStore.end())
-        {
-            sLog->outErrorDb("npc_spellclick_spells: Creature template %u has UNIT_NPC_FLAG_SPELLCLICK but no data in spellclick table! Removing flag", itr->second.Entry);
-            const_cast<CreatureTemplate*>(&itr->second)->npcflag &= ~UNIT_NPC_FLAG_SPELLCLICK;
-        }
-    }
 
     sLog->outString(">> Loaded %u spellclick definitions in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
@@ -8554,22 +8423,5 @@ CreatureTemplate const* ObjectMgr::GetCreatureTemplate(uint32 entry)
     if (itr != _creatureTemplateStore.end())
         return &(itr->second);
 
-    return NULL;
-}
-
-VehicleAccessoryList const* ObjectMgr::GetVehicleAccessoryList(Vehicle* veh) const
-{
-    if (Creature* cre = veh->GetBase()->ToCreature())
-    {
-        // Give preference to GUID-based accessories
-        VehicleAccessoryContainer::const_iterator itr = _vehicleAccessoryStore.find(cre->GetDBTableGUIDLow());
-        if (itr != _vehicleAccessoryStore.end())
-            return &itr->second;
-    }
-
-    // Otherwise return entry-based
-    VehicleAccessoryContainer::const_iterator itr = _vehicleTemplateAccessoryStore.find(veh->GetCreatureEntry());
-    if (itr != _vehicleTemplateAccessoryStore.end())
-        return &itr->second;
     return NULL;
 }

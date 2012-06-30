@@ -35,7 +35,6 @@
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
 #include "ScriptMgr.h"
-#include "Vehicle.h"
 
 class Aura;
 //
@@ -347,7 +346,7 @@ pAuraEffectHandler AuraEffectHandler[TOTAL_AURAS]=
     &AuraEffect::HandleAuraOverrideSpells,                        //293 auras which probably add set of abilities to their target based on it's miscvalue
     &AuraEffect::HandleNoImmediateEffect,                         //294 SPELL_AURA_PREVENT_REGENERATE_POWER implemented in Player::Regenerate(Powers power)
     &AuraEffect::HandleNULL,                                      //295 0 spells in 3.3.5
-    &AuraEffect::HandleAuraSetVehicle,                            //296 SPELL_AURA_SET_VEHICLE_ID sets vehicle on target
+    &AuraEffect::HandleNULL,                                      //296 unused
     &AuraEffect::HandleNULL,                                      //297 Spirit Burst spells
     &AuraEffect::HandleNULL,                                      //298 70569 - Strangulating, maybe prevents talk or cast
     &AuraEffect::HandleNULL,                                      //299 unused
@@ -3014,43 +3013,6 @@ void AuraEffect::HandleCharmConvert(AuraApplication const* aurApp, uint8 mode, b
         target->RemoveCharmedBy(caster);
 }
 
-/**
- * Such auras are applied from a caster(=player) to a vehicle.
- * This has been verified using spell #49256
- */
-void AuraEffect::HandleAuraControlVehicle(AuraApplication const* aurApp, uint8 mode, bool apply) const
-{
-    if (!(mode & AURA_EFFECT_HANDLE_CHANGE_AMOUNT_MASK))
-        return;
-
-    Unit* target = aurApp->GetTarget();
-
-    if (!target->IsVehicle())
-        return;
-
-    Unit* caster = GetCaster();
-
-    if (!caster || caster == target)
-        return;
-
-    if (apply)
-    {
-        caster->_EnterVehicle(target->GetVehicleKit(), m_amount - 1, aurApp);
-    }
-    else
-    {
-        if (GetId() == 53111) // Devour Humanoid
-        {
-            target->Kill(caster);
-            if (caster->GetTypeId() == TYPEID_UNIT)
-                caster->ToCreature()->RemoveCorpse();
-        }
-        caster->_ExitVehicle();
-        // some SPELL_AURA_CONTROL_VEHICLE auras have a dummy effect on the player - remove them
-        caster->RemoveAurasDueToSpell(GetId());
-    }
-}
-
 /*********************************************************/
 /***                  MODIFY SPEED                     ***/
 /*********************************************************/
@@ -5334,38 +5296,6 @@ void AuraEffect::HandleAuraOverrideSpells(AuraApplication const* aurApp, uint8 m
             for (uint8 i = 0; i < MAX_OVERRIDE_SPELL; ++i)
                 if (uint32 spellId = overrideSpells->spellId[i])
                     target->RemoveTemporarySpell(spellId);
-    }
-}
-
-void AuraEffect::HandleAuraSetVehicle(AuraApplication const* aurApp, uint8 mode, bool apply) const
-{
-    if (!(mode & AURA_EFFECT_HANDLE_REAL))
-        return;
-
-    Unit* target = aurApp->GetTarget();
-
-    if (target->GetTypeId() != TYPEID_PLAYER || !target->IsInWorld())
-        return;
-
-    uint32 vehicleId = GetMiscValue();
-
-    if (apply)
-    {
-        if (!target->CreateVehicleKit(vehicleId, 0))
-            return;
-    }
-    else if (target->GetVehicleKit())
-        target->RemoveVehicleKit();
-
-    WorldPacket data(SMSG_PLAYER_VEHICLE_DATA, target->GetPackGUID().size()+4);
-    data.appendPackGUID(target->GetGUID());
-    data << uint32(apply ? vehicleId : 0);
-    target->SendMessageToSet(&data, true);
-
-    if (apply)
-    {
-        data.Initialize(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA, 0);
-        target->ToPlayer()->GetSession()->SendPacket(&data);
     }
 }
 

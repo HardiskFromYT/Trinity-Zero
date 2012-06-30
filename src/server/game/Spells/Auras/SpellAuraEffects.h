@@ -179,7 +179,6 @@ class AuraEffect
         void HandleModPossessPet(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleModCharm(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleCharmConvert(AuraApplication const* aurApp, uint8 mode, bool apply) const;
-        void HandleAuraControlVehicle(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         //  modify speed
         void HandleAuraModIncreaseSpeed(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleAuraModIncreaseMountedSpeed(AuraApplication const* aurApp, uint8 mode, bool apply) const;
@@ -276,7 +275,6 @@ class AuraEffect
         void HandleAuraOpenStable(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleAuraModFakeInebriation(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandleAuraOverrideSpells(AuraApplication const* aurApp, uint8 mode, bool apply) const;
-        void HandleAuraSetVehicle(AuraApplication const* aurApp, uint8 mode, bool apply) const;
         void HandlePreventResurrection(AuraApplication const* aurApp, uint8 mode, bool apply) const;
 
         // aura effect periodic tick handlers

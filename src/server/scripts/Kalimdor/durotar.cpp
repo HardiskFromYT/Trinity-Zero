@@ -17,7 +17,6 @@
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
-#include "Vehicle.h"
 #include "SpellScript.h"
 
 /*######
@@ -141,9 +140,6 @@ enum Spells
 
 enum Creatures
 {
-    // Tiger Matriarch Credit
-    NPC_TIGER_VEHICLE                   = 40305,
-
     // Troll Volunteer
     NPC_URUZIN                          = 40253,
     NPC_VOLUNTEER_1                     = 40264,
@@ -239,19 +235,6 @@ class npc_tiger_matriarch : public CreatureScript
                 _events.Reset();
                 _events.ScheduleEvent(EVENT_POUNCE, 100);
                 _events.ScheduleEvent(EVENT_NOSUMMON, 50000);
-            }
-
-            void IsSummonedBy(Unit* summoner)
-            {
-                if (summoner->GetTypeId() != TYPEID_PLAYER || !summoner->GetVehicle())
-                    return;
-
-                _tigerGuid = summoner->GetVehicle()->GetBase()->GetGUID();
-                if (Unit* tiger = ObjectAccessor::GetUnit(*me, _tigerGuid))
-                {
-                    me->AddThreat(tiger, 500000.0f);
-                    DoCast(me, SPELL_FURIOUS_BITE);
-                }
             }
 
             void KilledUnit(Unit* victim)

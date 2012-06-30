@@ -45,7 +45,6 @@
 #include "Battleground.h"
 #include "Util.h"
 #include "TemporarySummon.h"
-#include "Vehicle.h"
 #include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
 #include "ConditionMgr.h"
@@ -197,7 +196,6 @@ uint64 SpellCastTargets::GetUnitTargetGUID() const
     switch (GUID_HIPART(m_objectTargetGUID))
     {
         case HIGHGUID_PLAYER:
-        case HIGHGUID_VEHICLE:
         case HIGHGUID_UNIT:
         case HIGHGUID_PET:
             return m_objectTargetGUID;
@@ -1489,22 +1487,6 @@ void Spell::SelectImplicitCasterObjectTargets(SpellEffIndex effIndex, SpellImpli
         case TARGET_UNIT_SUMMONER:
             if (m_caster->isSummon())
                 if (Unit* unit = m_caster->ToTempSummon()->GetSummoner())
-                    AddUnitTarget(unit, 1 << effIndex);
-            break;
-        case TARGET_UNIT_VEHICLE:
-            if (Unit *vehicle = m_caster->GetVehicleBase())
-                AddUnitTarget(vehicle, 1 << effIndex);
-            break;
-        case TARGET_UNIT_PASSENGER_0:
-        case TARGET_UNIT_PASSENGER_1:
-        case TARGET_UNIT_PASSENGER_2:
-        case TARGET_UNIT_PASSENGER_3:
-        case TARGET_UNIT_PASSENGER_4:
-        case TARGET_UNIT_PASSENGER_5:
-        case TARGET_UNIT_PASSENGER_6:
-        case TARGET_UNIT_PASSENGER_7:
-            if (m_caster->GetTypeId() == TYPEID_UNIT && m_caster->ToCreature()->IsVehicle())
-                if (Unit *unit = m_caster->GetVehicleKit()->GetPassenger(targetType.GetTarget() - TARGET_UNIT_PASSENGER_0))
                     AddUnitTarget(unit, 1 << effIndex);
             break;
         default:
@@ -4556,35 +4538,6 @@ SpellCastResult Spell::CheckCast(bool strict)
         if ((!m_caster->HasUnitMovementFlag(MOVEMENTFLAG_FALLING_FAR) || m_spellInfo->Effects[0].Effect != SPELL_EFFECT_STUCK) &&
             (IsAutoRepeat() || (m_spellInfo->AuraInterruptFlags & AURA_INTERRUPT_FLAG_NOT_SEATED) != 0))
             return SPELL_FAILED_MOVING;
-    }
-
-
-    Vehicle* vehicle = m_caster->GetVehicle();
-    if (vehicle && !(_triggeredCastFlags & TRIGGERED_IGNORE_CASTER_MOUNTED_OR_ON_VEHICLE))
-    {
-        uint16 checkMask = 0;
-        for (uint8 effIndex = EFFECT_0; effIndex < MAX_SPELL_EFFECTS; ++effIndex)
-        {
-            SpellEffectInfo const* effInfo = &m_spellInfo->Effects[effIndex];
-            if (effInfo->ApplyAuraName == SPELL_AURA_MOD_SHAPESHIFT)
-            {
-                SpellShapeshiftEntry const* shapeShiftEntry = sSpellShapeshiftStore.LookupEntry(effInfo->MiscValue);
-                if (shapeShiftEntry && (shapeShiftEntry->flags1 & 1) == 0)  // unk flag
-                    checkMask |= VEHICLE_SEAT_FLAG_UNCONTROLLED;
-                break;
-            }
-        }
-
-        if (m_spellInfo->HasAura(SPELL_AURA_MOUNTED))
-            checkMask |= VEHICLE_SEAT_FLAG_CAN_CAST_MOUNT_SPELL;
-
-        if (!checkMask)
-            checkMask = VEHICLE_SEAT_FLAG_CAN_ATTACK;
-
-        VehicleSeatEntry const* vehicleSeat = vehicle->GetSeatForPassenger(m_caster);
-        if (!(m_spellInfo->AttributesEx6 & SPELL_ATTR6_CASTABLE_WHILE_ON_VEHICLE) && !(m_spellInfo->Attributes & SPELL_ATTR0_CASTABLE_WHILE_MOUNTED)
-            && (vehicleSeat->m_flags & checkMask) != checkMask)
-            return SPELL_FAILED_DONT_REPORT;
     }
 
     // check spell cast conditions from database

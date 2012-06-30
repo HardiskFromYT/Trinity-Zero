@@ -1550,9 +1550,6 @@ SpellCastResult SpellInfo::CheckExplicitTarget(Unit const* caster, WorldObject c
             if (neededTargets & TARGET_FLAG_UNIT_MINIPET)
                 if (unitTarget->GetGUID() == caster->GetCritterGUID())
                     return SPELL_CAST_OK;
-            if (neededTargets & TARGET_FLAG_UNIT_PASSENGER)
-                if (unitTarget->IsOnVehicle(caster))
-                    return SPELL_CAST_OK;
             return SPELL_FAILED_BAD_TARGETS;
         }
     }

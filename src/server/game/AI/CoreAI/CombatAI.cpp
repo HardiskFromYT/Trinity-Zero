@@ -19,7 +19,6 @@
 #include "CombatAI.h"
 #include "SpellMgr.h"
 #include "SpellInfo.h"
-#include "Vehicle.h"
 #include "ObjectAccessor.h"
 
 int AggressorAI::Permissible(const Creature* creature)
@@ -51,11 +50,6 @@ int ArcherAI::Permissible(const Creature* /*creature*/)
 }
 
 int TurretAI::Permissible(const Creature* /*creature*/)
-{
-    return PERMIT_BASE_NO;
-}
-
-int VehicleAI::Permissible(const Creature* /*creature*/)
 {
     return PERMIT_BASE_NO;
 }
@@ -260,80 +254,4 @@ void TurretAI::UpdateAI(const uint32 /*diff*/)
         return;
 
     DoSpellAttackIfReady(me->m_spells[0]);
-}
-
-//////////////
-//VehicleAI
-//////////////
-
-VehicleAI::VehicleAI(Creature* c) : CreatureAI(c), m_vehicle(c->GetVehicleKit()), m_IsVehicleInUse(false), m_ConditionsTimer(VEHICLE_CONDITION_CHECK_TIME)
-{
-    LoadConditions();
-    m_DoDismiss = false;
-    m_DismissTimer = VEHICLE_DISMISS_TIME;
-}
-
-//NOTE: VehicleAI::UpdateAI runs even while the vehicle is mounted
-void VehicleAI::UpdateAI(const uint32 diff)
-{
-    CheckConditions(diff);
-
-    if (m_DoDismiss)
-    {
-        if (m_DismissTimer < diff)
-        {
-            m_DoDismiss = false;
-            me->SetVisible(false);
-            me->DespawnOrUnsummon();
-        }else m_DismissTimer -= diff;
-    }
-}
-
-void VehicleAI::Reset()
-{
-    me->SetVisible(true);
-}
-
-void VehicleAI::OnCharmed(bool apply)
-{
-    if (m_IsVehicleInUse && !apply && !conditions.empty())//was used and has conditions
-    {
-        m_DoDismiss = true;//needs reset
-        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
-        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-    }
-    else if (apply)
-        m_DoDismiss = false;//in use again
-    m_DismissTimer = VEHICLE_DISMISS_TIME;//reset timer
-    m_IsVehicleInUse = apply;
-}
-
-void VehicleAI::LoadConditions()
-{
-    conditions = sConditionMgr->GetConditionsForNotGroupedEntry(CONDITION_SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE, me->GetEntry());
-    if (!conditions.empty())
-        sLog->outDebug(LOG_FILTER_CONDITIONSYS, "VehicleAI::LoadConditions: loaded %u conditions", uint32(conditions.size()));
-}
-
-void VehicleAI::CheckConditions(const uint32 diff)
-{
-    if (m_ConditionsTimer < diff)
-    {
-        if (!conditions.empty())
-        {
-            for (SeatMap::iterator itr = m_vehicle->Seats.begin(); itr != m_vehicle->Seats.end(); ++itr)
-                if (Unit* passenger = ObjectAccessor::GetUnit(*m_vehicle->GetBase(), itr->second.Passenger))
-                {
-                    if (Player* player = passenger->ToPlayer())
-                    {
-                        if (!sConditionMgr->IsObjectMeetToConditions(player, me, conditions))
-                        {
-                            player->ExitVehicle();
-                            return;//check other pessanger in next tick
-                        }
-                    }
-                }
-        }
-        m_ConditionsTimer = VEHICLE_CONDITION_CHECK_TIME;
-    } else m_ConditionsTimer -= diff;
 }

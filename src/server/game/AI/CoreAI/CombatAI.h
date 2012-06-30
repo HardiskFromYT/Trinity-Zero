@@ -89,13 +89,9 @@ struct TurretAI : public CreatureAI
         float m_minRange;
 };
 
-#define VEHICLE_CONDITION_CHECK_TIME 1000
-#define VEHICLE_DISMISS_TIME 5000
-struct VehicleAI : public CreatureAI
+struct CreatureAI
 {
     public:
-        explicit VehicleAI(Creature* c);
-
         void UpdateAI(const uint32 diff);
         static int Permissible(const Creature*);
         void Reset();
@@ -104,8 +100,6 @@ struct VehicleAI : public CreatureAI
         void OnCharmed(bool apply);
 
     private:
-        Vehicle* m_vehicle;
-        bool m_IsVehicleInUse;
         void LoadConditions();
         void CheckConditions(const uint32 diff);
         ConditionList conditions;

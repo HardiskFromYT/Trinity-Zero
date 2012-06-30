@@ -30,7 +30,6 @@
 #include "SocialMgr.h"
 #include "Util.h"
 #include "SpellAuras.h"
-#include "Vehicle.h"
 
 class Aura;
 
@@ -828,12 +827,6 @@ void WorldSession::BuildPartyMemberStatsChangedPacket(Player* player, WorldPacke
             *data << (uint16) pet->GetMaxPower(pet->getPowerType());
         else
             *data << (uint16) 0;
-    }
-
-    if (mask & GROUP_UPDATE_FLAG_VEHICLE_SEAT)
-    {
-        if (Vehicle* veh = player->GetVehicle())
-            *data << (uint32) veh->GetVehicleInfo()->m_seatID[player->m_movementInfo.t_seat];
     }
 
     if (mask & GROUP_UPDATE_FLAG_PET_AURAS)

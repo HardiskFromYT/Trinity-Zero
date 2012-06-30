@@ -42,7 +42,6 @@
 #include "SocialMgr.h"
 #include "CellImpl.h"
 #include "AccountMgr.h"
-#include "Vehicle.h"
 #include "CreatureAI.h"
 #include "DBCEnums.h"
 #include "ScriptMgr.h"

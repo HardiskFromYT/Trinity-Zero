@@ -38,7 +38,6 @@ class Unit;
 class GameObject;
 class DynamicObject;
 class WorldObject;
-class Vehicle;
 class Map;
 class WorldRunnable;
 
@@ -185,7 +184,7 @@ class ObjectAccessor
         static Creature* GetCreature(WorldObject const& u, uint64 guid);
         static Pet* GetPet(WorldObject const&, uint64 guid);
         static Player* GetPlayer(WorldObject const&, uint64 guid);
-        static Creature* GetCreatureOrPetOrVehicle(WorldObject const&, uint64);
+        static Creature* GetCreatureOrPet(WorldObject const&, uint64);
 
         // these functions return objects if found in whole world
         // ACCESS LIKE THAT IS NOT THREAD SAFE

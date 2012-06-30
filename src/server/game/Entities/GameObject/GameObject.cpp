@@ -1520,8 +1520,6 @@ void GameObject::Use(Unit* user)
                 Battleground* bg = player->GetBattleground();
                 if (!bg)
                     return;
-                if (player->GetVehicle())
-                    return;
                 // BG flag click
                 // AB:
                 // 15001
@@ -1558,8 +1556,6 @@ void GameObject::Use(Unit* user)
                 // in battleground check
                 Battleground* bg = player->GetBattleground();
                 if (!bg)
-                    return;
-                if (player->GetVehicle())
                     return;
                 // BG flag dropped
                 // WS:

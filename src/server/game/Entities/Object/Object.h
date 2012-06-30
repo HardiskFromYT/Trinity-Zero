@@ -111,7 +111,6 @@ class UpdateMask;
 class InstanceScript;
 class GameObject;
 class TempSummon;
-class Vehicle;
 class CreatureAI;
 class ZoneScript;
 class Unit;

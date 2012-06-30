@@ -1561,7 +1561,6 @@ class Player : public Unit, public GridObject<Player>
         void PetSpellInitialize();
         void CharmSpellInitialize();
         void PossessSpellInitialize();
-        void VehicleSpellInitialize();
         void SendRemoveControlBar();
         bool HasSpell(uint32 spell) const;
         bool HasActiveSpell(uint32 spell) const;            // show in spellbook

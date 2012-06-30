@@ -425,7 +425,7 @@ void WorldSession::HandlePetCancelAuraOpcode(WorldPacket& recvPacket)
         return;
     }
 
-    Creature* pet=ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Creature* pet=ObjectAccessor::GetCreatureOrPet(*_player, guid);
 
     if (!pet)
     {
@@ -519,7 +519,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recv_data)
     recv_data >> guid;
 
     // this will get something not in world. crash
-    Creature* unit = ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Creature* unit = ObjectAccessor::GetCreatureOrPet(*_player, guid);
 
     if (!unit)
         return;
