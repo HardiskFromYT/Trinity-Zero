@@ -305,7 +305,6 @@ void Map::ScriptsProcess()
                         source = player->GetItemByGuid(step.sourceGUID);
                     break;
                 case HIGHGUID_UNIT:
-                case HIGHGUID_VEHICLE:
                     source = HashMapHolder<Creature>::Find(step.sourceGUID);
                     break;
                 case HIGHGUID_PET:
@@ -343,7 +342,6 @@ void Map::ScriptsProcess()
             switch (GUID_HIPART(step.targetGUID))
             {
                 case HIGHGUID_UNIT:
-                case HIGHGUID_VEHICLE:
                     target = HashMapHolder<Creature>::Find(step.targetGUID);
                     break;
                 case HIGHGUID_PET:

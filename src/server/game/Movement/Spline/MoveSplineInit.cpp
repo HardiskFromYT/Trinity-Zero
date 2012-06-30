@@ -21,7 +21,6 @@
 #include "MovementPacketBuilder.h"
 #include "Unit.h"
 #include "Transport.h"
-#include "Vehicle.h"
 
 namespace Movement
 {
@@ -136,9 +135,7 @@ namespace Movement
     {
         if (args.TransformForTransport)
         {
-            if (Unit* vehicle = unit.GetVehicleBase())
-                angle -= vehicle->GetOrientation();
-            else if (Transport* transport = unit.GetTransport())
+            if (Transport* transport = unit.GetTransport())
                 angle -= transport->GetOrientation();
         }
 
@@ -158,13 +155,7 @@ namespace Movement
     {
         if (_transformForTransport)
         {
-            if (Unit* vehicle = _owner.GetVehicleBase())
-            {
-                input.x -= vehicle->GetPositionX();
-                input.y -= vehicle->GetPositionY();
-                input.z -= vehicle->GetPositionZMinusOffset();
-            }
-            else if (Transport* transport = _owner.GetTransport())
+            if (Transport* transport = _owner.GetTransport())
             {
                 float unused = 0.0f;
                 transport->CalculatePassengerOffset(input.x, input.y, input.z, unused);

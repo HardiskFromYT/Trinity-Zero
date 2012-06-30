@@ -425,7 +425,7 @@ void WorldSession::HandlePetCancelAuraOpcode(WorldPacket& recvPacket)
         return;
     }
 
-    Creature* pet=ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
+    Creature* pet=ObjectAccessor::GetCreatureOrPet(*_player, guid);
 
     if (!pet)
     {
@@ -511,24 +511,6 @@ void WorldSession::HandleSelfResOpcode(WorldPacket & /*recv_data*/)
 
         _player->SetUInt32Value(PLAYER_SELF_RES_SPELL, 0);
     }
-}
-
-void WorldSession::HandleSpellClick(WorldPacket& recv_data)
-{
-    uint64 guid;
-    recv_data >> guid;
-
-    // this will get something not in world. crash
-    Creature* unit = ObjectAccessor::GetCreatureOrPetOrVehicle(*_player, guid);
-
-    if (!unit)
-        return;
-
-    // TODO: Unit::SetCharmedBy: 28782 is not in world but 0 is trying to charm it! -> crash
-    if (!unit->IsInWorld())
-        return;
-
-    unit->HandleSpellClick(_player);
 }
 
 void WorldSession::HandleMirrorImageDataRequest(WorldPacket & recv_data)

@@ -156,7 +156,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Entities/Player
   ${CMAKE_CURRENT_SOURCE_DIR}/Entities/Totem
   ${CMAKE_CURRENT_SOURCE_DIR}/Entities/Unit
-  ${CMAKE_CURRENT_SOURCE_DIR}/Entities/Vehicle
   ${CMAKE_CURRENT_SOURCE_DIR}/Entities/Transport
   ${CMAKE_CURRENT_SOURCE_DIR}/Events
   ${CMAKE_CURRENT_SOURCE_DIR}/Globals

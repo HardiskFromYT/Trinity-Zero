@@ -836,11 +836,6 @@ struct SmartAction
 
         struct
         {
-            uint32 seat;
-        } enterVehicle;
-
-        struct
-        {
             uint32 id;
             uint32 timerType;
         } timedActionList;
@@ -960,10 +955,9 @@ enum SMARTAI_TARGETS
     SMART_TARGET_CLOSEST_CREATURE               = 19,   // CreatureEntry(0any), maxDist, dead?
     SMART_TARGET_CLOSEST_GAMEOBJECT             = 20,   // entry(0any), maxDist
     SMART_TARGET_CLOSEST_PLAYER                 = 21,   // maxDist
-    SMART_TARGET_ACTION_INVOKER_VEHICLE         = 22,   // Unit's vehicle who caused this Event to occur
-    SMART_TARGET_OWNER_OR_SUMMONER              = 23,   // Unit's owner or summoner
-    SMART_TARGET_THREAT_LIST                    = 24,   // All units on creature's threat list
-    SMART_TARGET_END                            = 25,
+    SMART_TARGET_OWNER_OR_SUMMONER              = 22,   // Unit's owner or summoner
+    SMART_TARGET_THREAT_LIST                    = 23,   // All units on creature's threat list
+    SMART_TARGET_END                            = 24,
 };
 
 struct SmartTarget

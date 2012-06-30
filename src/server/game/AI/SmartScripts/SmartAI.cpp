@@ -441,7 +441,7 @@ void SmartAI::RemoveAuras()
     for (Unit::AuraApplicationMap::iterator iter = appliedAuras.begin(); iter != appliedAuras.end(); ++iter)
     {
         Aura const* aura = iter->second->GetBase();
-        if (!aura->GetSpellInfo()->IsPassive() && !aura->GetSpellInfo()->HasAura(SPELL_AURA_CONTROL_VEHICLE) && aura->GetCaster() != me)
+        if (!aura->GetSpellInfo()->IsPassive() && aura->GetCaster() != me)
             me->RemoveAurasDueToSpell(aura->GetId());
     }
 }
@@ -676,11 +676,6 @@ void SmartAI::UpdateAIWhileCharmed(const uint32 /*diff*/)
 void SmartAI::CorpseRemoved(uint32& respawnDelay)
 {
     GetScript()->ProcessEventsFor(SMART_EVENT_CORPSE_REMOVED, NULL, respawnDelay);
-}
-
-void SmartAI::PassengerBoarded(Unit* who, int8 seatId, bool apply)
-{
-    GetScript()->ProcessEventsFor(SMART_EVENT_PASSENGER_BOARDED, who, (uint32)seatId, 0, apply);
 }
 
 void SmartAI::InitializeAI()

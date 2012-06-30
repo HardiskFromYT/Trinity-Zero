@@ -31,7 +31,6 @@
 #include "SmartScript.h"
 #include "SmartAI.h"
 #include "Group.h"
-#include "Vehicle.h"
 #include "ScriptedGossip.h"
 #include "CreatureTextMgr.h"
 
@@ -2115,10 +2114,6 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         case SMART_TARGET_ACTION_INVOKER:
             if (trigger)
                 l->push_back(trigger);
-            break;
-        case SMART_TARGET_ACTION_INVOKER_VEHICLE:
-            if (trigger && trigger->GetVehicle() && trigger->GetVehicle()->GetBase())
-                l->push_back(trigger->GetVehicle()->GetBase());
             break;
         case SMART_TARGET_INVOKER_PARTY:
             if (trigger)

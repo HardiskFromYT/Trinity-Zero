@@ -715,26 +715,6 @@ void Battleground::EndBattleground(uint32 winner)
             player->getHostileRefManager().deleteReferences();
         }
 
-        uint32 winner_kills = player->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
-        uint32 loser_kills = player->GetRandomWinner() ? BG_REWARD_LOSER_HONOR_LAST : BG_REWARD_LOSER_HONOR_FIRST;
-
-        // Reward winner team
-        if (team == winner)
-        {
-            if (BattlegroundMgr::IsBGWeekend(GetTypeID()))
-            {
-                UpdatePlayerScore(player, SCORE_BONUS_HONOR, GetBonusHonorFromKill(winner_kills));
-
-                if (!player->GetRandomWinner())
-                    player->SetRandomWinner(true);
-            }
-        }
-        else
-        {
-            if (BattlegroundMgr::IsBGWeekend(GetTypeID()))
-                UpdatePlayerScore(player, SCORE_BONUS_HONOR, GetBonusHonorFromKill(loser_kills));
-        }
-
         player->ResetAllPowers();
         player->CombatStopWithPets(true);
         BlockMovement(player);
@@ -1621,13 +1601,6 @@ void Battleground::SetBgRaid(uint32 TeamID, Group* bg_raid)
 WorldSafeLocsEntry const* Battleground::GetClosestGraveYard(Player* player)
 {
     return sObjectMgr->GetClosestGraveYard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam());
-}
-
-bool Battleground::IsTeamScoreInRange(uint32 team, uint32 minScore, uint32 maxScore) const
-{
-    BattlegroundTeamId teamIndex = GetTeamIndexByTeamId(team);
-    uint32 score = std::max(m_TeamScores[teamIndex], 0);
-    return score >= minScore && score <= maxScore;
 }
 
 void Battleground::SetBracket(PvPDifficultyEntry const* bracketEntry)
