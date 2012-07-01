@@ -1754,7 +1754,7 @@ void Player::Update(uint32 p_time)
                                     break;
 
                                 RemoveFromMeetingStoneQueue();
-                                player->SetGroupInvite(this); // Player is invited to group
+                                player->SetGroupInvite(group); // Player is invited to group
                             }
                         }
                     }

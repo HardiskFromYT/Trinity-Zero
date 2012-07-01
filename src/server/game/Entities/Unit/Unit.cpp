@@ -2271,11 +2271,6 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spell)
             canParry = false;
             canBlock = false;
         }
-        else // Only deterrence as of 3.3.5
-        {
-            if (spell->AttributesCu & SPELL_ATTR0_CU_REQ_CASTER_BEHIND_TARGET)
-                canParry = false;
-        }
     }
     // Check creatures flags_extra for disable parry
     if (victim->GetTypeId() == TYPEID_UNIT)
