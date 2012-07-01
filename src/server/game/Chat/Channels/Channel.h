@@ -194,7 +194,6 @@ class Channel
         void MakePlayerInviteBanned(WorldPacket* data, const std::string &name);//? 0x1E
         void MakeThrottled(WorldPacket* data);                                  //? 0x1F
         void MakeNotInArea(WorldPacket* data);                                  //? 0x20
-        void MakeNotInLfg(WorldPacket* data);                                   //? 0x21
         void MakeVoiceOn(WorldPacket* data, uint64 guid);                       //+ 0x22
         void MakeVoiceOff(WorldPacket* data, uint64 guid);                      //+ 0x23
 
