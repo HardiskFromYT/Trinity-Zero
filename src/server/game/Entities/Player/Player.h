@@ -2307,75 +2307,24 @@ class Player : public Unit, public GridObject<Player>
         Player* GetNextRandomRaidMember(float radius);
         PartyResult CanUninviteFromGroup() const;
 
-        // Maybe should move to cpp file.
+        /*********************************************************/
+        /***                MEETING STONE SYSTEM               ***/
+        /*********************************************************/
         std::map<uint32 /*GUIDLow*/, uint32 /*areaId*/> meetingStoneQueue;
 
         void CheckMeetingStoneValidity();
 
         //void GetMeetingStoneQueueForInstanceId(uint32 areaId);//return sObjectMgr->GetMeetingStoneInfo(); }
 
-        bool IsInMeetingStoneQueue()
-        {
-            for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
-                if (itr->first == GetGUIDLow())
-                    return true;
-            return false;
-        }
-
-        bool IsInMeetingStoneQueueForInstanceId(uint32 areaId)
-        {
-            for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
-                if (itr->first == GetGUIDLow() && itr->second == areaId)
-                    return true;
-            return false;
-        }
-
-        std::vector<Player*> GetPlayersInMeetingStoneQueueForInstanceId(uint32 areaId)
-        {
-            std::vector<Player*> players;
-            for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
-                if (itr->second == areaId)
-                    players.push_back(ObjectAccessor::GetPlayer(*this, MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)));
-            return players;
-        }
-
-        uint32 GetSizeOfMeetingStoneQueueForInstanceId(uint32 areaId)
-        {
-            uint32 count;
-            for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
-                if (itr->second == areaId)
-                    count++;
-            return count;
-        }
-
-        uint32 GetAreaIdInMeetingStoneQueue()
-        {
-            for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
-                if (itr->first == GetGUIDLow())
-                    return itr->second;
-            return 0;
-        }
-
+        bool IsInMeetingStoneQueue();
+        bool IsInMeetingStoneQueueForInstanceId(uint32 areaId);
+        std::vector<Player*> GetPlayersInMeetingStoneQueueForInstanceId(uint32 areaId);
+        uint32 GetSizeOfMeetingStoneQueueForInstanceId(uint32 areaId);
+        uint32 GetAreaIdInMeetingStoneQueue();
         uint32 GetTimeInMeetingStoneQueue() { return timeInMeetingStoneQueue; }
-
-        std::string GetMeetingStoneQueueDungeonName(uint32 _areaId) { return GetAreaEntryByAreaID(_areaId)->area_name[GetSession()->GetSessionDbcLocale()]; }
-
+        std::string GetMeetingStoneQueueDungeonName(uint32 _areaId);
         void AddToMeetingStoneQueue(uint32 areaId) { meetingStoneQueue[areaId] = GetGUIDLow(); }
-
-        void RemoveFromMeetingStoneQueue()
-        {
-            std::map<uint32, uint32>::iterator itr = meetingStoneQueue.find(GetGUIDLow());
-            if (itr != meetingStoneQueue.end())
-            {
-                meetingStoneQueue.erase(itr);
-                timeInMeetingStoneQueue = 0;
-            }
-        }
-
-
-
-
-
+        void RemoveFromMeetingStoneQueue();
 
         // Battleground Group System
         void SetBattlegroundRaid(Group* group, int8 subgroup = -1);

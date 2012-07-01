@@ -1389,9 +1389,6 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Dungeon boss data...");
     sObjectMgr->LoadInstanceEncounters();
 
-    /*sLog->outString("Loading LFG rewards...");
-    sLFGMgr->LoadRewards();*/
-
     sLog->outString("Loading SpellArea Data...");                // must be after quest load
     sSpellMgr->LoadSpellAreas();
 
@@ -1904,9 +1901,6 @@ void World::Update(uint32 diff)
         m_timers[WUPDATE_DELETECHARS].Reset();
         Player::DeleteOldCharacters();
     }
-
-    /*sLFGMgr->Update(diff);
-    RecordTimeDiff("UpdateLFGMgr");*/
 
     // execute callbacks from sql queries that were queued recently
     ProcessQueryCallbacks();
