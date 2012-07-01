@@ -194,7 +194,7 @@ enum ShapeshiftForm
 {
     FORM_NONE               = 0x00,
     FORM_CAT                = 0x01,
-    FORM_TREE               = 0x02,
+    //FORM_TREE               = 0x02,
     FORM_TRAVEL             = 0x03,
     FORM_AQUA               = 0x04,
     FORM_BEAR               = 0x05,
@@ -214,15 +214,15 @@ enum ShapeshiftForm
     FORM_BERSERKERSTANCE    = 0x13,
     FORM_TEST               = 0x14,
     FORM_ZOMBIE             = 0x15,
-    FORM_METAMORPHOSIS      = 0x16,
+    //FORM_METAMORPHOSIS      = 0x16,
     FORM_UNDEAD             = 0x19,
     FORM_MASTER_ANGLER      = 0x1A,
-    FORM_FLIGHT_EPIC        = 0x1B,
+    //FORM_FLIGHT_EPIC        = 0x1B,
     FORM_SHADOW             = 0x1C,
-    FORM_FLIGHT             = 0x1D,
+    //FORM_FLIGHT             = 0x1D,
     FORM_STEALTH            = 0x1E,
     FORM_MOONKIN            = 0x1F,
-    FORM_SPIRITOFREDEMPTION = 0x20
+    //FORM_SPIRITOFREDEMPTION = 0x20
 };
 
 // low byte (0 from 0..3) of UNIT_FIELD_BYTES_2

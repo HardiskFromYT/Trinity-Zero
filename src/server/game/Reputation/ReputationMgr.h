@@ -42,7 +42,7 @@ enum FactionFlags
     FACTION_FLAG_PEACE_FORCED       = 0x10,                 // always overwrite FACTION_FLAG_AT_WAR, used for prevent war with own team factions
     FACTION_FLAG_INACTIVE           = 0x20,                 // player controlled, state stored in characters.data (CMSG_SET_FACTION_INACTIVE)
     FACTION_FLAG_RIVAL              = 0x40,                 // flag for the two competing outland factions
-    FACTION_FLAG_SPECIAL            = 0x80                  // horde and alliance home cities and their northrend allies have this flag
+    FACTION_FLAG_SPECIAL            = 0x80                  // horde and alliance home cities have this flag
 };
 
 typedef uint32 RepListID;
