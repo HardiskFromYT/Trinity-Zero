@@ -2379,10 +2379,6 @@ bool InstanceMap::AddPlayerToMap(Player* player)
         {
             Group* group = player->GetGroup();
 
-            // increase current instances (hourly limit)
-            if (!group || !group->isLFGGroup())
-                player->AddInstanceEnterTime(GetInstanceId(), time(NULL));
-
             // get or create an instance save for the map
             InstanceSave* mapSave = sInstanceSaveMgr->GetInstanceSave(GetInstanceId());
             if (!mapSave)

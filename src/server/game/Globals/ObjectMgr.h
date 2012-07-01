@@ -864,7 +864,6 @@ class ObjectMgr
         void LoadGossipMenuItemsLocales();
         void LoadPointOfInterestLocales();
         void LoadInstanceTemplate();
-        void LoadInstanceEncounters();
         void LoadMailLevelRewards();
 
         void LoadGossipText();

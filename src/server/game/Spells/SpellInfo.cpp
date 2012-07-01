@@ -418,21 +418,6 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster, int32 const* bp, Unit const
         basePoints += int32(level * basePointsPerLevel);
     }
 
-    // roll in a range <1;EffectDieSides> as of patch 3.3.3
-    switch (randomPoints)
-    {
-        case 0: break;
-        case 1: basePoints += 1; break;                     // range 1..1
-        default:
-            // range can have positive (1..rand) and negative (rand..1) values, so order its for irand
-            int32 randvalue = (randomPoints >= 1)
-                ? irand(1, randomPoints)
-                : irand(randomPoints, 1);
-
-            basePoints += randvalue;
-            break;
-    }
-
     float value = float(basePoints);
 
     // random damage
