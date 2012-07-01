@@ -150,8 +150,7 @@ public:
         bool isSystem = channel &&
                         (channel->HasFlag(CHANNEL_FLAG_TRADE) ||
                          channel->HasFlag(CHANNEL_FLAG_GENERAL) ||
-                         channel->HasFlag(CHANNEL_FLAG_CITY) ||
-                         channel->HasFlag(CHANNEL_FLAG_LFG));
+                         channel->HasFlag(CHANNEL_FLAG_CITY));
 
         if (sWorld->getBoolConfig(CONFIG_CHATLOG_SYSCHAN) && isSystem)
             sLog->outChat("[SYSCHAN] Player %s tells channel %s: %s",
