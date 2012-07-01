@@ -170,7 +170,6 @@ LanguageDesc lang_description[LANGUAGES_COUNT] =
     { LANG_GNOMISH,      7340, SKILL_LANG_GNOMISH      },
     { LANG_TROLL,        7341, SKILL_LANG_TROLL        },
     { LANG_GUTTERSPEAK, 17737, SKILL_LANG_GUTTERSPEAK  },
-    //{ LANG_DRAENEI,     29932, SKILL_LANG_DRAENEI      }, //! TrinityZero note: not sure if creatures used this pre-TBC
     { LANG_ZOMBIE,          0, 0                       },
     { LANG_GNOMISH_BINARY,  0, 0                       },
     { LANG_GOBLIN_BINARY,   0, 0                       }
