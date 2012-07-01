@@ -24132,3 +24132,60 @@ void Player::SendMovementSetFeatherFall(bool apply)
     data << uint32(0);          //! movement counter
     SendDirectMessage(&data);
 }
+
+bool Player::IsInMeetingStoneQueue()
+{
+    for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
+        if (itr->first == GetGUIDLow())
+            return true;
+    return false;
+}
+
+bool Player::IsInMeetingStoneQueueForInstanceId(uint32 areaId)
+{
+    for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
+        if (itr->first == GetGUIDLow() && itr->second == areaId)
+            return true;
+    return false;
+}
+
+std::vector<Player*> Player::GetPlayersInMeetingStoneQueueForInstanceId(uint32 areaId)
+{
+    std::vector<Player*> players;
+    for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
+        if (itr->second == areaId)
+            players.push_back(ObjectAccessor::GetPlayer(*this, MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)));
+    return players;
+}
+
+uint32 Player::GetSizeOfMeetingStoneQueueForInstanceId(uint32 areaId)
+{
+    uint32 count;
+    for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
+        if (itr->second == areaId)
+            count++;
+    return count;
+}
+
+uint32 Player::GetAreaIdInMeetingStoneQueue()
+{
+    for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
+        if (itr->first == GetGUIDLow())
+            return itr->second;
+    return 0;
+}
+
+std::string Player::GetMeetingStoneQueueDungeonName(uint32 _areaId)
+{
+    return GetAreaEntryByAreaID(_areaId)->area_name[GetSession()->GetSessionDbcLocale()];
+}
+
+void Player::RemoveFromMeetingStoneQueue()
+{
+    std::map<uint32, uint32>::iterator itr = meetingStoneQueue.find(GetGUIDLow());
+    if (itr != meetingStoneQueue.end())
+    {
+        meetingStoneQueue.erase(itr);
+        timeInMeetingStoneQueue = 0;
+    }
+}
