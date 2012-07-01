@@ -215,23 +215,6 @@ void Group::LoadMemberFromDB(uint32 guidLow, uint8 memberFlags, uint8 subgroup, 
     SubGroupCounterIncrease(subgroup);
 }
 
-void Group::ConvertToLFG()
-{
-    m_groupType = GroupType(m_groupType | GROUPTYPE_LFG | GROUPTYPE_UNK1);
-    m_lootMethod = NEED_BEFORE_GREED;
-    if (!isBGGroup())
-    {
-        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GROUP_TYPE);
-
-        stmt->setUInt8(0, uint8(m_groupType));
-        stmt->setUInt32(1, m_dbStoreId);
-
-        CharacterDatabase.Execute(stmt);
-    }
-
-    SendUpdate();
-}
-
 void Group::ConvertToRaid()
 {
     m_groupType = GroupType(m_groupType | GROUPTYPE_RAID);
@@ -1897,16 +1880,6 @@ void Group::SetLooterGuid(uint64 guid)
 void Group::SetLootThreshold(ItemQualities threshold)
 {
     m_lootThreshold = threshold;
-}
-
-void Group::SetLfgRoles(uint64 guid, const uint8 roles)
-{
-    member_witerator slot = _getMemberWSlot(guid);
-    if (slot == m_memberSlots.end())
-        return;
-
-    slot->roles = roles;
-         SendUpdate();
 }
 
 bool Group::IsFull() const

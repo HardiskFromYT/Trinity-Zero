@@ -41,11 +41,6 @@ Channel::Channel(const std::string& name, uint32 channel_id, uint32 Team)
 
         if (ch->flags & CHANNEL_DBC_FLAG_CITY_ONLY2)         // for city only channels
             m_flags |= CHANNEL_FLAG_CITY;
-
-        if (ch->flags & CHANNEL_DBC_FLAG_LFG)                // for LFG channel
-            m_flags |= CHANNEL_FLAG_LFG;
-        else                                                // for all other channels
-            m_flags |= CHANNEL_FLAG_NOT_LFG;
     }
     else                                                    // it's custom channel
     {
@@ -172,10 +167,8 @@ void Channel::Join(uint64 p, const char *pass)
 
     if (player)
     {
-        if (HasFlag(CHANNEL_FLAG_LFG) &&
-            sWorld->getBoolConfig(CONFIG_RESTRICTED_LFG_CHANNEL) && AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()) && player->GetGroup())
+        if (sWorld->getBoolConfig(CONFIG_RESTRICTED_LFG_CHANNEL) && AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()) && player->GetGroup())
         {
-            MakeNotInLfg(&data);
             SendToOne(&data, p);
             return;
         }
@@ -1015,12 +1008,6 @@ void Channel::MakeThrottled(WorldPacket* data)
 void Channel::MakeNotInArea(WorldPacket* data)
 {
     MakeNotifyPacket(data, CHAT_NOT_IN_AREA_NOTICE);
-}
-
-// done 0x21
-void Channel::MakeNotInLfg(WorldPacket* data)
-{
-    MakeNotifyPacket(data, CHAT_NOT_IN_LFG_NOTICE);
 }
 
 // done 0x22

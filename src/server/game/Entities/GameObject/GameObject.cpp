@@ -2040,7 +2040,7 @@ void GameObject::SetLootRecipient(Unit* unit)
         return;
     }
 
-    if (unit->GetTypeId() != TYPEID_PLAYER && !unit->IsVehicle())
+    if (unit->GetTypeId() != TYPEID_PLAYER)
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();

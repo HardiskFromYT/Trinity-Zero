@@ -248,7 +248,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
     }
 
     // players are only allowed to enter 5 instances per hour
-    if (entry->IsDungeon() && (!player->GetGroup() || (player->GetGroup() && !player->GetGroup()->isLFGGroup())))
+    if (entry->IsDungeon() && (!player->GetGroup() || (player->GetGroup())))
     {
         uint32 instaceIdToCheck = 0;
         if (InstanceSave* save = player->GetInstanceSave(mapid, entry->IsRaid()))

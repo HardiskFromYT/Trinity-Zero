@@ -50,13 +50,6 @@ struct AreaTableEntry;
 struct AuctionEntry;
 struct DeclinedName;
 struct ItemTemplate;
-struct LfgJoinResultData;
-struct LfgLockStatus;
-struct LfgPlayerBoot;
-struct LfgProposal;
-struct LfgReward;
-struct LfgRoleCheck;
-struct LfgUpdateData;
 struct MovementInfo;
 
 enum AccountDataType
@@ -778,33 +771,6 @@ class WorldSession
         void HandleHearthAndResurrect(WorldPacket& recv_data);
         void HandleInstanceLockResponse(WorldPacket& recvPacket);
         void HandleUpdateMissileTrajectory(WorldPacket& recvPacket);
-
-        // Looking for Dungeon/Raid
-        void HandleLfgSetCommentOpcode(WorldPacket& recv_data);
-        void HandleLfgPlayerLockInfoRequestOpcode(WorldPacket& recv_data);
-        void HandleLfgPartyLockInfoRequestOpcode(WorldPacket& recv_data);
-        void HandleLfgJoinOpcode(WorldPacket& recv_data);
-        void HandleLfgLeaveOpcode(WorldPacket& recv_data);
-        void HandleLfgSetRolesOpcode(WorldPacket& recv_data);
-        void HandleLfgProposalResultOpcode(WorldPacket& recv_data);
-        void HandleLfgSetBootVoteOpcode(WorldPacket& recv_data);
-        void HandleLfgTeleportOpcode(WorldPacket& recv_data);
-        void HandleLfrSearchOpcode(WorldPacket& recv_data);
-        void HandleLfrLeaveOpcode(WorldPacket& recv_data);
-
-        void SendLfgUpdatePlayer(const LfgUpdateData& updateData);
-        void SendLfgUpdateParty(const LfgUpdateData& updateData);
-        void SendLfgRoleChosen(uint64 guid, uint8 roles);
-        void SendLfgRoleCheckUpdate(const LfgRoleCheck* pRoleCheck);
-        void SendLfgUpdateSearch(bool update);
-        void SendLfgJoinResult(const LfgJoinResultData& joinData);
-        void SendLfgQueueStatus(uint32 dungeon, int32 waitTime, int32 avgWaitTime, int32 waitTimeTanks, int32 waitTimeHealer, int32 waitTimeDps, uint32 queuedTime, uint8 tanks, uint8 healers, uint8 dps);
-        void SendLfgPlayerReward(uint32 rdungeonEntry, uint32 sdungeonEntry, uint8 done, const LfgReward* reward, const Quest *qRew);
-        void SendLfgBootPlayer(const LfgPlayerBoot* pBoot);
-        void SendLfgUpdateProposal(uint32 proposalId, const LfgProposal *pProp);
-        void SendLfgDisabled();
-        void SendLfgOfferContinue(uint32 dungeonEntry);
-        void SendLfgTeleportError(uint8 err);
 
         void HandleAreaSpiritHealerQueryOpcode(WorldPacket& recv_data);
         void HandleAreaSpiritHealerQueueOpcode(WorldPacket& recv_data);
