@@ -3420,10 +3420,7 @@ bool Player::AddTalent(uint32 spellId, bool learning)
         return false;
     }
 
-    PlayerTalentMap::iterator itr = m_talents[spec]->find(spellId);
-    if (itr != m_talents[spec]->end())
-        itr->second->state = PLAYERSPELL_UNCHANGED;
-    else if (TalentSpellPos const* talentPos = GetTalentSpellPos(spellId))
+    if (TalentSpellPos const* talentPos = GetTalentSpellPos(spellId))
     {
         if (TalentEntry const* talentInfo = sTalentStore.LookupEntry(talentPos->talent_id))
         {
@@ -3433,10 +3430,6 @@ bool Player::AddTalent(uint32 spellId, bool learning)
                 uint32 rankSpellId = talentInfo->RankID[rank];
                 if (!rankSpellId || rankSpellId == spellId)
                     continue;
-
-                itr = m_talents[spec]->find(rankSpellId);
-                if (itr != m_talents[spec]->end())
-                    itr->second->state = PLAYERSPELL_REMOVED;
             }
         }
 
@@ -3444,9 +3437,6 @@ bool Player::AddTalent(uint32 spellId, bool learning)
         PlayerTalent* newtalent = new PlayerTalent();
 
         newtalent->state = state;
-        newtalent->spec = spec;
-
-        (*m_talents[spec])[spellId] = newtalent;
         return true;
     }
     return false;
@@ -4346,10 +4336,6 @@ bool Player::resetTalents(bool no_cost)
             for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
                 if (_spellEntry->Effects[i].TriggerSpell > 0 && _spellEntry->Effects[i].Effect == SPELL_EFFECT_LEARN_SPELL)
                     removeSpell(_spellEntry->Effects[i].TriggerSpell, true);
-            // if this talent rank can be found in the PlayerTalentMap, mark the talent as removed so it gets deleted
-            PlayerTalentMap::iterator plrTalent = m_talents[m_activeSpec]->find(talentInfo->RankID[rank]);
-            if (plrTalent != m_talents[m_activeSpec]->end())
-                plrTalent->second->state = PLAYERSPELL_REMOVED;
         }
     }
 
@@ -4576,10 +4562,11 @@ bool Player::HasSpell(uint32 spell) const
         !itr->second->disabled);
 }
 
-bool Player::HasTalent(uint32 spell, uint8 spec) const
+bool Player::HasTalent(uint32 spell) const
 {
-    PlayerTalentMap::const_iterator itr = m_talents[spec]->find(spell);
-    return (itr != m_talents[spec]->end() && itr->second->state != PLAYERSPELL_REMOVED);
+    //PlayerTalentMap::const_iterator itr = m_talents[spec]->find(spell);
+    //return (itr != m_talents[spec]->end() && itr->second->state != PLAYERSPELL_REMOVED);
+    return false;
 }
 
 bool Player::HasActiveSpell(uint32 spell) const
@@ -6591,7 +6578,7 @@ int16 Player::GetSkillTempBonusValue(uint32 skill) const
 
 void Player::SendActionButtons(uint32 state) const
 {
-    sLog->outDetail("Sending Action Buttons for '%u' spec '%u'", GetGUIDLow(), m_activeSpec);
+    sLog->outDetail("Sending Action Buttons for '%u'", GetGUIDLow());
 
     WorldPacket data(SMSG_ACTION_BUTTONS, 1+(MAX_ACTION_BUTTONS*4));
     data << uint8(state);
@@ -6614,7 +6601,7 @@ void Player::SendActionButtons(uint32 state) const
     }
 
     GetSession()->SendPacket(&data);
-    sLog->outDetail("Action Buttons for '%u' spec '%u' Sent", GetGUIDLow(), m_activeSpec);
+    sLog->outDetail("Action Buttons for '%u' Sent", GetGUIDLow());
 }
 
 bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type)
@@ -13676,10 +13663,6 @@ void Player::PrepareGossipMenu(WorldObject* source, uint32 menuId /*= 0*/, bool 
                     if (!creature->isCanTrainingOf(this, false))
                         canTalk = false;
                     break;
-                case GOSSIP_OPTION_LEARNDUALSPEC:
-                    if (!(GetSpecsCount() == 1 && creature->isCanTrainingAndResetTalentsOf(this) && !(getLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL))))
-                        canTalk = false;
-                    break;
                 case GOSSIP_OPTION_UNLEARNTALENTS:
                     if (!creature->isCanTrainingAndResetTalentsOf(this))
                         canTalk = false;
@@ -18182,10 +18165,9 @@ void Player::_SaveActions(SQLTransaction& trans)
             case ACTIONBUTTON_NEW:
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_ACTION);
                 stmt->setUInt32(0, GetGUIDLow());
-                stmt->setUInt8(1, m_activeSpec);
-                stmt->setUInt8(2, itr->first);
-                stmt->setUInt32(3, itr->second.GetAction());
-                stmt->setUInt8(4, uint8(itr->second.GetType()));
+                stmt->setUInt8(1, itr->first);
+                stmt->setUInt32(2, itr->second.GetAction());
+                stmt->setUInt8(3, uint8(itr->second.GetType()));
                 trans->Append(stmt);
 
                 itr->second.uState = ACTIONBUTTON_UNCHANGED;
@@ -18197,7 +18179,6 @@ void Player::_SaveActions(SQLTransaction& trans)
                 stmt->setUInt8(1, uint8(itr->second.GetType()));
                 stmt->setUInt32(2,  GetGUIDLow());
                 stmt->setUInt8(3, itr->first);
-                stmt->setUInt8(4, m_activeSpec);
                 trans->Append(stmt);
 
                 itr->second.uState = ACTIONBUTTON_UNCHANGED;
@@ -18207,7 +18188,6 @@ void Player::_SaveActions(SQLTransaction& trans)
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACTION_BY_BUTTON_SPEC);
                 stmt->setUInt32(0, GetGUIDLow());
                 stmt->setUInt8(1, itr->first);
-                stmt->setUInt8(2, m_activeSpec);
                 trans->Append(stmt);
 
                 m_actionButtons.erase(itr++);
@@ -23148,7 +23128,7 @@ void Player::LearnTalent(uint32 talentId, uint32 talentRank)
     learnSpell(spellid, false);
     AddTalent(spellid, true);
 
-    sLog->outDetail("TalentID: %u Rank: %u Spell: %u Spec: %u\n", talentId, talentRank, spellid, m_activeSpec);
+    sLog->outDetail("TalentID: %u Rank: %u Spell: %u \n", talentId, talentRank, spellid);
 
     // update free talent points
     SetFreeTalentPoints(CurTalentPoints - (talentRank - curtalent_maxrank + 1));
@@ -23362,53 +23342,46 @@ void Player::BuildPlayerTalentsInfoData(WorldPacket* data)
 {
     *data << uint32(GetFreeTalentPoints());                 // unspentTalentPoints
 
-    if (m_specsCount)
+    uint8 talentIdCount = 0;
+    size_t pos = data->wpos();
+    *data << uint8(talentIdCount);                  // [PH], talentIdCount
+
+    // find class talent tabs (all players have 3 talent tabs)
+    uint32 const* talentTabIds = GetTalentTabPages(getClass());
+
+    for (uint8 i = 0; i < MAX_TALENT_TABS; ++i)
     {
-        // loop through all specs (only 1 for now)
-        for (uint32 specIdx = 0; specIdx < m_specsCount; ++specIdx)
+        uint32 talentTabId = talentTabIds[i];
+
+        for (uint32 talentId = 0; talentId < sTalentStore.GetNumRows(); ++talentId)
         {
-            uint8 talentIdCount = 0;
-            size_t pos = data->wpos();
-            *data << uint8(talentIdCount);                  // [PH], talentIdCount
+            TalentEntry const* talentInfo = sTalentStore.LookupEntry(talentId);
+            if (!talentInfo)
+                continue;
 
-            // find class talent tabs (all players have 3 talent tabs)
-            uint32 const* talentTabIds = GetTalentTabPages(getClass());
+            // skip another tab talents
+            if (talentInfo->TalentTab != talentTabId)
+                continue;
 
-            for (uint8 i = 0; i < MAX_TALENT_TABS; ++i)
+            // find max talent rank (0~4)
+            int8 curtalent_maxrank = -1;
+            for (int8 rank = MAX_TALENT_RANK-1; rank >= 0; --rank)
             {
-                uint32 talentTabId = talentTabIds[i];
-
-                for (uint32 talentId = 0; talentId < sTalentStore.GetNumRows(); ++talentId)
+                if (talentInfo->RankID[rank] && HasTalent(talentInfo->RankID[rank]))
                 {
-                    TalentEntry const* talentInfo = sTalentStore.LookupEntry(talentId);
-                    if (!talentInfo)
-                        continue;
-
-                    // skip another tab talents
-                    if (talentInfo->TalentTab != talentTabId)
-                        continue;
-
-                    // find max talent rank (0~4)
-                    int8 curtalent_maxrank = -1;
-                    for (int8 rank = MAX_TALENT_RANK-1; rank >= 0; --rank)
-                    {
-                        if (talentInfo->RankID[rank] && HasTalent(talentInfo->RankID[rank], specIdx))
-                        {
-                            curtalent_maxrank = rank;
-                            break;
-                        }
-                    }
-
-                    // not learned talent
-                    if (curtalent_maxrank < 0)
-                        continue;
-
-                    *data << uint32(talentInfo->TalentID);  // Talent.dbc
-                    *data << uint8(curtalent_maxrank);      // talentMaxRank (0-4)
-
-                    ++talentIdCount;
+                    curtalent_maxrank = rank;
+                    break;
                 }
             }
+
+            // not learned talent
+            if (curtalent_maxrank < 0)
+                continue;
+
+            *data << uint32(talentInfo->TalentID);  // Talent.dbc
+            *data << uint8(curtalent_maxrank);      // talentMaxRank (0-4)
+
+            ++talentIdCount;
 
             data->put<uint8>(pos, talentIdCount);           // put real count
         }
@@ -23744,42 +23717,37 @@ void Player::_LoadTalents(PreparedQueryResult result)
 
 void Player::_SaveTalents(SQLTransaction& trans)
 {
-    PreparedStatement* stmt = NULL;
+    // Need we this?
+    //PreparedStatement* stmt = NULL;
 
-    for (uint8 i = 0; i < MAX_TALENT_SPECS; ++i)
-    {
-        for (PlayerTalentMap::iterator itr = m_talents[i]->begin(); itr != m_talents[i]->end();)
-        {
-            if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->state == PLAYERSPELL_CHANGED)
-            {
-                stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_TALENT_BY_SPELL_SPEC);
-                stmt->setUInt32(0, GetGUIDLow());
-                stmt->setUInt32(1, itr->first);
-                stmt->setUInt8(2, itr->second->spec);
-                trans->Append(stmt);
-            }
+    //if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->state == PLAYERSPELL_CHANGED)
+    //{
+    //    stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_TALENT_BY_SPELL_SPEC);
+    //    stmt->setUInt32(0, GetGUIDLow());
+    //    stmt->setUInt32(1, itr->first);
+    //    stmt->setUInt8(2, itr->second->spec);
+    //    trans->Append(stmt);
+    //}
 
-            if (itr->second->state == PLAYERSPELL_NEW || itr->second->state == PLAYERSPELL_CHANGED)
-            {
-                stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_TALENT);
-                stmt->setUInt32(0, GetGUIDLow());
-                stmt->setUInt32(1, itr->first);
-                stmt->setUInt8(2, itr->second->spec);
-                trans->Append(stmt);
-            }
+    //if (itr->second->state == PLAYERSPELL_NEW || itr->second->state == PLAYERSPELL_CHANGED)
+    //{
+    //    stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_TALENT);
+    //    stmt->setUInt32(0, GetGUIDLow());
+    //    stmt->setUInt32(1, itr->first);
+    //    stmt->setUInt8(2, itr->second->spec);
+    //    trans->Append(stmt);
+    //}
 
-            if (itr->second->state == PLAYERSPELL_REMOVED)
-            {
-                delete itr->second;
-                m_talents[i]->erase(itr++);
-            }
-            else
-            {
-                itr->second->state = PLAYERSPELL_UNCHANGED;
-                ++itr;
-            }
-        }
-    }
+    //if (itr->second->state == PLAYERSPELL_REMOVED)
+    //{
+    //    delete itr->second;
+    //    m_talents[i]->erase(itr++);
+    //}
+    //else
+    //{
+    //    itr->second->state = PLAYERSPELL_UNCHANGED;
+    //    ++itr;
+    //}
 }
 
 void Player::ResetTimeSync()
