@@ -668,10 +668,6 @@ void Group::Disband(bool hideDestroy /* = false */)
         ResetInstances(INSTANCE_RESET_GROUP_DISBAND, false, NULL);
         ResetInstances(INSTANCE_RESET_GROUP_DISBAND, true, NULL);
 
-        stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_LFG_DATA);
-        stmt->setUInt32(0, m_dbStoreId);
-        CharacterDatabase.Execute(stmt);
-
         sGroupMgr->FreeGroupDbStoreId(this);
     }
 

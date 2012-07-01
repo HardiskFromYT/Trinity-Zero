@@ -923,7 +923,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket& recv_data)
             return;
 
         if (Group* group = player->GetGroup())
-            if (group->isLFGGroup() && player->GetMap()->IsDungeon())
+            if (player->GetMap()->IsDungeon())
                 teleported = player->TeleportToBGEntryPoint();
     }
 

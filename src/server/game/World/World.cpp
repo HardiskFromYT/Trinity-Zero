@@ -323,7 +323,7 @@ void World::AddQueuedPlayer(WorldSession* sess)
     m_QueuedPlayer.push_back(sess);
 
     // The 1st SMSG_AUTH_RESPONSE needs to contain other info too.
-    sess->SendAuthResponse(AUTH_WAIT_QUEUE, false, GetQueuePos(sess));
+    sess->SendAuthResponse(AUTH_WAIT_QUEUE, GetQueuePos(sess));
 }
 
 bool World::RemoveQueuedPlayer(WorldSession* sess)
@@ -1385,9 +1385,6 @@ void World::SetInitialWorldSettings()
 
     sLog->outString("Loading Game Event Data...");               // must be after loading pools fully
     sGameEventMgr->LoadFromDB();
-
-    sLog->outString("Loading Dungeon boss data...");
-    sObjectMgr->LoadInstanceEncounters();
 
     sLog->outString("Loading SpellArea Data...");                // must be after quest load
     sSpellMgr->LoadSpellAreas();
