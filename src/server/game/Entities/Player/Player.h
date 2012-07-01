@@ -36,6 +36,7 @@
 #include "Util.h"                                           // for Tokens typedef
 #include "WorldSession.h"
 #include "DBCStores.h"
+#include "ObjectAccessor.h"
 
 // for template
 #include "SpellMgr.h"
@@ -2306,10 +2307,7 @@ class Player : public Unit, public GridObject<Player>
         Player* GetNextRandomRaidMember(float radius);
         PartyResult CanUninviteFromGroup() const;
 
-
-
-
-
+        // Maybe should move to cpp file.
         std::map<uint32 /*GUIDLow*/, uint32 /*areaId*/> meetingStoneQueue;
 
         void CheckMeetingStoneValidity();

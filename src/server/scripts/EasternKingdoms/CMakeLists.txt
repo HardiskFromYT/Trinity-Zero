@@ -10,7 +10,6 @@
 
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
-  EasternKingdoms/ghostlands.cpp
   EasternKingdoms/eversong_woods.cpp
   EasternKingdoms/AlteracValley/boss_galvangar.cpp
   EasternKingdoms/AlteracValley/boss_balinda.cpp
@@ -31,8 +30,6 @@ set(scripts_STAT_SRCS
   EasternKingdoms/Scholomance/instance_scholomance.cpp
   EasternKingdoms/Scholomance/boss_lorekeeper_polkelt.cpp
   EasternKingdoms/Scholomance/boss_ras_frostwhisper.cpp
-  EasternKingdoms/isle_of_queldanas.cpp
-  EasternKingdoms/boss_kruul.cpp
   EasternKingdoms/ZulGurub/boss_hakkar.cpp
   EasternKingdoms/ZulGurub/boss_mandokir.cpp
   EasternKingdoms/ZulGurub/boss_marli.cpp
@@ -126,15 +123,6 @@ set(scripts_STAT_SRCS
   EasternKingdoms/BlackrockSpire/boss_the_beast.cpp
   EasternKingdoms/BlackrockSpire/blackrock_spire.h
   EasternKingdoms/BlackrockSpire/instance_blackrock_spire.cpp
-  EasternKingdoms/SunwellPlateau/boss_eredar_twins.cpp
-  EasternKingdoms/SunwellPlateau/boss_kiljaeden.cpp
-  EasternKingdoms/SunwellPlateau/sunwell_plateau.h
-  EasternKingdoms/SunwellPlateau/boss_muru.cpp
-  EasternKingdoms/SunwellPlateau/instance_sunwell_plateau.cpp
-  EasternKingdoms/SunwellPlateau/boss_kalecgos.cpp
-  EasternKingdoms/SunwellPlateau/boss_brutallus.cpp
-  EasternKingdoms/SunwellPlateau/sunwell_plateau.cpp
-  EasternKingdoms/SunwellPlateau/boss_felmyst.cpp
   EasternKingdoms/stranglethorn_vale.cpp
   EasternKingdoms/Deadmines/deadmines.h
   EasternKingdoms/Deadmines/deadmines.cpp
@@ -154,7 +142,6 @@ set(scripts_STAT_SRCS
   EasternKingdoms/ScarletMonastery/boss_herod.cpp
   EasternKingdoms/ScarletMonastery/boss_scorn.cpp
   EasternKingdoms/undercity.cpp
-  EasternKingdoms/silvermoon_city.cpp
   EasternKingdoms/loch_modan.cpp
   EasternKingdoms/ShadowfangKeep/shadowfang_keep.cpp
   EasternKingdoms/ShadowfangKeep/instance_shadowfang_keep.cpp
@@ -172,33 +159,11 @@ set(scripts_STAT_SRCS
   EasternKingdoms/BlackwingLair/boss_victor_nefarius.cpp
   EasternKingdoms/blasted_lands.cpp
   EasternKingdoms/stormwind_city.cpp
-  EasternKingdoms/ZulAman/boss_halazzi.cpp
-  EasternKingdoms/ZulAman/boss_hexlord.cpp
-  EasternKingdoms/ZulAman/boss_zuljin.cpp
-  EasternKingdoms/ZulAman/boss_akilzon.cpp
-  EasternKingdoms/ZulAman/instance_zulaman.cpp
-  EasternKingdoms/ZulAman/boss_janalai.cpp
-  EasternKingdoms/ZulAman/boss_nalorakk.cpp
-  EasternKingdoms/ZulAman/zulaman.cpp
-  EasternKingdoms/ZulAman/zulaman.h
   EasternKingdoms/hinterlands.cpp
   EasternKingdoms/western_plaguelands.cpp
   EasternKingdoms/alterac_mountains.cpp
   EasternKingdoms/westfall.cpp
   EasternKingdoms/silverpine_forest.cpp
-  EasternKingdoms/Karazhan/instance_karazhan.cpp
-  EasternKingdoms/Karazhan/boss_nightbane.cpp
-  EasternKingdoms/Karazhan/karazhan.cpp
-  EasternKingdoms/Karazhan/boss_curator.cpp
-  EasternKingdoms/Karazhan/boss_shade_of_aran.cpp
-  EasternKingdoms/Karazhan/boss_netherspite.cpp
-  EasternKingdoms/Karazhan/boss_maiden_of_virtue.cpp
-  EasternKingdoms/Karazhan/boss_midnight.cpp
-  EasternKingdoms/Karazhan/boss_prince_malchezaar.cpp
-  EasternKingdoms/Karazhan/bosses_opera.cpp
-  EasternKingdoms/Karazhan/boss_moroes.cpp
-  EasternKingdoms/Karazhan/boss_terestian_illhoof.cpp
-  EasternKingdoms/Karazhan/karazhan.h
 )
 
 message("  -> Prepared: Eastern Kingdoms")
