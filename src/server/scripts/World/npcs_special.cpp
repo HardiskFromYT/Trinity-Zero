@@ -16,32 +16,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Npcs_Special
-SD%Complete: 100
-SDComment: To be used for special NPCs that are located globally.
-SDCategory: NPCs
-EndScriptData
-*/
-
-/* ContentData
-npc_air_force_bots       80%    support for misc (invisible) guard bots in areas where player allowed to fly. Summon guards after a preset time if tagged by spell
-npc_lunaclaw_spirit      80%    support for quests 6001/6002 (Body and Heart)
-npc_chicken_cluck       100%    support for quest 3861 (Cluck!)
-npc_dancing_flames      100%    midsummer event NPC
-npc_guardian            100%    guardianAI used to prevent players from accessing off-limits areas. Not in use by SD2
-npc_garments_of_quests   80%    NPC's related to all Garments of-quests 5621, 5624, 5625, 5648, 565
-npc_injured_patient     100%    patients for triage-quests (6622 and 6624)
-npc_doctor              100%    Gustaf Vanhowzen and Gregory Victor, quest 6622 and 6624 (Triage)
-npc_mount_vendor        100%    Regular mount vendors all over the world. Display gossip if player doesn't meet the requirements to buy
-npc_rogue_trainer        80%    Scripted trainers, so they are able to offer item 17126 for class quest 6681
-npc_sayge               100%    Darkmoon event fortune teller, buff player based on answers given
-npc_snake_trap_serpents  80%    AI for snakes that summoned by Snake Trap
-npc_shadowfiend         100%   restore 5% of owner's mana when shadowfiend die from damage
-npc_locksmith            75%    list of keys needs to be confirmed
-npc_firework            100%    NPC's summoned by rockets and rocket clusters, for making them cast visual
-EndContentData */
-
 #include "ScriptPCH.h"
 #include "ScriptedEscortAI.h"
 #include "ObjectMgr.h"
@@ -1091,49 +1065,6 @@ public:
     CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_garments_of_questsAI(creature);
-    }
-};
-
-/*######
-## npc_guardian
-######*/
-
-#define SPELL_DEATHTOUCH                5
-
-class npc_guardian : public CreatureScript
-{
-public:
-    npc_guardian() : CreatureScript("npc_guardian") { }
-
-    struct npc_guardianAI : public ScriptedAI
-    {
-        npc_guardianAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void Reset()
-        {
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        }
-
-        void EnterCombat(Unit* /*who*/)
-        {
-        }
-
-        void UpdateAI(uint32 const /*diff*/)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (me->isAttackReady())
-            {
-                DoCast(me->getVictim(), SPELL_DEATHTOUCH, true);
-                me->resetAttackTimer();
-            }
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_guardianAI(creature);
     }
 };
 
@@ -2832,7 +2763,6 @@ void AddSC_npcs_special()
     new npc_doctor();
     new npc_injured_patient();
     new npc_garments_of_quests();
-    new npc_guardian();
     new npc_mount_vendor();
     new npc_rogue_trainer();
     new npc_sayge();

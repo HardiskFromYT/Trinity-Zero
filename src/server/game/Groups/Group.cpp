@@ -438,12 +438,8 @@ bool Group::RemoveMember(uint64 guid, const RemoveMethod &method /*= GROUP_REMOV
 
     sScriptMgr->OnGroupRemoveMember(this, guid, method, kicker, reason);
 
-    // LFG group vote kick handled in scripts
-    if (isLFGGroup() && method == GROUP_REMOVEMETHOD_KICK)
-        return m_memberSlots.size();
-
     // remove member and change leader (if need) only if strong more 2 members _before_ member remove (BG allow 1 member group)
-    if (GetMembersCount() > ((isBGGroup() || isLFGGroup()) ? 1u : 2u))
+    if (GetMembersCount() > (isBGGroup()) ? 1u : 2u)
     {
         Player* player = ObjectAccessor::FindPlayer(guid);
         if (player)
@@ -539,7 +535,7 @@ bool Group::RemoveMember(uint64 guid, const RemoveMethod &method /*= GROUP_REMOV
 
         SendUpdate();
 
-        if (m_memberMgr.getSize() < ((isLFGGroup() || isBGGroup()) ? 1u : 2u))
+        if (m_memberMgr.getSize() < (isBGGroup() ? 1u : 2u))
             Disband();
 
         return true;
@@ -1916,11 +1912,6 @@ void Group::SetLfgRoles(uint64 guid, const uint8 roles)
 bool Group::IsFull() const
 {
     return isRaidGroup() ? (m_memberSlots.size() >= MAXRAIDSIZE) : (m_memberSlots.size() >= MAXGROUPSIZE);
-}
-
-bool Group::isLFGGroup() const
-{
-    return m_groupType & GROUPTYPE_LFG;
 }
 
 bool Group::isRaidGroup() const

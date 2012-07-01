@@ -3261,9 +3261,8 @@ enum BattlegroundTypeId
     BATTLEGROUND_AV            = 1, // Alterac Valley
     BATTLEGROUND_WS            = 2, // Warsong Gulch
     BATTLEGROUND_AB            = 3, // Arathi Basin
+    MAX_BATTLEGROUND_TYPE_ID,
 };
-
-#define MAX_BATTLEGROUND_TYPE_ID 4
 
 enum MailResponseType
 {

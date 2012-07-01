@@ -29,7 +29,7 @@
 #include "ScriptMgr.h"
 #include "CreatureAISelector.h"
 #include "Group.h"
-
+#include "Chat.h"
 #include "GameObjectModel.h"
 #include "DynamicTree.h"
 
@@ -1478,35 +1478,66 @@ void GameObject::Use(Unit* user)
         }
         case GAMEOBJECT_TYPE_MEETINGSTONE:                  //23
         {
-            GameObjectTemplate const* info = GetGOInfo();
-
             if (user->GetTypeId() != TYPEID_PLAYER)
                 return;
 
+            GameObjectTemplate const* info = GetGOInfo();
             Player* player = user->ToPlayer();
+            uint32 areaId = info->meetingstone.areaID;
+            uint8 minLevel = info->meetingstone.minLevel;
+            uint8 maxLevel = info->meetingstone.maxLevel;
+            std::string dungeonName = "<unknown>"; // Default <unkown>, in case the area_name is NULL
+            if (AreaTableEntry const* area = GetAreaEntryByAreaID(areaId))
+                dungeonName = area->area_name[player->GetSession()->GetSessionDbcLocale()];
 
-            Player* targetPlayer = ObjectAccessor::FindPlayer(player->GetSelection());
-
-            // accept only use by player from same raid as caster, except caster itself
-            if (!targetPlayer || targetPlayer == player || !targetPlayer->IsInSameRaidWith(player))
+            if (player->GetAreaId() != areaId)
                 return;
 
-            //required lvl checks!
-            uint8 level = player->getLevel();
-            if (level < info->meetingstone.minLevel)
+            // Patch 1.6.0 (2005-07-12): Players now receive an error message if they try to join a meeting stone queue and are in a raid or are not the party leader.
+            if (player->GetGroup() && player->GetGroup()->isRaidGroup())
+            {
+                ChatHandler(player).PSendSysMessage("You are not able to queue for this dungeon whilst in a raid group.");
                 return;
-            level = targetPlayer->getLevel();
-            if (level < info->meetingstone.minLevel)
-                return;
+            }
 
-            if (info->entry == 194097)
-                spellId = 61994;                            // Ritual of Summoning
+            // Patch 1.6.0 (2005-07-12): Players now receive an error message if they try to join a meeting stone queue and are in a raid or are not the party leader.
+            if (player->GetGroup() && player->GetGroup()->GetLeaderGUID() != player->GetGUID())
+            {
+                ChatHandler(player).PSendSysMessage("You must be the group leader in order to queue your group for this dungeon.");
+                return;
+            }
+
+            if (player->getLevel() < minLevel || player->getLevel() > maxLevel)
+            {
+                //! Got this error message from a 2005 post! :>
+                ChatHandler(player).PSendSysMessage("You do not meet the level requirements of this meeting stone.");
+                return;
+            }
+
+            if (player->IsInMeetingStoneQueue())
+            {
+                ChatHandler(player).PSendSysMessage("You are already in queue for instance %s.", player->GetMeetingStoneQueueDungeonName(player->GetAreaIdInMeetingStoneQueue()));
+                return;
+            }
+
+            if (Group* group = player->GetGroup())
+            {
+                for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+                {
+                    if (Player* grpMember = itr->getSource())
+                    {
+                        grpMember->AddToMeetingStoneQueue(areaId);
+                        ChatHandler(grpMember).PSendSysMessage("You have been succesfuly placed in queue for instance %s.", dungeonName);
+                    }
+                }
+            }
             else
-                spellId = 59782;                            // Summoning Stone Effect
-
+            {
+                player->AddToMeetingStoneQueue(areaId);
+                ChatHandler(player).PSendSysMessage("You have been succesfuly placed in queue for instance %s.", dungeonName);
+            }
             break;
         }
-
         case GAMEOBJECT_TYPE_FLAGSTAND:                     // 24
         {
             if (user->GetTypeId() != TYPEID_PLAYER)
@@ -2009,7 +2040,7 @@ void GameObject::SetLootRecipient(Unit* unit)
         return;
     }
 
-    if (unit->GetTypeId() != TYPEID_PLAYER)
+    if (unit->GetTypeId() != TYPEID_PLAYER && !unit->IsVehicle())
         return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();

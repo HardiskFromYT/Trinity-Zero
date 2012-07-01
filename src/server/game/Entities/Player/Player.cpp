@@ -659,6 +659,9 @@ Player::Player(WorldSession* session): Unit(true), m_reputationMgr(this)
     m_zoneUpdateId = 0;
     m_zoneUpdateTimer = 0;
 
+    timeInMeetingStoneQueue = 0;
+    checkForGroupTimer = 5000;
+
     m_areaUpdateId = 0;
 
     m_nextSave = sWorld->getIntConfig(CONFIG_INTERVAL_SAVE);
@@ -1705,6 +1708,67 @@ void Player::Update(uint32 p_time)
         }
         else
             _pendingBindTimer -= p_time;
+    }
+
+    if (IsInMeetingStoneQueue())
+        timeInMeetingStoneQueue += p_time;
+    else
+        timeInMeetingStoneQueue = 0;
+
+    //! "As time goes on and you are unable to find a group, the meeting stone will become less picky about who it chooses to group you with."
+    if (IsInMeetingStoneQueue() && GetAreaIdInMeetingStoneQueue() && (timeInMeetingStoneQueue & 60000) == 0)
+    {
+        sLog->outString("As time goes by ...");
+        ChatHandler(this).PSendSysMessage("You are in queue for dungeon %s...", GetMeetingStoneQueueDungeonName(GetAreaIdInMeetingStoneQueue()));
+    }
+
+    if (IsInMeetingStoneQueue())
+    {
+        if (checkForGroupTimer <= p_time)
+        {
+            uint32 dungeonArea = GetAreaIdInMeetingStoneQueue();
+            uint32 mapId = GetAreaEntryByAreaID(dungeonArea)->mapid;
+            std::vector<Player*> playersInQueueForInstance = GetPlayersInMeetingStoneQueueForInstanceId(dungeonArea);
+            for (std::vector<Player*>::const_iterator itr = playersInQueueForInstance.begin(); itr != playersInQueueForInstance.end(); ++itr)
+            {
+                //! Here we iterate through all possibile players that are in the queue, these can be:
+                //  - Groups which are put in queue by their leader;
+                //  - Players that are queueing on their own;
+                //  - 
+                Player* player = (*itr)->ToPlayer();
+                if (Group* group = player->GetGroup())
+                {
+                    //! Only make this work if this player is the leader of the group, else there is a
+                    //! chance we iterate through the same group more than once.
+                    if (group->GetLeaderGUID() == player->GetGUID())
+                    {
+                        for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+                        {
+                            if (Player* grpMember = itr->getSource())
+                            {
+                                //! We won't invite ourselves to this group if:
+                                //  - One of their members is not in queue for the queue;
+                                //  - The group is full;
+                                //  - Either a groupmember ignored this player or likewise;
+                                if (!grpMember->IsInMeetingStoneQueueForInstanceId(dungeonArea) || group->IsFull() || grpMember->GetSocial()->HasIgnore(GetGUIDLow()) || GetSocial()->HasIgnore(grpMember->GetGUIDLow()))
+                                    break;
+
+                                RemoveFromMeetingStoneQueue();
+                                player->SetGroupInvite(this); // Player is invited to group
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Hier komt code voor wanneer er geen groep is (?)
+                    }
+                }
+            }
+
+            checkForGroupTimer = 5000;
+        }
+        else
+            checkForGroupTimer -= p_time;
     }
 
     // not auto-free ghost from body in instances
@@ -3315,7 +3379,7 @@ void Player::AddNewMailDeliverTime(time_t deliver_time)
     }
 }
 
-bool Player::AddTalent(uint32 spellId, bool learning)
+bool Player::AddTalent(uint32 spellId, uint8 spec, bool learning)
 {
     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
     if (!spellInfo)
@@ -15421,7 +15485,7 @@ void Player::KilledPlayerCredit()
 
 void Player::CastedCreatureOrGO(uint32 entry, uint64 guid, uint32 spell_id)
 {
-    bool isCreature = IS_CREATURE_GUID(guid);
+    bool isCreature = IS_CRE_OR_VEH_GUID(guid);
 
     uint16 addCastCount = 1;
     for (uint8 i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
@@ -17913,6 +17977,9 @@ void Player::SaveToDB(bool create /*=false*/)
 
         stmt->setUInt32(index++, GetSession()->GetLatency());
 
+        stmt->setUInt8(index++, m_specsCount);
+        stmt->setUInt8(index++, m_activeSpec);
+
         ss.str("");
         for (uint32 i = 0; i < PLAYER_EXPLORED_ZONES_SIZE; ++i)
             ss << GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + i) << ' ';
@@ -18019,6 +18086,9 @@ void Player::SaveToDB(bool create /*=false*/)
             stmt->setUInt32(index++, GetPower(Powers(i)));
 
         stmt->setUInt32(index++, GetSession()->GetLatency());
+
+        stmt->setUInt8(index++, m_specsCount);
+        stmt->setUInt8(index++, m_activeSpec);
 
         ss.str("");
         for (uint32 i = 0; i < PLAYER_EXPLORED_ZONES_SIZE; ++i)
@@ -21723,6 +21793,34 @@ void Player::UpdateForQuestWorldObjects()
             if (GameObject* obj = HashMapHolder<GameObject>::Find(*itr))
                 obj->BuildValuesUpdateBlockForPlayer(&udata, this);
         }
+        else if (IS_CRE_OR_VEH_GUID(*itr))
+        {
+            Creature* obj = ObjectAccessor::GetCreatureOrPet(*this, *itr);
+            if (!obj)
+                continue;
+
+            // check if this unit requires quest specific flags
+            if (!obj->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK))
+                continue;
+
+            SpellClickInfoMapBounds clickPair = sObjectMgr->GetSpellClickInfoMapBounds(obj->GetEntry());
+            for (SpellClickInfoContainer::const_iterator _itr = clickPair.first; _itr != clickPair.second; ++_itr)
+            {
+                //! This code doesn't look right, but it was logically converted to condition system to do the exact
+                //! same thing it did before. It definitely needs to be overlooked for intended functionality.
+                ConditionList conds = sConditionMgr->GetConditionsForSpellClickEvent(obj->GetEntry(), _itr->second.spellId);
+                bool buildUpdateBlock = false;
+                for (ConditionList::const_iterator jtr = conds.begin(); jtr != conds.end() && !buildUpdateBlock; ++jtr)
+                    if ((*jtr)->ConditionType == CONDITION_QUESTREWARDED || (*jtr)->ConditionType == CONDITION_QUESTTAKEN)
+                        buildUpdateBlock = true;
+
+                if (buildUpdateBlock)
+                {
+                    obj->BuildCreateUpdateBlockForPlayer(&udata, this);
+                    break;
+                }
+            }
+        }
     }
     udata.BuildPacket(&packet);
     GetSession()->SendPacket(&packet);
@@ -21980,7 +22078,7 @@ bool Player::GetsRecruitAFriendBonus(bool forXP)
     bool recruitAFriend = false;
     if (getLevel() <= sWorld->getIntConfig(CONFIG_MAX_RECRUIT_A_FRIEND_BONUS_PLAYER_LEVEL) || !forXP)
     {
-        if (Group* group = this->GetGroup())
+        if (Group* group = GetGroup())
         {
             for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
             {
@@ -23082,7 +23180,7 @@ void Player::LearnTalent(uint32 talentId, uint32 talentRank)
 
     // learn! (other talent ranks will unlearned at learning)
     learnSpell(spellid, false);
-    AddTalent(spellid, true);
+    AddTalent(spellid, m_activeSpec, true);
 
     sLog->outDetail("TalentID: %u Rank: %u Spell: %u Spec: %u\n", talentId, talentRank, spellid, m_activeSpec);
 
@@ -23297,9 +23395,14 @@ bool Player::canSeeSpellClickOn(Creature const* c) const
 void Player::BuildPlayerTalentsInfoData(WorldPacket* data)
 {
     *data << uint32(GetFreeTalentPoints());                 // unspentTalentPoints
+    *data << uint8(m_specsCount);                           // talent group count (0, 1 or 2)
+    *data << uint8(m_activeSpec);                           // talent group index (0 or 1)
 
     if (m_specsCount)
     {
+        if (m_specsCount > MAX_TALENT_SPECS)
+            m_specsCount = MAX_TALENT_SPECS;
+
         // loop through all specs (only 1 for now)
         for (uint32 specIdx = 0; specIdx < m_specsCount; ++specIdx)
         {
@@ -23673,7 +23776,7 @@ void Player::_LoadTalents(PreparedQueryResult result)
     if (result)
     {
         do
-            AddTalent((*result)[0].GetUInt32(), false);
+            AddTalent((*result)[0].GetUInt32(), (*result)[1].GetUInt8(), false);
         while (result->NextRow());
     }
 }
