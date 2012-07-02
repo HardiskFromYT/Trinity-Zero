@@ -3094,9 +3094,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 48421:
                 spellInfo->Stances = 1 << (FORM_MOONKIN - 1);
                 break;
-            case 48422:
-                spellInfo->Stances = 1 << (FORM_TREE - 1);
-                break;
             case 51466: // Elemental Oath (Rank 1)
             case 51470: // Elemental Oath (Rank 2)
                 spellInfo->Effect[EFFECT_1] = SPELL_EFFECT_APPLY_AURA;

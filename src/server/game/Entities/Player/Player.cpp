@@ -2083,27 +2083,21 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     if (!InBattleground() && mEntry->IsBattleground())
         return false;
 
-    // client without expansion support
-    if (GetSession()->Expansion() < mEntry->Expansion())
+    if (GetTransport())
     {
-        sLog->outDebug(LOG_FILTER_MAPS, "Player %s using client without required expansion tried teleport to non accessible map %u", GetName(), mapid);
-
-        if (GetTransport())
-        {
-            m_transport->RemovePassenger(this);
-            m_transport = NULL;
-            m_movementInfo.t_pos.Relocate(0.0f, 0.0f, 0.0f, 0.0f);
-            m_movementInfo.t_time = 0;
-            m_movementInfo.t_seat = -1;
-            RepopAtGraveyard();                             // teleport to near graveyard if on transport, looks blizz like :)
-        }
-
-        SendTransferAborted(mapid, TRANSFER_ABORT_INSUF_EXPAN_LVL, mEntry->Expansion());
-
-        return false;                                       // normal client can't teleport to this map...
+        m_transport->RemovePassenger(this);
+        m_transport = NULL;
+        m_movementInfo.t_pos.Relocate(0.0f, 0.0f, 0.0f, 0.0f);
+        m_movementInfo.t_time = 0;
+        m_movementInfo.t_seat = -1;
+        RepopAtGraveyard();                             // teleport to near graveyard if on transport, looks blizz like :)
     }
-    else
-        sLog->outDebug(LOG_FILTER_MAPS, "Player %s is being teleported to map %u", GetName(), mapid);
+
+    SendTransferAborted(mapid, TRANSFER_ABORT_INSUF_EXPAN_LVL);
+
+    return false;                                       // normal client can't teleport to this map...
+
+    sLog->outDebug(LOG_FILTER_MAPS, "Player %s is being teleported to map %u", GetName(), mapid);
 
     // reset movement flags at teleport, because player will continue move with these flags after teleport
     SetUnitMovementFlags(0);
@@ -6205,9 +6199,6 @@ void Player::UpdateWeaponSkill(WeaponAttackType attType)
     if (IsInFeralForm())
         return;                                             // always maximized SKILL_FERAL_COMBAT in fact
 
-    if (GetShapeshiftForm() == FORM_TREE)
-        return;                                             // use weapon but not skill up
-
     if (victim && victim->GetTypeId() == TYPEID_UNIT && (victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_SKILLGAIN))
         return;
 
@@ -7312,17 +7303,6 @@ void Player::UpdateArea(uint32 newArea)
     UpdatePvPState(true);
 
     UpdateAreaDependentAuras(newArea);
-
-    // previously this was in UpdateZone (but after UpdateArea) so nothing will break
-    pvpInfo.inNoPvPArea = false;
-    if (area && area->IsSanctuary())    // in sanctuary
-    {
-        SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
-        pvpInfo.inNoPvPArea = true;
-        CombatStopWithPets();
-    }
-    else
-        RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
 }
 
 void Player::UpdateZone(uint32 newZone, uint32 newArea)
@@ -7381,7 +7361,7 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
 
     if (zone->flags & AREA_FLAG_CAPITAL)                     // Is in a capital city
     {
-        if (!pvpInfo.inHostileArea || zone->IsSanctuary())
+        if (!pvpInfo.inHostileArea)
         {
             SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
             SetRestType(REST_TYPE_IN_CITY);
@@ -16228,12 +16208,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
     // client without expansion support
     if (mapEntry)
     {
-        if (GetSession()->Expansion() < mapEntry->Expansion())
-        {
-            sLog->outDebug(LOG_FILTER_PLAYER_LOADING, "Player %s using client without required expansion tried login at non accessible map %u", GetName(), mapId);
-            RelocateToHomebind();
-        }
-
         // fix crash (because of if (Map* map = _FindMap(instanceId)) in MapInstanced::CreateInstance)
         if (instanceId)
             if (InstanceSave* save = GetInstanceSave(mapId, mapEntry->IsRaid()))
@@ -17737,7 +17711,7 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
 
         // accept saved data only for valid position (and non instanceable), and accessable
         if (MapManager::IsValidMapCoord(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ) &&
-            !bindMapEntry->Instanceable() && GetSession()->Expansion() >= bindMapEntry->Expansion())
+            !bindMapEntry->Instanceable())
             ok = true;
         else
         {
