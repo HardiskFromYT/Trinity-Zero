@@ -67,13 +67,6 @@ enum LoginResult
 
 #define ACCEPTED_CLIENT_BUILD             {5875, 6005, 0}
 
-enum ExpansionFlags
-{
-    POST_BC_EXP_FLAG                            = 0x2,
-    PRE_BC_EXP_FLAG                             = 0x1,
-    NO_VALID_EXP_FLAG                           = 0x0
-};
-
 namespace AuthHelper
 {
     bool IsAcceptedClientBuild(int build);

@@ -721,13 +721,6 @@ ContentLevels GetContentLevelsForMapAndZone(uint32 mapid, uint32 zoneId)
     MapEntry const* mapEntry = sMapStore.LookupEntry(mapid);
     if (!mapEntry)
         return CONTENT_1_60;
-
-    switch (mapEntry->Expansion())
-    {
-        default: return CONTENT_1_60;
-        case 1:  return CONTENT_61_70;
-        case 2:  return CONTENT_71_80;
-    }
 }
 
 bool IsTotemCategoryCompatiableWith(uint32 itemTotemCategoryId, uint32 requiredTotemCategoryId)

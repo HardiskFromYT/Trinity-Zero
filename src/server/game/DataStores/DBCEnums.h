@@ -61,7 +61,7 @@ enum AreaFlags
     AREA_FLAG_ARENA            = 0x00000080,                // FFA arenas
     AREA_FLAG_CAPITAL          = 0x00000100,                // main capital city flag
     AREA_FLAG_CITY             = 0x00000200,                // only for one zone named "City" (where it located?)
-    AREA_FLAG_OUTLAND          = 0x00000400,                // expansion zones? (only Eye of the Storm not have this flag, but have 0x00004000 flag)
+    //AREA_FLAG_OUTLAND          = 0x00000400,                // expansion zones? (only Eye of the Storm not have this flag, but have 0x00004000 flag)
     AREA_FLAG_SANCTUARY        = 0x00000800,                // sanctuary area (PvP disabled)
     AREA_FLAG_NEED_FLY         = 0x00001000,                // Respawn alive at the graveyard without corpse
     AREA_FLAG_UNUSED1          = 0x00002000,                // Unused in 3.3.5a

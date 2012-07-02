@@ -35,7 +35,6 @@ public:
     {
         static ChatCommand accountSetCommandTable[] =
         {
-            { "addon",          SEC_ADMINISTRATOR,  true,  &HandleAccountSetAddonCommand,     "", NULL },
             { "gmlevel",        SEC_CONSOLE,        true,  &HandleAccountSetGmLevelCommand,   "", NULL },
             { "password",       SEC_CONSOLE,        true,  &HandleAccountSetPasswordCommand,  "", NULL },
             { NULL,             0,                  false, NULL,                              "", NULL }
@@ -72,23 +71,6 @@ public:
         char* exp = strtok((char*)args, " ");
 
         uint32 accountId = handler->GetSession()->GetAccountId();
-
-        int expansion = atoi(exp); //get int anyway (0 if error)
-        if (expansion < 0 || uint8(expansion) > sWorld->getIntConfig(CONFIG_EXPANSION))
-        {
-            handler->SendSysMessage(LANG_IMPROPER_VALUE);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
-
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPANSION);
-
-        stmt->setUInt8(0, uint8(expansion));
-        stmt->setUInt32(1, accountId);
-
-        LoginDatabase.Execute(stmt);
-
-        handler->PSendSysMessage(LANG_ACCOUNT_ADDON, expansion);
         return true;
     }
 
@@ -333,71 +315,6 @@ public:
     {
         AccountTypes gmLevel = handler->GetSession()->GetSecurity();
         handler->PSendSysMessage(LANG_ACCOUNT_LEVEL, uint32(gmLevel));
-        return true;
-    }
-
-    /// Set/Unset the expansion level for an account
-    static bool HandleAccountSetAddonCommand(ChatHandler* handler, char const* args)
-    {
-        ///- Get the command line arguments
-        char* account = strtok((char*)args, " ");
-        char* exp = strtok(NULL, " ");
-
-        if (!account)
-            return false;
-
-        std::string accountName;
-        uint32 accountId;
-
-        if (!exp)
-        {
-            Player* player = handler->getSelectedPlayer();
-            if (!player)
-                return false;
-
-            accountId = player->GetSession()->GetAccountId();
-            AccountMgr::GetName(accountId, accountName);
-            exp = account;
-        }
-        else
-        {
-            ///- Convert Account name to Upper Format
-            accountName = account;
-            if (!AccountMgr::normalizeString(accountName))
-            {
-                handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
-                handler->SetSentErrorMessage(true);
-                return false;
-            }
-
-            accountId = AccountMgr::GetId(accountName);
-            if (!accountId)
-            {
-                handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
-                handler->SetSentErrorMessage(true);
-                return false;
-            }
-
-        }
-
-        // Let set addon state only for lesser (strong) security level
-        // or to self account
-        if (handler->GetSession() && handler->GetSession()->GetAccountId() != accountId &&
-            handler->HasLowerSecurityAccount(NULL, accountId, true))
-            return false;
-
-        int expansion = atoi(exp); //get int anyway (0 if error)
-        if (expansion < 0 || uint8(expansion) > sWorld->getIntConfig(CONFIG_EXPANSION))
-            return false;
-
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPANSION);
-
-        stmt->setUInt8(0, expansion);
-        stmt->setUInt32(1, accountId);
-
-        LoginDatabase.Execute(stmt);
-
-        handler->PSendSysMessage(LANG_ACCOUNT_SETADDON, accountName.c_str(), accountId, expansion);
         return true;
     }
 
