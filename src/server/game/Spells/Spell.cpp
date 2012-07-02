@@ -1130,77 +1130,6 @@ void Spell::SelectImplicitAreaTargets(SpellEffIndex effIndex, SpellImplicitTarge
     std::list<WorldObject*> targets;
     float radius = m_spellInfo->Effects[effIndex].CalcRadius(m_caster) * m_spellValue->RadiusMod;
     SearchAreaTargets(targets, radius, center, referer, targetType.GetObjectType(), targetType.GetCheckType(), m_spellInfo->Effects[effIndex].ImplicitTargetConditions);
-
-    // Custom entries
-    // TODO: remove those
-    switch (m_spellInfo->Id)
-    {
-        case 46584: // Raise Dead
-        {
-            if (Player* playerCaster = m_caster->ToPlayer())
-            {
-                for (std::list<WorldObject*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
-                {
-                    switch ((*itr)->GetTypeId())
-                    {
-                        case TYPEID_UNIT:
-                        case TYPEID_PLAYER:
-                        {
-                            Unit* unitTarget = (*itr)->ToUnit();
-                            if (unitTarget->isAlive() || !playerCaster->isHonorOrXPTarget(unitTarget)
-                                || ((unitTarget->GetCreatureTypeMask() & (1 << (CREATURE_TYPE_HUMANOID-1))) == 0)
-                                || (unitTarget->GetDisplayId() != unitTarget->GetNativeDisplayId()))
-                                break;
-                            AddUnitTarget(unitTarget, effMask, false);
-                            // no break;
-                        }
-                        case TYPEID_CORPSE: // wont work until corpses are allowed in target lists, but at least will send dest in packet
-                            m_targets.SetDst(*(*itr));
-                            return; // nothing more to do here
-                        default:
-                            break;
-                    }
-                }
-            }
-            return; // don't add targets to target map
-        }
-        // Corpse Explosion
-        case 49158:
-        case 51325:
-        case 51326:
-        case 51327:
-        case 51328:
-            // check if our target is not valid (spell can target ghoul or dead unit)
-            if (!(m_targets.GetUnitTarget() && m_targets.GetUnitTarget()->GetDisplayId() == m_targets.GetUnitTarget()->GetNativeDisplayId() &&
-                ((m_targets.GetUnitTarget()->GetEntry() == 26125 && m_targets.GetUnitTarget()->GetOwnerGUID() == m_caster->GetGUID())
-                || m_targets.GetUnitTarget()->isDead())))
-            {
-                // remove existing targets
-                CleanupTargetList();
-
-                for (std::list<WorldObject*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
-                {
-                    switch ((*itr)->GetTypeId())
-                    {
-                        case TYPEID_UNIT:
-                        case TYPEID_PLAYER:
-                            if (!(*itr)->ToUnit()->isDead())
-                                break;
-                            AddUnitTarget((*itr)->ToUnit(), 1 << effIndex, false);
-                            return;
-                        default:
-                            break;
-                    }
-                }
-                if (m_caster->GetTypeId() == TYPEID_PLAYER)
-                    m_caster->ToPlayer()->RemoveSpellCooldown(m_spellInfo->Id, true);
-                SendCastResult(SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW);
-                finish(false);
-            }
-            return;
-        default:
-            break;
-    }
     std::list<Unit*> unitTargets;
     std::list<GameObject*> gObjTargets;
     // for compability with older code - add only unit and go targets
@@ -1218,68 +1147,6 @@ void Spell::SelectImplicitAreaTargets(SpellEffIndex effIndex, SpellImplicitTarge
         // Special target selection for smart heals and energizes
         uint32 maxSize = 0;
         int32 power = -1;
-        switch (m_spellInfo->SpellFamilyName)
-        {
-            case SPELLFAMILY_GENERIC:
-                switch (m_spellInfo->Id)
-                {
-                    case 52759: // Ancestral Awakening
-                    case 71610: // Echoes of Light (Althor's Abacus normal version)
-                    case 71641: // Echoes of Light (Althor's Abacus heroic version)
-                        maxSize = 1;
-                        power = POWER_HEALTH;
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            case SPELLFAMILY_PRIEST:
-                if (m_spellInfo->SpellFamilyFlags[0] == 0x10000000) // Circle of Healing
-                {
-                    maxSize = 5;
-                    power = POWER_HEALTH;
-                }
-                else if (m_spellInfo->Id == 64844) // Divine Hymn
-                {
-                    maxSize = 3;
-                    power = POWER_HEALTH;
-                }
-                else if (m_spellInfo->Id == 64904) // Hymn of Hope
-                {
-                    maxSize = 3;
-                    power = POWER_MANA;
-                }
-                else
-                    break;
-
-                // Remove targets outside caster's raid
-                for (std::list<Unit*>::iterator itr = unitTargets.begin(); itr != unitTargets.end();)
-                {
-                    if (!(*itr)->IsInRaidWith(m_caster))
-                        itr = unitTargets.erase(itr);
-                    else
-                        ++itr;
-                }
-                break;
-            case SPELLFAMILY_DRUID:
-                if (m_spellInfo->SpellFamilyFlags[1] == 0x04000000) // Wild Growth
-                {
-                    maxSize = 5;
-                    power = POWER_HEALTH;
-                }
-                else
-                    break;
-
-                // Remove targets outside caster's raid
-                for (std::list<Unit*>::iterator itr = unitTargets.begin(); itr != unitTargets.end();)
-                    if (!(*itr)->IsInRaidWith(m_caster))
-                        itr = unitTargets.erase(itr);
-                    else
-                        ++itr;
-                break;
-            default:
-                break;
-        }
 
         if (maxSize && power != -1)
         {
@@ -2672,25 +2539,10 @@ void Spell::DoTriggersOnSpellHit(Unit* unit, uint8 effMask)
     // Apply additional spell effects to target
     // TODO: move this code to scripts
     if (m_preCastSpell)
-    {
         // Paladin immunity shields
         if (m_preCastSpell == 61988)
-        {
             // Cast Forbearance
             m_caster->CastSpell(unit, 25771, true);
-            // Cast Avenging Wrath Marker
-            unit->CastSpell(unit, 61987, true);
-        }
-
-        // Avenging Wrath
-        if (m_preCastSpell == 61987)
-            // Cast the serverside immunity shield marker
-            m_caster->CastSpell(unit, 61988, true);
-
-        if (sSpellMgr->GetSpellInfo(m_preCastSpell))
-            // Blizz seems to just apply aura without bothering to cast
-            m_caster->AddAura(m_preCastSpell, unit);
-    }
 
     // handle SPELL_AURA_ADD_TARGET_TRIGGER auras
     // this is executed after spell proc spells on target hit
@@ -3646,26 +3498,6 @@ void Spell::SendCastResult(Player* caster, SpellInfo const* spellInfo, uint8 cas
     {
         case SPELL_FAILED_REQUIRES_SPELL_FOCUS:
             data << uint32(spellInfo->RequiresSpellFocus);  // SpellFocusObject.dbc id
-            break;
-        case SPELL_FAILED_REQUIRES_AREA:                    // AreaTable.dbc id
-            // hardcode areas limitation case
-            switch (spellInfo->Id)
-            {
-                case 41617:                                 // Cenarion Mana Salve
-                case 41619:                                 // Cenarion Healing Salve
-                    data << uint32(3905);
-                    break;
-                case 41618:                                 // Bottled Nethergon Energy
-                case 41620:                                 // Bottled Nethergon Vapor
-                    data << uint32(3842);
-                    break;
-                case 45373:                                 // Bloodberry Elixir
-                    data << uint32(4075);
-                    break;
-                default:                                    // default case (don't must be)
-                    data << uint32(0);
-                    break;
-            }
             break;
         case SPELL_FAILED_TOTEMS:
             if (spellInfo->Totem[0])

@@ -4845,13 +4845,12 @@ bool Unit::HandleHasteAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             {
                 // Blade Flurry
                 case 13877:
-                case 33735:
                 {
                     target = SelectNearbyTarget(victim);
                     if (!target)
                         return false;
                     basepoints0 = damage;
-                    triggered_spell_id = 22482;
+                    triggered_spell_id = 22482; //! TrinityZero note: vanilla or not?
                     break;
                 }
             }
