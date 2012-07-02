@@ -187,7 +187,7 @@ struct CreatureBaseStats
 
     uint32 GenerateHealth(CreatureTemplate const* info) const
     {
-        return uint32(info->ModHealth) + 0.5f);
+        return uint32(info->ModHealth) + 0.5f;
     }
 
     uint32 GenerateMana(CreatureTemplate const* info) const

@@ -5850,9 +5850,6 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
             }
             case SPELLFAMILY_PALADIN:
             {
-                        // Illumination
-                        if (auraSpellInfo->SpellIconID == 241)
-                        {
                 if (!procSpell)
                     return false;
                 // procspell is triggered spell but we need mana cost of original casted spell
@@ -13185,14 +13182,6 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form)
                 return 2281;
             else
                 return 2289;
-        case FORM_FLIGHT:
-            if (Player::TeamForRace(getRace()) == ALLIANCE)
-                return 20857;
-            return 20872;
-        case FORM_FLIGHT_EPIC:
-            if (Player::TeamForRace(getRace()) == ALLIANCE)
-                return 21243;
-            return 21244;
         default:
             break;
     }

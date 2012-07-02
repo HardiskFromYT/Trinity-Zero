@@ -569,11 +569,6 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             if (level_diff > 0)
                 amount += int32(multiplier * level_diff);
             break;
-        case SPELL_AURA_MOD_INCREASE_SPEED:
-            // Dash - do not set speed if not in cat form
-            if (GetSpellInfo()->SpellFamilyName == SPELLFAMILY_DRUID && GetSpellInfo()->SpellFamilyFlags[2] & 0x00000008)
-                amount = GetBase()->GetUnitOwner()->GetShapeshiftForm() == FORM_CAT ? amount : 0;
-            break;
         default:
             break;
     }

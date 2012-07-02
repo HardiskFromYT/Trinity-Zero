@@ -343,7 +343,6 @@ bool AuthSocket::_HandleLogonChallenge()
 
     _login = (const char*)ch->I;
     _build = ch->build;
-    _expversion = (NO_VALID_EXP_FLAG) | (PRE_BC_EXP_FLAG);
     _os = (const char*)ch->os;
 
     if (_os.size() > 4)
@@ -512,14 +511,10 @@ bool AuthSocket::_HandleLogonProof()
     if (!socket().recv((char *)&lp, sizeof(sAuthLogonProof_C)))
         return false;
 
-    // If the client has no valid version
-    if (_expversion == NO_VALID_EXP_FLAG)
-    {
-        // Check if we have the appropriate patch on the disk
-        sLog->outDebug(LOG_FILTER_NETWORKIO, "Client with invalid version, patching is not implemented");
-        socket().shutdown();
-        return true;
-    }
+    // Check if we have the appropriate patch on the disk
+    sLog->outDebug(LOG_FILTER_NETWORKIO, "Client with invalid version, patching is not implemented");
+    socket().shutdown();
+    return true;
 
     // Continue the SRP6 calculation based on data received from the client
     BigNumber A;
@@ -620,27 +615,6 @@ bool AuthSocket::_HandleLogonProof()
         sha.Initialize();
         sha.UpdateBigNumbers(&A, &M, &K, NULL);
         sha.Finalize();
-
-        if (_expversion & POST_BC_EXP_FLAG)                 // 2.x and 3.x clients
-        {
-            sAuthLogonProof_S proof;
-            memcpy(proof.M2, sha.GetDigest(), 20);
-            proof.cmd = AUTH_LOGON_PROOF;
-            proof.error = 0;
-            proof.unk1 = 0x00800000;    // Accountflags. 0x01 = GM, 0x08 = Trial, 0x00800000 = Pro pass
-            proof.unk2 = 0x00;          // SurveyId
-            proof.unk3 = 0x00;
-            socket().send((char *)&proof, sizeof(proof));
-        }
-        else
-        {
-            sAuthLogonProof_S_Old proof;
-            memcpy(proof.M2, sha.GetDigest(), 20);
-            proof.cmd = AUTH_LOGON_PROOF;
-            proof.error = 0;
-            proof.unk2 = 0x00;
-            socket().send((char *)&proof, sizeof(proof));
-        }
 
         _authed = true;
     }
@@ -848,9 +822,9 @@ bool AuthSocket::_HandleRealmList()
     for (RealmList::RealmMap::const_iterator i = sRealmList->begin(); i != sRealmList->end(); ++i)
     {
         // don't work with realms which not compatible with the client
-        if ((_expversion & POST_BC_EXP_FLAG) && i->second.gamebuild != _build)
+        if (i->second.gamebuild != _build)
             continue;
-        else if ((_expversion & PRE_BC_EXP_FLAG) && !AuthHelper::IsAcceptedClientBuild(i->second.gamebuild))
+        else if (!AuthHelper::IsAcceptedClientBuild(i->second.gamebuild))
                 continue;
 
         uint8 AmountOfCharacters;
@@ -867,19 +841,15 @@ bool AuthSocket::_HandleRealmList()
 
         uint8 lock = (i->second.allowedSecurityLevel > _accountSecurityLevel) ? 1 : 0;
 
-        pkt << i->second.icon;                              // realm type
-        if ( _expversion & POST_BC_EXP_FLAG )               // only 2.x and 3.x clients
-            pkt << lock;                                    // if 1, then realm locked
-        pkt << uint8(i->second.flag);                       // RealmFlags
+        pkt << i->second.icon;                          // realm type
+        pkt << lock;                                    // if 1, then realm locked
+        pkt << uint8(i->second.flag);                   // RealmFlags
         pkt << i->first;
         pkt << i->second.address;
         pkt << i->second.populationLevel;
         pkt << AmountOfCharacters;
-        pkt << i->second.timezone;                          // realm category
-        if (_expversion & POST_BC_EXP_FLAG)                 // 2.x and 3.x clients
-            pkt << (uint8)0x2C;                             // unk, may be realm number/id?
-        else
-            pkt << (uint8)0x0;                              // 1.12.1 and 1.12.2 clients
+        pkt << i->second.timezone;                      // realm category
+        pkt << (uint8)0x0;                              // 1.12.1 and 1.12.2 clients
 
         if (i->second.flag & REALM_FLAG_SPECIFYBUILD)
         {
@@ -893,24 +863,12 @@ bool AuthSocket::_HandleRealmList()
         ++RealmListSize;
     }
 
-    if ( _expversion & POST_BC_EXP_FLAG )                   // 2.x and 3.x clients
-    {
-        pkt << (uint8)0x10;
-        pkt << (uint8)0x00;
-    }
-    else                                                    // 1.12.1 and 1.12.2 clients
-    {
-        pkt << (uint8)0x00;
-        pkt << (uint8)0x02;
-    }
+    pkt << (uint8)0x00;
+    pkt << (uint8)0x02;
 
     // make a ByteBuffer which stores the RealmList's size
     ByteBuffer RealmListSizeBuffer;
     RealmListSizeBuffer << (uint32)0;
-    if (_expversion & POST_BC_EXP_FLAG)                     // only 2.x and 3.x clients
-        RealmListSizeBuffer << (uint16)RealmListSize;
-    else
-        RealmListSizeBuffer << (uint32)RealmListSize;
 
     ByteBuffer hdr;
     hdr << (uint8) REALM_LIST;

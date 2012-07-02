@@ -6199,9 +6199,6 @@ void Player::UpdateWeaponSkill(WeaponAttackType attType)
     if (IsInFeralForm())
         return;                                             // always maximized SKILL_FERAL_COMBAT in fact
 
-    if (GetShapeshiftForm() == FORM_TREE)
-        return;                                             // use weapon but not skill up
-
     if (victim && victim->GetTypeId() == TYPEID_UNIT && (victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_SKILLGAIN))
         return;
 
@@ -17714,7 +17711,7 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
 
         // accept saved data only for valid position (and non instanceable), and accessable
         if (MapManager::IsValidMapCoord(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ) &&
-            !bindMapEntry->Instanceable() && GetSession()->Expansion() >= bindMapEntry->Expansion())
+            !bindMapEntry->Instanceable())
             ok = true;
         else
         {
