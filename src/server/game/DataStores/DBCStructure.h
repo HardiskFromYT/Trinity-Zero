@@ -51,14 +51,6 @@ struct AreaTableEntry
                                                             // 27, string flags, unused
     uint32  team;                                           // 28
     uint32  LiquidTypeOverride[4];                          // 29-32 liquid override by type
-
-    // helpers
-    bool IsSanctuary() const
-    {
-        if (mapid == 609)
-            return true;
-        return (flags & AREA_FLAG_SANCTUARY);
-    }
 };
 
 #define MAX_GROUP_AREA_IDS 6
@@ -764,8 +756,6 @@ struct MapEntry
     //uint32 maxPlayers;                                    // 65 max players
 
     // Helpers
-    uint32 Expansion() const { return addon; }
-
     bool IsDungeon() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID; }
     bool IsNonRaidDungeon() const { return map_type == MAP_INSTANCE; }
     bool Instanceable() const { return map_type == MAP_INSTANCE || map_type == MAP_RAID || map_type == MAP_BATTLEGROUND; }

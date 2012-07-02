@@ -205,7 +205,7 @@ class CharacterCreateInfo
 class WorldSession
 {
     public:
-        WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 recruiter, bool isARecruiter);
+        WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, time_t mute_time, LocaleConstant locale, uint32 recruiter, bool isARecruiter);
         ~WorldSession();
 
         bool PlayerLoading() const { return m_playerLoading; }
@@ -241,7 +241,6 @@ class WorldSession
         void SetSecurity(AccountTypes security) { _security = security; }
         std::string const& GetRemoteAddress() { return m_Address; }
         void SetPlayer(Player* player);
-        uint8 Expansion() const { return m_expansion; }
 
         void InitWarden(BigNumber* k, std::string os);
 
@@ -895,7 +894,6 @@ class WorldSession
 
         AccountTypes _security;
         uint32 _accountId;
-        uint8 m_expansion;
 
         typedef std::list<AddonInfo> AddonsList;
 

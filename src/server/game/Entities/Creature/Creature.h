@@ -94,7 +94,6 @@ struct CreatureTemplate
     uint32  GossipMenuId;
     uint8   minlevel;
     uint8   maxlevel;
-    uint32  expansion;
     uint32  faction_A;
     uint32  faction_H;
     uint32  npcflag;
@@ -175,7 +174,6 @@ struct CreatureTemplate
 typedef UNORDERED_MAP<uint32, CreatureTemplate> CreatureTemplateContainer;
 
 // Represents max amount of expansions.
-// TODO: Add MAX_EXPANSION constant.
 #define MAX_CREATURE_BASE_HP 3
 
 // Defines base stats for creatures (used to calculate HP/mana/armor).
@@ -189,7 +187,7 @@ struct CreatureBaseStats
 
     uint32 GenerateHealth(CreatureTemplate const* info) const
     {
-        return uint32((BaseHealth[info->expansion] * info->ModHealth) + 0.5f);
+        return uint32(info->ModHealth) + 0.5f);
     }
 
     uint32 GenerateMana(CreatureTemplate const* info) const

@@ -747,9 +747,8 @@ bool AuthSocket::_HandleReconnectChallenge()
         return false;
     }
 
-    // Reinitialize build, expansion and the account securitylevel
+    // Reinitialize build, and the account securitylevel
     _build = ch->build;
-    _expversion = (NO_VALID_EXP_FLAG) | (PRE_BC_EXP_FLAG);
     _os = (const char*)ch->os;
 
     if (_os.size() > 4)

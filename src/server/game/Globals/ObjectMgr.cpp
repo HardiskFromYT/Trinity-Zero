@@ -170,6 +170,7 @@ LanguageDesc lang_description[LANGUAGES_COUNT] =
     { LANG_GNOMISH,      7340, SKILL_LANG_GNOMISH      },
     { LANG_TROLL,        7341, SKILL_LANG_TROLL        },
     { LANG_GUTTERSPEAK, 17737, SKILL_LANG_GUTTERSPEAK  },
+    //{ LANG_DRAENEI,     29932, SKILL_LANG_DRAENEI      }, //! TrinityZero note: not sure if creatures used this pre-TBC
     { LANG_ZOMBIE,          0, 0                       },
     { LANG_GNOMISH_BINARY,  0, 0                       },
     { LANG_GOBLIN_BINARY,   0, 0                       }
@@ -417,7 +418,6 @@ void ObjectMgr::LoadCreatureTemplates()
         creatureTemplate.GossipMenuId      = fields[13].GetUInt32();
         creatureTemplate.minlevel          = fields[14].GetUInt8();
         creatureTemplate.maxlevel          = fields[15].GetUInt8();
-        creatureTemplate.expansion         = uint32(fields[16].GetInt16());
         creatureTemplate.faction_A         = uint32(fields[17].GetUInt16());
         creatureTemplate.faction_H         = uint32(fields[18].GetUInt16());
         creatureTemplate.npcflag           = fields[19].GetUInt32();
@@ -839,12 +839,6 @@ void ObjectMgr::CheckCreatureTemplate(CreatureTemplate const* cInfo)
             const_cast<CreatureTemplate*>(cInfo)->scale = displayScaleEntry->scale;
         else
             const_cast<CreatureTemplate*>(cInfo)->scale = 1.0f;
-    }
-
-    if (cInfo->expansion > (MAX_CREATURE_BASE_HP - 1))
-    {
-        sLog->outErrorDb("Table `creature_template` lists creature (Entry: %u) with expansion %u. Ignored and set to 0.", cInfo->Entry, cInfo->expansion);
-        const_cast<CreatureTemplate*>(cInfo)->expansion = 0;
     }
 
     if (uint32 badFlags = (cInfo->flags_extra & ~CREATURE_FLAG_EXTRA_DB_ALLOWED))
@@ -3297,15 +3291,6 @@ void ObjectMgr::LoadPlayerInfo()
                 // skip non loaded combinations
                 if (!pInfo->displayId_m || !pInfo->displayId_f)
                     continue;
-
-                //! TrinityZero note: what to do with this code?
-                // skip expansion races if not playing with expansion
-                /*if (sWorld->getIntConfig(CONFIG_EXPANSION) < 1 && (race == RACE_BLOODELF || race == RACE_DRAENEI))
-                    continue;
-
-                // skip expansion classes if not playing with expansion
-                if (sWorld->getIntConfig(CONFIG_EXPANSION) < 2 && class_ == CLASS_DEATH_KNIGHT)
-                    continue;*/
 
                 // fatal error if no level 1 data
                 if (!pInfo->levelInfo || pInfo->levelInfo[0].stats[0] == 0)
