@@ -2093,10 +2093,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         RepopAtGraveyard();                             // teleport to near graveyard if on transport, looks blizz like :)
     }
 
-    SendTransferAborted(mapid, TRANSFER_ABORT_INSUF_EXPAN_LVL);
-
-    return false;                                       // normal client can't teleport to this map...
-
     sLog->outDebug(LOG_FILTER_MAPS, "Player %s is being teleported to map %u", GetName(), mapid);
 
     // reset movement flags at teleport, because player will continue move with these flags after teleport

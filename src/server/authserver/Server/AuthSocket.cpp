@@ -512,9 +512,9 @@ bool AuthSocket::_HandleLogonProof()
         return false;
 
     // Check if we have the appropriate patch on the disk
-    sLog->outDebug(LOG_FILTER_NETWORKIO, "Client with invalid version, patching is not implemented");
-    socket().shutdown();
-    return true;
+    //sLog->outDebug(LOG_FILTER_NETWORKIO, "Client with invalid version, patching is not implemented");
+    //socket().shutdown();
+    //return true;
 
     // Continue the SRP6 calculation based on data received from the client
     BigNumber A;
@@ -825,7 +825,7 @@ bool AuthSocket::_HandleRealmList()
         if (i->second.gamebuild != _build)
             continue;
         else if (!AuthHelper::IsAcceptedClientBuild(i->second.gamebuild))
-                continue;
+            continue;
 
         uint8 AmountOfCharacters;
 
@@ -857,7 +857,7 @@ bool AuthSocket::_HandleRealmList()
             pkt << uint8(3);
             pkt << uint8(3);
             pkt << uint8(5);
-            pkt << uint16(12340);
+            pkt << uint16(12340); //! TrinityZero note: What to do here? 12340 is the build of 3.3.5a
         }
 
         ++RealmListSize;
