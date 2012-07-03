@@ -96,13 +96,6 @@ set(scripts_STAT_SRCS
   EasternKingdoms/SunkenTemple/sunken_temple.cpp
   EasternKingdoms/SunkenTemple/sunken_temple.h
   EasternKingdoms/SunkenTemple/instance_sunken_temple.cpp
-  EasternKingdoms/MagistersTerrace/boss_felblood_kaelthas.cpp
-  EasternKingdoms/MagistersTerrace/magisters_terrace.h
-  EasternKingdoms/MagistersTerrace/boss_priestess_delrissa.cpp
-  EasternKingdoms/MagistersTerrace/instance_magisters_terrace.cpp
-  EasternKingdoms/MagistersTerrace/boss_selin_fireheart.cpp
-  EasternKingdoms/MagistersTerrace/boss_vexallus.cpp
-  EasternKingdoms/MagistersTerrace/magisters_terrace.cpp
   EasternKingdoms/Uldaman/uldaman.cpp
   EasternKingdoms/Uldaman/boss_ironaya.cpp
   EasternKingdoms/Uldaman/uldaman.h

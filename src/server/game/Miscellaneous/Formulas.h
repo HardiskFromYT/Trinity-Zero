@@ -110,27 +110,10 @@ namespace Trinity
             return diff;
         }
 
-        inline uint32 BaseGain(uint8 pl_level, uint8 mob_level, ContentLevels content)
+        inline uint32 BaseGain(uint8 pl_level, uint8 mob_level)
         {
             uint32 baseGain;
-            uint32 nBaseExp;
-
-            switch (content)
-            {
-                case CONTENT_1_60:
-                    nBaseExp = 45;
-                    break;
-                case CONTENT_61_70:
-                    nBaseExp = 235;
-                    break;
-                case CONTENT_71_80:
-                    nBaseExp = 580;
-                    break;
-                default:
-                    sLog->outError("BaseGain: Unsupported content level %u", content);
-                    nBaseExp = 45;
-                    break;
-            }
+            uint32 nBaseExp = 45;
 
             if (mob_level >= pl_level)
             {
@@ -152,7 +135,7 @@ namespace Trinity
                     baseGain = 0;
             }
 
-            sScriptMgr->OnBaseGainCalculation(baseGain, pl_level, mob_level, content);
+            sScriptMgr->OnBaseGainCalculation(baseGain, pl_level, mob_level);
             return baseGain;
         }
 
@@ -167,7 +150,7 @@ namespace Trinity
                 gain = 0;
             else
             {
-                gain = BaseGain(player->getLevel(), u->getLevel(), GetContentLevelsForMapAndZone(u->GetMapId(), u->GetZoneId()));
+                gain = BaseGain(player->getLevel(), u->getLevel());
 
                 if (gain != 0 && u->GetTypeId() == TYPEID_UNIT && ((Creature*)u)->isElite())
                 {

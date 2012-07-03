@@ -25,7 +25,6 @@
 #include "UnorderedMap.h"
 
 #include "UpdateData.h"
-
 #include "GridDefines.h"
 #include "Object.h"
 #include "Player.h"

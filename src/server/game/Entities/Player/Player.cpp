@@ -7040,6 +7040,17 @@ bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool pvpt
     if (HasAura(SPELL_AURA_PLAYER_INACTIVE))
         return false;
 
+    // If killer and victim have the same IP address, log it and do not execute any code
+    if (Player* victim = uVictim->ToPlayer())
+    {
+        if (GetSession()->GetRemoteAddress() == victim->GetSession()->GetRemoteAddress())
+        {
+            GetSession()->SendNotification("You won't get rewarded for killing players who play on your own IP address.");
+            victim->GetSession()->SendNotification("You won't get rewarded for killing players who play on your own IP address.");
+            return false;
+        }
+    }
+
     uint64 victim_guid = 0;
     uint32 victim_rank = 0;
 
@@ -23995,7 +24006,7 @@ std::vector<Player*> Player::GetPlayersInMeetingStoneQueueForInstanceId(uint32 a
 
 uint32 Player::GetSizeOfMeetingStoneQueueForInstanceId(uint32 areaId)
 {
-    uint32 count;
+    uint32 count = 0;
     for (std::map<uint32, uint32>::iterator itr = meetingStoneQueue.begin(); itr != meetingStoneQueue.end(); ++itr)
         if (itr->second == areaId)
             count++;

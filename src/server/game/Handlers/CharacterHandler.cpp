@@ -946,9 +946,9 @@ void WorldSession::HandleMeetingStoneInfo(WorldPacket & recv_data)
 {
     sLog->outStaticDebug("WORLD SESSION: Received CMSG_MEETING_STONE_INFO");
 
-    WorldPacket data(SMSG_MEETINGSTONE_SETQUEUE, 5);
-    data << uint32(0) << uint8(6);
-    SendPacket(&data);
+    //WorldPacket data(SMSG_MEETINGSTONE_SETQUEUE, 5);
+    //data << uint32(0) << uint8(6);
+    //SendPacket(&data);
 }
 
 void WorldSession::HandleTutorialFlag(WorldPacket & recv_data)

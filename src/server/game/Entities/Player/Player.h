@@ -36,7 +36,6 @@
 #include "Util.h"                                           // for Tokens typedef
 #include "WorldSession.h"
 #include "DBCStores.h"
-#include "ObjectAccessor.h"
 
 // for template
 #include "SpellMgr.h"

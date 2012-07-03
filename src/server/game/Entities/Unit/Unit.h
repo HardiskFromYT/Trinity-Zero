@@ -2287,9 +2287,6 @@ class Unit : public WorldObject
         bool HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, SpellInfo const* procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown, bool * handled);
         bool HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* triggeredByAura, SpellInfo const* procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown);
         bool HandleOverrideClassScriptAuraProc(Unit* victim, uint32 damage, AuraEffect* triggeredByAura, SpellInfo const* procSpell, uint32 cooldown);
-        bool HandleAuraRaidProcFromChargeWithValue(AuraEffect* triggeredByAura);
-        bool HandleAuraRaidProcFromCharge(AuraEffect* triggeredByAura);
-
         void UpdateSplineMovement(uint32 t_diff);
 
         // player or player's pet

@@ -41,14 +41,6 @@ WMOAreaTableEntry const* GetWMOAreaTableEntryByTripple(int32 rootid, int32 adtid
 
 uint32 GetVirtualMapForMapAndZone(uint32 mapid, uint32 zoneId);
 
-enum ContentLevels
-{
-    CONTENT_1_60 = 0,
-    CONTENT_61_70,
-    CONTENT_71_80
-};
-ContentLevels GetContentLevelsForMapAndZone(uint32 mapid, uint32 zoneId);
-
 bool IsTotemCategoryCompatiableWith(uint32 itemTotemCategoryId, uint32 requiredTotemCategoryId);
 
 void Zone2MapCoordinates(float &x, float &y, uint32 zone);

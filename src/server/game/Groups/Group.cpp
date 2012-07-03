@@ -422,7 +422,8 @@ bool Group::RemoveMember(uint64 guid, const RemoveMethod &method /*= GROUP_REMOV
     sScriptMgr->OnGroupRemoveMember(this, guid, method, kicker, reason);
 
     // remove member and change leader (if need) only if strong more 2 members _before_ member remove (BG allow 1 member group)
-    if (GetMembersCount() > (isBGGroup()) ? 1u : 2u)
+    uint8 groupCount = (isBGGroup()) ? 1u : 2u;
+    if (GetMembersCount() > groupCount)
     {
         Player* player = ObjectAccessor::FindPlayer(guid);
         if (player)

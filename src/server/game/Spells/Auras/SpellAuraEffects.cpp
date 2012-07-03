@@ -274,9 +274,7 @@ pAuraEffectHandler AuraEffectHandler[TOTAL_AURAS]=
     &AuraEffect::HandleModRatingFromStat,                         //220 SPELL_AURA_MOD_RATING_FROM_STAT
     &AuraEffect::HandleNULL,                                      //221 SPELL_AURA_MOD_DETAUNT
     &AuraEffect::HandleUnused,                                    //222 unused (3.2.0) only for spell 44586 that not used in real spell cast
-    &AuraEffect::HandleNoImmediateEffect,                         //223 SPELL_AURA_RAID_PROC_FROM_CHARGE
     &AuraEffect::HandleUnused,                                    //224 unused (3.0.8a)
-    &AuraEffect::HandleNoImmediateEffect,                         //225 SPELL_AURA_RAID_PROC_FROM_CHARGE_WITH_VALUE
     &AuraEffect::HandleNoImmediateEffect,                         //226 SPELL_AURA_PERIODIC_DUMMY implemented in AuraEffect::PeriodicTick
     &AuraEffect::HandleNoImmediateEffect,                         //227 SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE implemented in AuraEffect::PeriodicTick
     &AuraEffect::HandleNoImmediateEffect,                         //228 SPELL_AURA_DETECT_STEALTH stealth detection
@@ -551,6 +549,7 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
                 ApplyPctF(amount, float(GetBase()->GetUnitOwner()->GetCreatePowers(POWER_MANA)) / GetTotalTicks());
             break;
         case SPELL_AURA_MOD_THREAT:
+        {
             uint8 level_diff = 0;
             float multiplier = 0.0f;
             switch (GetId())
@@ -569,6 +568,7 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             if (level_diff > 0)
                 amount += int32(multiplier * level_diff);
             break;
+        }
         default:
             break;
     }
@@ -1552,6 +1552,7 @@ void AuraEffect::HandleAuraModShapeshift(AuraApplication const* aurApp, uint8 mo
                 case FORM_CAT:
                 case FORM_BEAR:
                 case FORM_DIREBEAR:
+                {
                     // get furor proc chance
                     uint32 FurorChance = 0;
                     if (AuraEffect const* dummy = target->GetDummyAuraEffect(SPELLFAMILY_DRUID, 238, 0))
@@ -1560,21 +1561,26 @@ void AuraEffect::HandleAuraModShapeshift(AuraApplication const* aurApp, uint8 mo
                     switch (GetMiscValue())
                     {
                         case FORM_CAT:
+                        {
                             int32 basePoints = int32(std::min(oldPower, FurorChance));
                             target->SetPower(POWER_ENERGY, 0);
                             target->CastCustomSpell(target, 17099, &basePoints, NULL, NULL, true, NULL, this);
                             break;
+                        }
                         case FORM_BEAR:
                         case FORM_DIREBEAR:
                             if (urand(0, 99) < FurorChance)
                                 target->CastSpell(target, 17057, true); // Furor
                             break;
                         default:
+                        {
                             uint32 newEnergy = std::min(target->GetPower(POWER_ENERGY), FurorChance);
                             target->SetPower(POWER_ENERGY, newEnergy);
                             break;
+                        }
                     }
                     break;
+                }
                 default:
                     break;
             }
@@ -4143,6 +4149,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                     break;
                 // Unstable Power
                 case 24658:
+                {
                     uint32 spellId = 24659;
                     if (apply && caster)
                     {
@@ -4154,8 +4161,10 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                     }
                     target->RemoveAurasDueToSpell(spellId);
                     break;
+                }
                 // Restless Strength
                 case 24661:
+                {
                     uint32 spellId = 24662;
                     if (apply && caster)
                     {
@@ -4166,6 +4175,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                     }
                     target->RemoveAurasDueToSpell(spellId);
                     break;
+                }
                 default:
                     break;
             }

@@ -712,17 +712,6 @@ uint32 GetVirtualMapForMapAndZone(uint32 mapid, uint32 zoneId)
     return mapid;
 }
 
-ContentLevels GetContentLevelsForMapAndZone(uint32 mapid, uint32 zoneId)
-{
-    mapid = GetVirtualMapForMapAndZone(mapid, zoneId);
-    if (mapid < 2)
-        return CONTENT_1_60;
-
-    MapEntry const* mapEntry = sMapStore.LookupEntry(mapid);
-    if (!mapEntry)
-        return CONTENT_1_60;
-}
-
 bool IsTotemCategoryCompatiableWith(uint32 itemTotemCategoryId, uint32 requiredTotemCategoryId)
 {
     if (requiredTotemCategoryId == 0)
