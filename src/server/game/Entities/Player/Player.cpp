@@ -7040,17 +7040,6 @@ bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool pvpt
     if (HasAura(SPELL_AURA_PLAYER_INACTIVE))
         return false;
 
-    // If killer and victim have the same IP address, log it and do not execute any code
-    if (Player* victim = uVictim->ToPlayer())
-    {
-        if (GetSession()->GetRemoteAddress() == victim->GetSession()->GetRemoteAddress())
-        {
-            GetSession()->SendNotification("You won't get rewarded for killing players who play on your own IP address.");
-            victim->GetSession()->SendNotification("You won't get rewarded for killing players who play on your own IP address.");
-            return false;
-        }
-    }
-
     uint64 victim_guid = 0;
     uint32 victim_rank = 0;
 
